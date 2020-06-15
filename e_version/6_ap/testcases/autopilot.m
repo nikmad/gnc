@@ -97,8 +97,8 @@ theta_takeoff = 15*pi/180;
 
 % throttle_max = 2.5;
 % throttle_limit = 2.5;
-throttle_max = 2.5;
-throttle_limit = 2.5;
+throttle_max = 1.5;
+throttle_limit = 1.5;
 
 
 % h_minus = h_c - h_hold
