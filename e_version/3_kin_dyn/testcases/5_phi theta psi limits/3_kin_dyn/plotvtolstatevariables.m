@@ -1,4 +1,6 @@
-function plotvtolstatevariables(uu)
+function plotMAVStateVariables(uu)
+%
+% modified 12/11/2009 - RB
 
     % process inputs to function
     pn          = uu(1);             % North position (meters)
@@ -57,14 +59,21 @@ function plotvtolstatevariables(uu)
     t           = uu(54);            % simulation time
     
     % compute course angle
-    %chi = 180/pi*atan2(Va*sin(psi)+we, Va*cos(psi)+wn);
-    chi = chi_hat;
-    %Va = 50;
-    V_wind = sqrt(wn^2+we^2+wd^2);
+    chi = 180/pi*atan2(Va*sin(psi)+we, Va*cos(psi)+wn);
 
-%     gamma_a = theta-alpha;
-%     gamma_a_c = theta_c-alpha_c;
-%     gamma_a_hat = theta_hat-alpha_hat;
+    %===========================================================
+    % Valid only for In the absence of wind for 3_kin_dyn simulation 
+    %===========================================================
+
+    % Compute 'gamma_a' (air-mass-referenced flight path angle)
+    alpha = 180/pi*atan2(w, u);
+    gamma_a = theta-alpha;
+    gamma_a_c = theta_c-alpha_c;
+    gamma_a_hat = theta_hat-alpha_hat;
+
+    Va = sqrt(u^2+v^2+w^2); % only when there is no wind
+    %===========================================================
+
     
     % define persistent variables 
     persistent pn_handle
@@ -77,7 +86,6 @@ function plotvtolstatevariables(uu)
     persistent phi_handle
     persistent theta_handle
     persistent chi_handle
-    persistent psi_handle
     persistent p_handle
     persistent q_handle
     persistent r_handle
@@ -85,146 +93,112 @@ function plotvtolstatevariables(uu)
     persistent delta_a_handle
     persistent delta_r_handle
     persistent delta_t_handle
-    persistent wind_handle 
-    persistent Vwind_handle
-    persistent uvw_handle
     
 
   % first time function is called, initialize plot and persistent vars
-    if t==0
-        
+    if t==0,
         figure(2), clf
-        
-        set(gcf,'color',[77/255,77/255,77/255]);
-        %figure('color',[0.47,0.53,0.6]);
-        
-        subplot(4,5,4,'color',[0.275,0.509,0.706])
+
+        subplot(8,2,1)
         hold on
         grid on
         pn_handle = graph_y_yhat_yd(t, pn, pn_hat, pn_c, 'p_n', []);
         
-
-        subplot(4,5,2,'color',[0.275,0.509,0.706])
+        subplot(8,2,2)
         hold on
         grid on
         Va_handle = graph_y_yhat_yd(t, Va, Va_hat, Va_c, 'V_a', []);
         %gamma_a_handle = graph_y_yhat_yd(t, gamma_a, gamma_a_hat, gamma_a_c, '(\gamma)_a', []);
 
-        subplot(4,5,14,'color',[0.275,0.509,0.706])
+        subplot(8,2,3)
         hold on
         grid on
         pe_handle = graph_y_yhat_yd(t, pe, pe_hat, pe_c, 'p_e', []);
 
-        subplot(4,5,3,'color',[0.275,0.509,0.706])
+        subplot(8,2,4)
         hold on
         grid on
         alpha_handle = graph_y_yhat_yd(t, alpha, alpha_hat, alpha_c, '\alpha', []);
 
-        subplot(4,5,9,'color',[0.275,0.509,0.706])
+        subplot(8,2,5)
         hold on
         grid on
         h_handle = graph_y_yhat_yd(t, h, h_hat, h_c, 'h', []);
 
-        subplot(4,5,15,'color',[0.275,0.509,0.706])
+        subplot(8,2,6)
         hold on
         grid on
         beta_handle = graph_y_yhat_yd(t, beta, beta_hat, beta_c, '\beta', []);
 
-        subplot(4,5,18,'color',[0.275,0.509,0.706])
+        subplot(8,2,7)
         hold on
         grid on
         phi_handle = graph_y_yhat_yd(t, phi, phi_hat, phi_c, '\phi', []);
         
-        subplot(4,5,17,'color',[0.275,0.509,0.706])
+        subplot(8,2,8)
         hold on
         grid on
         p_handle = graph_y_yhat_yd(t, p, p_hat, p_c, 'p', []);
         
-        subplot(4,5,8,'color',[0.275,0.509,0.706])
+        subplot(8,2,9)
         hold on
         grid on
         theta_handle = graph_y_yhat_yd(t, theta, theta_hat, theta_c, '\theta', []);
         
-        subplot(4,5,7,'color',[0.275,0.509,0.706])
+        subplot(8,2,10)
         hold on
         grid on
         q_handle = graph_y_yhat_yd(t, q, q_hat, q_c, 'q', []);
         
-        subplot(4,5,19,'color',[0.275,0.509,0.706])
+        subplot(8,2,11)
         hold on
         grid on
         chi_handle = graph_y_yhat_yd(t, chi, chi_hat, chi_c, '\chi', []);
         
-        subplot(4,5,12,'color',[0.275,0.509,0.706])
+        subplot(8,2,12)
         hold on
         grid on
         r_handle = graph_y_yhat_yd(t, r, r_hat, r_c, 'r', []);
         
-      
-        subplot(4,5,6,'color',[0.275,0.509,0.706])
+        subplot(8,2,13)
         hold on
         grid on
-        delta_e_handle = graph_y(t, delta_e, [], 'y');
-        title('\delta_e','fontweight','bold', 'fontsize', 20, 'color', [255/255,179/255,25/255]);
+        delta_e_handle = graph_y(t, delta_e, [], 'b');
+        ylabel('\delta_e')
         
-        subplot(4,5,16,'color',[0.275,0.509,0.706])
+        subplot(8,2,14)
         hold on
         grid on
-        delta_a_handle = graph_y(t, delta_a, [], 'y');
-        title('\delta_a','fontweight','bold', 'fontsize', 20, 'color', [255/255,179/255,25/255]);
+        delta_a_handle = graph_y(t, delta_a, [], 'b');
+        ylabel('\delta_a')
 
-        subplot(4,5,11,'color',[0.275,0.509,0.706])
+        subplot(8,2,15)
         hold on
         grid on
-        delta_r_handle = graph_y(t, delta_r, [], 'y');
-        title('\delta_r','fontweight','bold', 'fontsize', 20, 'color', [255/255,179/255,25/255]);
+        delta_r_handle = graph_y(t, delta_r, [], 'b');
+        ylabel('\delta_r')
         
-        subplot(4,5,1,'color',[0.275,0.509,0.706])
+        subplot(8,2,16)
         hold on
         grid on
-        delta_t_handle = graph_y(t, delta_t, [], 'y');
-        title('\delta_t','fontweight','bold', 'fontsize', 20, 'color', [255/255,179/255,25/255]);
-        
-        subplot(4,5,13,'color',[0.275,0.509,0.706])
-        hold on
-        grid on
-        psi_handle = graph_y_yhat_yd(t, psi, psi, psi, '\psi', []);
-        
-        subplot(4,5,10,'color',[0.275,0.509,0.706])
-        hold on
-        grid on
-        wind_handle = graph_y_yhat_yd(t, wn, we, wd, 'wn,we,wd', []);
-        
-        subplot(4,5,5,'color',[0.275,0.509,0.706])
-        hold on
-        grid on
-        Vwind_handle = graph_y_yhat_yd(t, V_wind, V_wind, V_wind, 'Vwind', []);
-        
-        subplot(4,5,20,'color',[0.275,0.509,0.706])
-        hold on
-        grid on
-        uvw_handle = graph_y_yhat_yd(t, u, v, w, 'uvw', []);
+        delta_t_handle = graph_y(t, delta_t, [], 'b');
+        ylabel('\delta_t')
         
     % at every other time step, redraw state variables
     else 
-       
-       graph_y_yhat_yd(t, pn, pn_hat, pn_c, 'p_n\t', pn_handle);
-       graph_y_yhat_yd(t, pe, pe_hat, pe_c, 'p_e\t', pe_handle);
-       graph_y_yhat_yd(t, h, h_hat, h_c, 'h\t', h_handle);
-       graph_y_yhat_yd(t, Va, Va_hat, Va_c, 'V_a\t', Va_handle);
+       graph_y_yhat_yd(t, pn, pn_hat, pn_c, 'p_n', pn_handle);
+       graph_y_yhat_yd(t, pe, pe_hat, pe_c, 'p_e', pe_handle);
+       graph_y_yhat_yd(t, h, h_hat, h_c, 'h', h_handle);
+       graph_y_yhat_yd(t, Va, Va_hat, Va_c, 'V_a', Va_handle);
        %graph_y_yhat_yd(t, gamma_a, gamma_a_hat, gamma_a_c, '(\gamma)_a', gamma_a_handle);
-       graph_y_yhat_yd(t, alpha, alpha_hat, alpha_c, '\alpha\t', alpha_handle);
-       graph_y_yhat_yd(t, beta, beta_hat, beta_c, '\beta\t', beta_handle);
-       graph_y_yhat_yd(t, phi, phi_hat, phi_c, '\phi\t', phi_handle);
-       graph_y_yhat_yd(t, theta, theta_hat, theta_c, '\theta\t', theta_handle);
-       graph_y_yhat_yd(t, chi, chi_hat, chi_c, '\chi\t', chi_handle);
-       graph_y_yhat_yd(t, psi, psi, psi, '\psi\t', psi_handle);
-       graph_y_yhat_yd(t, wn, we, wd, 'wn,we,wd\t', wind_handle);
-       graph_y_yhat_yd(t, V_wind, V_wind, V_wind, 'Vwind\t', Vwind_handle);
-       graph_y_yhat_yd(t, u, v, w, 'uvw\t', uvw_handle);
-       graph_y_yhat_yd(t, p, p_hat, p_c, 'p\t', p_handle);
-       graph_y_yhat_yd(t, q, q_hat, q_c, 'q\t', q_handle);
-       graph_y_yhat_yd(t, r, r_hat, r_c, 'r\t', r_handle);
+       graph_y_yhat_yd(t, alpha, alpha_hat, alpha_c, '\alpha', alpha_handle);
+       graph_y_yhat_yd(t, beta, beta_hat, beta_c, '\beta', beta_handle);
+       graph_y_yhat_yd(t, phi, phi_hat, phi_c, '\phi', phi_handle);
+       graph_y_yhat_yd(t, theta, theta_hat, theta_c, '\theta', theta_handle);
+       graph_y_yhat_yd(t, chi, chi_hat, chi_c, '\chi', chi_handle);
+       graph_y_yhat_yd(t, p, p_hat, p_c, 'p', p_handle);
+       graph_y_yhat_yd(t, q, q_hat, q_c, 'q', q_handle);
+       graph_y_yhat_yd(t, r, r_hat, r_c, 'r', r_handle);
        graph_y(t, delta_e, delta_e_handle);
        graph_y(t, delta_a, delta_a_handle);
        graph_y(t, delta_r, delta_r_handle);
@@ -237,11 +211,8 @@ function plotvtolstatevariables(uu)
 % graph y with lable mylabel
 function handle = graph_y(t, y, handle, color)
   
-  if isempty(handle)
-    handle    = plot(t,y,color,'LineWidth', 2);
-    %title('y','fontweight','bold', 'fontsize', 20, 'color', [240/255,230/255,140/255]);
-    set(gca,'xcolor','w', 'ycolor','w');
-    %legend('Location','northeast')
+  if isempty(handle),
+    handle    = plot(t,y,color);
   else
     set(handle,'Xdata',[get(handle,'Xdata'),t]);
     set(handle,'Ydata',[get(handle,'Ydata'),y]);
@@ -252,7 +223,7 @@ function handle = graph_y(t, y, handle, color)
 % graph y and yd with lable mylabel
 function handle = graph_y_yd(t, y, yd, lab, handle)
   
-  if isempty(handle)
+  if isempty(handle),
     handle(1)    = plot(t,y,'b');
     handle(2)    = plot(t,yd,'g--');
     ylabel(lab)
@@ -267,22 +238,18 @@ function handle = graph_y_yd(t, y, yd, lab, handle)
 
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % plot the variable y in blue, its estimated value yhat in green, and its 
 % desired value yd in red, lab is the label on the graph
 function handle = graph_y_yhat_yd(t, y, yhat, yd, lab, handle)
   
-  if isempty(handle)
-    
-    %handle(2)   = plot(t,yhat,'d', 'color', [1 1 0],'DisplayName','\color{white} yhat');
-    handle(1)   = plot(t,y,'color', [255/255,215/255,0]);
-    handle(2)   = plot(t,yhat, 'color', [0,1,0],'LineWidth', 2);
-    handle(3)   = plot(t,yd,'color',[205/255,92/255,92/255], 'LineWidth', 2);
-    title(lab,'fontweight','bold', 'fontsize', 20, 'color', [255/255,179/255,25/255]);
-    %ylabel(lab,
+  if isempty(handle),
+    handle(1)   = plot(t,y,'b');
+    handle(2)   = plot(t,yhat,'g--');
+    handle(3)   = plot(t,yd,'r-.');
+    ylabel(lab)
     set(get(gca,'YLabel'),'Rotation',0.0);
-    set(gca,'xcolor','w', 'ycolor','w');
-    %legend('Location','southeast')
   else
     set(handle(1),'Xdata',[get(handle(1),'Xdata'),t]);
     set(handle(1),'Ydata',[get(handle(1),'Ydata'),y]);
@@ -301,9 +268,9 @@ function handle = graph_y_yhat_yd(t, y, yhat, yd, lab, handle)
 %
 function out=sat(in, low, high)
 
-  if in < low
+  if in < low,
       out = low;
-  elseif in > high
+  elseif in > high,
       out = high;
   else
       out = in;

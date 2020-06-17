@@ -58,8 +58,11 @@ if t==0
     Ts_prev = AP.Ts;
     Kr_prev = AP.yaw_damper_kp;
     pWo_prev = AP.p_wo;
+    Kr_prev = .996;
+    pWo_prev = 0.73;
 end
 
+%beta = 5*pi/180;
 %----------------------------------------------------------
 % lateral autopilot
 %chi_ref = wrap(chi_c, chi);
@@ -76,7 +79,12 @@ else
     xi_prev = xi;
     Ts_prev = Ts;
     Kr_prev = Kr;
-    pWo_prev= pWo;    
+    pWo_prev= pWo;
+%     [delta_r, intg, diff, err] = sideslip_with_rudder(beta, AP, intg_prev(2), diff_prev(2), err_prev(2));
+%     intg_prev(2) = intg;
+%     diff_prev(2) = diff;
+%     err_prev(2) = err;
+        
 end
 
 
@@ -97,8 +105,8 @@ theta_takeoff = 15*pi/180;
 
 % throttle_max = 2.5;
 % throttle_limit = 2.5;
-throttle_max = 1.5;
-throttle_limit = 1.5;
+throttle_max = 2.5;
+throttle_limit = 2.5;
 
 
 % h_minus = h_c - h_hold
