@@ -9,7 +9,7 @@
 % rewrite this file again in Euler so that both here and in compute_trim, the number of states
 % will be only 12 and thereby compute_trim algorithm works without issues."
 
-function [sys,x0,str,ts,simStateCompliance] = vtol_dynamics(t,x,u,flag,vtol)
+function [sys,x0,str,ts,simStateCompliance] = vtol_dynamics(t,x,uu,flag,vtol)
 
 switch flag
 
@@ -23,13 +23,13 @@ switch flag
   % Derivatives %
   %%%%%%%%%%%%%%%
   case 1
-    sys=mdlDerivatives(t,x,u,vtol);
+    sys=mdlDerivatives(t,x,uu,vtol);
 
   %%%%%%%%%%
   % Update %
   %%%%%%%%%%
   case 2
-    sys=mdlUpdate(t,x,u);
+    sys=mdlUpdate(t,x,uu);
 
   %%%%%%%%%%%
   % Outputs %
@@ -41,21 +41,19 @@ switch flag
   % GetTimeOfNextVarHit %
   %%%%%%%%%%%%%%%%%%%%%%%
   case 4
-    sys=mdlGetTimeOfNextVarHit(t,x,u);
+    sys=mdlGetTimeOfNextVarHit(t,x,uu);
 
   %%%%%%%%%%%%%
   % Terminate %
   %%%%%%%%%%%%%
   case 9
-    sys=mdlTerminate(t,x,u);
+    sys=mdlTerminate(t,x,uu);
 
   %%%%%%%%%%%%%%%%%%%%
   % Unexpected flags %
   %%%%%%%%%%%%%%%%%%%%
   otherwise
     DAStudio.error('Simulink:blocks:unhandledFlag', num2str(flag));
-
-end
 
 % end sfuntmpl
 end
@@ -142,7 +140,7 @@ ts  = [0 0];
 simStateCompliance = 'UnknownSimState';
 
 % end mdlInitializeSizes
-end
+
 
 %
 %=============================================================================
@@ -251,7 +249,8 @@ end
 	psidot = q*sin(phi)*sec(theta) + r*cos(phi)*sec(theta);
         
     pdot = c1*p*q-c2*q*r + c3*ell+c4*n;
-    qdot = c5*p*r-c6*(p^2-r^2) + m/Iy;
+%     qdot = c5*p*r-c6*(p^2-r^2) + m/Iy;
+    qdot = 0;
     rdot = c7*p*q-c1*q*r + c4*ell+c8*n;
         
 
@@ -259,7 +258,7 @@ end
 sys = [pndot; pedot; pddot; udot; vdot; wdot; phidot; thetadot; psidot; pdot; qdot; rdot];
 
 % end mdlDerivatives
-end
+
 
 %
 %=============================================================================
@@ -273,7 +272,7 @@ function sys=mdlUpdate(t,x,uu)
 sys = [];
 
 % end mdlUpdate
-end
+
 
 %
 %=============================================================================
@@ -311,34 +310,37 @@ to have values greater than 2*pi or less that -2*pi. So whenever it touches
 these bounds, we consider it as again starting from zero for the next circle
 and increasing from thereon.
 %}
-% for indx=7:9
-%   if((y(indx)>2*pi)||(y(indx)<-2*pi))
-%      y_temp = abs(y(indx))/(2*pi);
-%     if (y(indx)>0)
-%       y(indx) = 2*pi*(y_temp-floor(y_temp));
-%     else
-%       y(indx) = 2*pi*(-1*(y_temp-floor(y_temp)));
-%     end
-%   end
-% end
+for indx=7:9
+  if((y(indx)>2*pi)||(y(indx)<-2*pi))
+     y_temp = abs(y(indx))/(2*pi);
+    if (y(indx)>0)
+      y(indx) = 2*pi*(y_temp-floor(y_temp));
+    else
+      y(indx) = 2*pi*(-1*(y_temp-floor(y_temp)));
+    end
+  end
+end
 
-if y(7) > pi/3  %60 deg
-    y(7) = pi/3;
-elseif y(7) < -pi/3
-    y(7) = -pi/3;
-end
-    
-if y(8) > pi/3  %60 deg
-    y(8) = pi/3;
-elseif y(8) < -pi/3
-    y(8) = -pi/3;
-end
+% if y(7) > pi/3  %60 deg
+%     y(7) = pi/3;
+% elseif y(7) < -pi/3
+%     y(7) = -pi/3;
+% end
+%     
+% if y(8) > pi/3  %60 deg
+%     y(8) = pi/3;
+% elseif y(8) < -pi/3
+%     y(8) = -pi/3;
+% end
 %==========================================================================
 
+y(11) = 45*pi/180;
+
 sys = y;
+%sys = [y(1), y(2), y(3), y(4), y(5), y(6), y(7), y(8), y(9), y(10), y(11), y(12)];
 
 % end mdlOutputs
-end
+
 
 %
 %=============================================================================
@@ -349,13 +351,13 @@ end
 % mdlInitializeSizes.
 %=============================================================================
 %
-function sys=mdlGetTimeOfNextVarHit(t,x,u)
+function sys=mdlGetTimeOfNextVarHit(t,x,uu)
 
 sampleTime = 1;    %  Example, set the next hit to be one second later.
 sys = t + sampleTime;
 
 % end mdlGetTimeOfNextVarHit
-end
+
 
 %
 %=============================================================================
@@ -363,9 +365,9 @@ end
 % Perform any end of simulation tasks.
 %=============================================================================
 %
-function sys=mdlTerminate(t,x,u)
+function sys=mdlTerminate(t,x,uu)
 
 sys = [];
 
 % end mdlTerminate
-end
+
