@@ -1,33 +1,34 @@
-function y = rk4(plane_states,t,h, acc_real_plant)
+function yf = rk4(y,t,h,uu)
+% addpath('../1_dependencies/parameters/');  
+    NUM_STATEVARS = 12;
 
-	hh=h/2;
-	h6=h/6;
+    hh = h/2;
+	h6 = h/6;
 	
-	derivative(y,t,dydt,acc_real_plant);	
-	for(i=0;i<NUM_STATEVARS;i++)
-	{
-		yt[i] = y[i]+ (hh*dydt[i]);
-	}
-
+	dydt = sixDOF(y,uu);	
+	for i = (1:NUM_STATEVARS)
+        yt(i) = y(i) + (hh*dydt(i));
+    end
+	
 	th = t+hh;
-	derivative(yt,th,dyt,acc_real_plant);
-	for(i=0;i<NUM_STATEVARS;i++)
-	{
-		yt[i] = y[i] + (hh*dyt[i]);
-	}
+	
+    dyt = sixDOF(yt,uu);
+	for i=1:NUM_STATEVARS
+		yt(i) = y(i) + (hh*dyt(i));
+    end
 
-	derivative(yt,th,dym,acc_real_plant);
-	for(i=0;i<NUM_STATEVARS;i++)
-	{
-		yt[i] = y[i]+h*dym[i];
-	}
-	for(i=0;i<NUM_STATEVARS;i++)
-	{
-		dym[i] = dym[i] + dyt[i];
-	}
-	derivative(yt,t+h,dyt,acc_real_plant);
-	for(i=0;i<NUM_STATEVARS;i++)
-	{
-		y[i]=y[i]+h6*(dydt[i] +dyt[i] + (2.0*dym[i]));
-	}
+	dym = sixDOF(yt,uu);
+	for i=1:NUM_STATEVARS
+		yt(i) = y(i)+h*dym(i);
+    end
+	for i=1:NUM_STATEVARS
+		dym(i) = dym(i) + dyt(i);
+    end
+	
+    dyt = sixDOF(yt,uu);
+	for i=1:NUM_STATEVARS
+		y(i)=y(i)+h6*(dydt(i) + dyt(i) + (2.0*dym(i)));
+    end
+
+    yf = y;
   end

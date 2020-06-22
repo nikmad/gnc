@@ -9,7 +9,7 @@
 % rewrite this file again in Euler so that both here and in compute_trim, the number of states
 % will be only 12 and thereby compute_trim algorithm works without issues."
 
-function [sys,x0,str,ts,simStateCompliance] = vtol_dynamics(t,x,uu,flag,vtol)
+function [sys,x0,str,ts,simStateCompliance] = vtol_dynamics_original(t,x,uu,flag,vtol)
 
 switch flag
 
@@ -175,7 +175,6 @@ function sys=mdlDerivatives(t,x,uu, vtol)
     ell   = uu(4);
     m     = uu(5);
     n     = uu(6);
-    
     
 % Data for Aerosonde UAV
     mass = vtol.mass;
