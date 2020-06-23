@@ -1,5 +1,12 @@
 function dydt = sixDOF(y,uu)
 
+    fx    = uu(1);
+    fy    = uu(2);
+    fz    = uu(3);
+    ell   = uu(4);
+    m     = uu(5);
+    n     = uu(6);
+
     pn    = y(1);
     pe    = y(2);
     pd    = y(3);
@@ -13,32 +20,41 @@ function dydt = sixDOF(y,uu)
     q     = y(11);
     r     = y(12);
     
-    fx    = uu(1);
-    fy    = uu(2);
-    fz    = uu(3);
-    ell   = uu(4);
-    m     = uu(5);
-    n     = uu(6);
-    
-    
+   
     % Data for Aerosonde UAV
-    mass = vtol.mass;
-    Ix = vtol.Jx;
-    Iy = vtol.Jy;
-    Iz = vtol.Jz;
-    Ixz= vtol.Jxz;
+    gravity = 9.81;
+	mass = 11.0;
+	Jx   = 0.8244;
+	Jy   = 1.135;
+	Jz   = 1.759;
+	Jxz  = 0.1204;
+    
+    % Gamma parameters 
+	Gamma  = Jx*Jz-Jxz^2;
+	Gamma1 = (Jxz*(Jx-Jy+Jz))/Gamma;
+	Gamma2 = (Jz*(Jz-Jy)+Jxz*Jxz)/Gamma;
+	Gamma3 = Jz/Gamma;
+	Gamma4 = Jxz/Gamma;
+	Gamma5 = (Jz-Jx)/Jy;
+	Gamma6 = Jxz/Jy;
+	Gamma7 = (Jx*(Jx-Jy)+Jxz*Jxz)/Gamma;
+	Gamma8 = Jx/Gamma;
+    
+    mass = mass;
+    Ix = Jx;
+    Iy = Jy;
+    Iz = Jz;
+    Ixz= Jxz;
 
-    c0=vtol.Gamma; 
-    c1=vtol.Gamma1;    
-    c2=vtol.Gamma2;                                              
-    c3=vtol.Gamma3;
-    c4=vtol.Gamma4;
-    c5=vtol.Gamma5;
-    c6=vtol.Gamma6;
-    c7=vtol.Gamma7;
-    c8=vtol.Gamma8;
-
-
+    c0=Gamma; 
+    c1=Gamma1;    
+    c2=Gamma2;                                              
+    c3=Gamma3;
+    c4=Gamma4;
+    c5=Gamma5;
+    c6=Gamma6;
+    c7=Gamma7;
+    c8=Gamma8;
 
     pndot = u*cos(theta)*cos(psi) + v*(sin(phi)*sin(theta)*cos(psi)-cos(phi)*sin(psi)) ...
         + w*(cos(phi)*sin(theta)*cos(psi)+sin(phi)*sin(psi));

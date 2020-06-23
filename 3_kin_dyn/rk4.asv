@@ -1,9 +1,9 @@
-function yf = rk4(t,y,uu,h)
- 
+function yf = rk4(t,h,uu)
+% addpath('../1_dependencies/parameters/');  
     NUM_STATEVARS = 12;
 
     hh = h/2;
-	h6 = h/6*uu(3);
+	h6 = h/6*y(2);
 	
 	dydt = sixDOF(y,uu);	
 	
