@@ -1,4 +1,4 @@
-function yf = rk4(y,uu,h,vtol)
+function yf = rk4(y,uu,h)
 
     num_states = 12;
 
@@ -7,7 +7,7 @@ function yf = rk4(y,uu,h,vtol)
     %_______________________________________________________
     % K1: following evaluation gives the conventional textbook RK4 term K3
     % - nkm
-    K1 = sixDOF(y,uu,vtol);
+    K1 = sixDOF(y,uu);
     
     for i = (1:num_states)
         yt(i) = y(i) + h/2 * K1(i);
@@ -16,7 +16,7 @@ function yf = rk4(y,uu,h,vtol)
     %_______________________________________________________
     % K2: following evaluation gives the conventional textbook RK4 term K2
     % - nkm
-    K2 = sixDOF(yt,uu,vtol);
+    K2 = sixDOF(yt,uu);
 	
     for i=1:num_states
 		yt(i) = y(i) + h/2 * K2(i);
@@ -25,7 +25,7 @@ function yf = rk4(y,uu,h,vtol)
     %_______________________________________________________
     % K3: following evaluation gives the conventional textbook RK4 term K3
     % - nkm
-    K3 = sixDOF(yt,uu,vtol);
+    K3 = sixDOF(yt,uu);
 	
     for i=1:num_states
 		yt(i) = y(i) + h * K3(i);
@@ -34,7 +34,7 @@ function yf = rk4(y,uu,h,vtol)
     %_______________________________________________________
     % K4: following evaluation gives the conventional textbook RK4 term K4
     % - nkm
-    K4 = sixDOF(yt,uu,vtol);
+    K4 = sixDOF(yt,uu);
     %_______________________________________________________
     	
     for i=1:num_states
