@@ -13,7 +13,5 @@ WIND.sigma_u = 1.06;
 WIND.sigma_v = 1.06;
 WIND.sigma_w = 0.7;
 
-WIND.Va0 = 5;
+WIND.Va0 = 25;
 %WIND.Va0 = 0;
-
-

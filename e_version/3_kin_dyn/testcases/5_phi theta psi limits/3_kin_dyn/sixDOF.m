@@ -13,6 +13,8 @@ function dydt = sixDOF(y,uu,vtol)
     q     = y(11);
     r     = y(12);
     
+%     q     = 45*pi/180;
+    
     fx    = uu(1);
     fy    = uu(2);
     fz    = uu(3);
@@ -97,11 +99,12 @@ end
 
     phidot = p + q*sin(phi)*tan(theta) + r*cos(phi)*tan(theta);
 	thetadot = q*cos(phi)-r*sin(phi);
+%     thetadot  = 0;
 	psidot = q*sin(phi)*sec(theta) + r*cos(phi)*sec(theta);
         
     pdot = c1*p*q-c2*q*r + c3*ell+c4*n;
     qdot = c5*p*r-c6*(p^2-r^2) + m/Iy;
-    %qdot = 0;
+%     qdot = 45*pi/180;
     rdot = c7*p*q-c1*q*r + c4*ell+c8*n;
         
 dydt = [pndot; pedot; pddot; udot; vdot; wdot; phidot; thetadot; psidot; pdot; qdot; rdot];
