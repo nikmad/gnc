@@ -1,8 +1,5 @@
-function yf = vtol_dynamics(yi,uu,t, vtol)
+function yi = init_states(t, vtol)
 
-h = 0.01;
-
-if t < 0.1
     yi(1) = vtol.pn0;
 	yi(2) = vtol.pe0;
 	yi(3) = vtol.pd0;
@@ -15,10 +12,5 @@ if t < 0.1
 	yi(10) = vtol.p0;
 	yi(11) = vtol.q0;
 %     yi(11) = 45*pi/180;
-	yi(12) = vtol.r0;
+	yi(12) = vtol.r0;  
 end
-
-yf = rk4(yi,uu,h,vtol);
-% yf(12) = 45*pi/180;
-end
-

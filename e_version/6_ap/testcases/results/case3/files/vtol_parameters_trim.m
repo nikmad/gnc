@@ -164,12 +164,7 @@ vtol.C_n_delta_r   = -0.069;
 	vtol.C_T0 = 0.09357;
     %vtol.C_T0 = 1.1;
     
-%     [x_trim,u_trim,y_trim,dx_trim] = compute_trim('vtolsim_trim', vtol.Va0, gamma, R);
-x_trim = [   -0.0000;    0.0000;    0.0000;   34.9999;    0.0000;    0.0817;   -0.0002;   -0.2595;    0.0000;   -0.0000;    0.0000;    0.0000];
-u_trim = [    0.0072;    0.0008;   -0.0001;    0.8504];
-y_trim = [   35.0000;    0.0023;    0.0000];
-dx_trim = [   33.8074;   0.0000;    9.0587;    0.0000;   -0.0000;    0.0000;   -0.0000;    0.0000;    0.0000;    0.0000;    0.0000;    0.0000];    
-    
+    [x_trim,u_trim,y_trim,dx_trim] = compute_trim('vtolsim_trim', vtol.Va0, gamma, R);
     vtol.x_trim = x_trim;
     vtol.u_trim = u_trim;
     
