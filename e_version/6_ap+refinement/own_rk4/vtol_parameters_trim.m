@@ -2,7 +2,7 @@
 
 % compute trim conditions using 'vtolsim_trim.slx'
 % nominal airspeed vtol.Va0 specified above with aircraft parameters
-    vtol.Va0 = 115;
+    vtol.Va0 = 55;
     gamma = 15*pi/180;   % desired flight path angle (radians)
     R     = Inf;        % desired radius (m) - use (+) for right handed orbit, 
                         %                          (-) for left handed orbit 
@@ -165,38 +165,38 @@ vtol.C_n_delta_r   = -0.069;
     %vtol.C_T0 = 1.1;
     
     [x_trim,u_trim,y_trim,dx_trim] = compute_trim('vtolsim_trim', vtol.Va0, gamma, R);
-    vtol.x_trim = x_trim;
-    vtol.u_trim = u_trim;
-    
-    % set initial conditions to trim conditions
-    % initial conditions
-    vtol.pn0    = 0;           % initial North position
-    vtol.pe0    = 0;           % initial East position
-    vtol.pd0    = 0;   
-    vtol.u0     = x_trim(4);   % initial velocity along body x-axis
-    vtol.v0     = x_trim(5);   % initial velocity along body y-axis
-    vtol.w0     = x_trim(6);   % initial velocity along body z-axis
-    vtol.phi0   = x_trim(7);   % initial roll angle
-    vtol.theta0 = x_trim(8);   % initial pitch angle
-    vtol.psi0   = x_trim(9);   % initial yaw angle
-    vtol.p0     = x_trim(10);  % initial body frame roll rate
-    vtol.q0     = x_trim(11);  % initial body frame pitch rate
-    vtol.r0     = x_trim(12);  % initial body frame yaw rate
-    
-    vtol.Va_trim     = sqrt(x_trim(4)^2 + x_trim(5)^2 + x_trim(6)^2); % In the absence of wind, Vg = Va.
-  
-    
-%    compute different transfer functions 
-     [T_phi_delta_a, T_chi_phi, T_theta_delta_e, T_h_theta, T_h_Va, T_Va_delta_t, T_Va_theta, T_v_delta_r]...
-      = compute_tf_model(x_trim, u_trim, y_trim, vtol);
-  
-     trans_func = [T_phi_delta_a T_chi_phi T_theta_delta_e T_h_theta T_h_Va T_Va_delta_t T_Va_theta T_v_delta_r];
-     
-%    linearize the equations of motion around trim conditions
-     [A_lon, B_lon, A_lat, B_lat] = compute_ss_model('vtolsim_trim', x_trim, u_trim);
-     
-     [AP] = compute_autopilot_gains(trans_func, A_lon, B_lon, A_lat, B_lat, vtol);
-     
+%     vtol.x_trim = x_trim;
+%     vtol.u_trim = u_trim;
+%     
+%     % set initial conditions to trim conditions
+%     % initial conditions
+%     vtol.pn0    = 0;           % initial North position
+%     vtol.pe0    = 0;           % initial East position
+%     vtol.pd0    = 0;   
+%     vtol.u0     = x_trim(4);   % initial velocity along body x-axis
+%     vtol.v0     = x_trim(5);   % initial velocity along body y-axis
+%     vtol.w0     = x_trim(6);   % initial velocity along body z-axis
+%     vtol.phi0   = x_trim(7);   % initial roll angle
+%     vtol.theta0 = x_trim(8);   % initial pitch angle
+%     vtol.psi0   = x_trim(9);   % initial yaw angle
+%     vtol.p0     = x_trim(10);  % initial body frame roll rate
+%     vtol.q0     = x_trim(11);  % initial body frame pitch rate
+%     vtol.r0     = x_trim(12);  % initial body frame yaw rate
+%     
+%     vtol.Va_trim     = sqrt(x_trim(4)^2 + x_trim(5)^2 + x_trim(6)^2); % In the absence of wind, Vg = Va.
+%   
+%     
+% %    compute different transfer functions 
+%      [T_phi_delta_a, T_chi_phi, T_theta_delta_e, T_h_theta, T_h_Va, T_Va_delta_t, T_Va_theta, T_v_delta_r]...
+%       = compute_tf_model(x_trim, u_trim, y_trim, vtol);
+%   
+%      trans_func = [T_phi_delta_a T_chi_phi T_theta_delta_e T_h_theta T_h_Va T_Va_delta_t T_Va_theta T_v_delta_r];
+%      
+% %    linearize the equations of motion around trim conditions
+%      [A_lon, B_lon, A_lat, B_lat] = compute_ss_model('vtolsim_trim', x_trim, u_trim);
+%      
+%      [AP] = compute_autopilot_gains(trans_func, A_lon, B_lon, A_lat, B_lat, vtol);
+%      
 
 
      

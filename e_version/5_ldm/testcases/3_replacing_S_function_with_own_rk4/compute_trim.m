@@ -37,20 +37,20 @@ if R~=Inf, dx0(9) = Va/R; end % 9 - psidot
 % specify which derivaties to hold constant in trim algorithm
 idx = [3; 4; 5; 6; 7; 8; 9; 10; 11; 12];
 
-x0
-u0
-y0
-ix
-iu
-iy
-dx0
-idx
+% x0
+% u0
+% y0
+% ix
+% iu
+% iy
+% dx0
+% idx
 % compute trim conditions
 [x_trim,u_trim,y_trim,dx_trim] = trim(filename,x0,u0,y0,ix,iu,iy,dx0,idx);
-x_trim
-u_trim
-y_trim
-dx_trim
+% x_trim
+% u_trim
+% y_trim
+% dx_trim
 
 % check to make sure that the linearization worked (should be small)
 Linearization_coeff = norm(dx_trim(3:end)-dx0(3:end))

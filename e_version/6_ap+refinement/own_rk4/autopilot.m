@@ -47,6 +47,11 @@ persistent Ts_prev;
 persistent Kr_prev;
 persistent pWo_prev;
 
+% throttle_max = 2.5;
+% throttle_limit = 2.5;
+throttle_max = 2.0;
+throttle_limit = 2.5;
+
 flag = 2;
 if t==0
     flag = 1; % for initialization, flag is 1. For rest all cases it is 2;
@@ -105,10 +110,6 @@ h_takeoff = 15;
 h_hold = 20;
 theta_takeoff = 15*pi/180;
 
-% throttle_max = 2.5;
-% throttle_limit = 2.5;
-throttle_max = 2.0;
-throttle_limit = 2.5;
 
 
 % h_minus = h_c - h_hold
