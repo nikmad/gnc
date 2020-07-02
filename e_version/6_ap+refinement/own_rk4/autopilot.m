@@ -49,8 +49,8 @@ persistent pWo_prev;
 
 % throttle_max = 2.5;
 % throttle_limit = 2.5;
-throttle_max = 2.0;
-throttle_limit = 2.5;
+throttle_max = 3.5;
+throttle_limit = 3.5;
 
 flag = 2;
 if t==0
@@ -64,9 +64,12 @@ if t==0
     Kr_prev = AP.yaw_damper_kp;
     pWo_prev = AP.p_wo;
     Kr_prev = .996;
-    pWo_prev = 0.73;
-%     Kr_prev = 0.7;
-%     pWo_prev = 0.9;
+    pWo_prev = 1.73;
+%     Kr_prev = 1.5996;
+%     pWo_prev = 1.573;
+
+%     Kr_prev = 0.1;
+%     pWo_prev = .1;
 end
 
 %beta = 5*pi/180;
@@ -109,8 +112,6 @@ end
 h_takeoff = 15;
 h_hold = 20;
 theta_takeoff = 15*pi/180;
-
-
 
 % h_minus = h_c - h_hold
 % h_plus = h_c + h_hold

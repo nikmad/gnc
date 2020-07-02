@@ -2,8 +2,9 @@
 
 % compute trim conditions using 'vtolsim_trim.slx'
 % nominal airspeed vtol.Va0 specified above with aircraft parameters
-    vtol.Va0 = 55;
-    gamma = 15*pi/180;   % desired flight path angle (radians)
+    vtol.Va0 = 35;
+%     gamma = 15*pi/180;   % desired flight path angle (radians)
+    gamma = 0;
     R     = Inf;        % desired radius (m) - use (+) for right handed orbit, 
                         %                          (-) for left handed orbit 
                         
@@ -35,6 +36,7 @@
 % 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
 	vtol.gravity = 9.81;
 	vtol.mass = 11.0;
+% 	vtol.mass = 2477.0;
 	vtol.Jx   = 0.8244;
 	vtol.Jy   = 1.135;
 	vtol.Jz   = 1.759;
@@ -42,7 +44,15 @@
 	vtol.S_wing        = 0.55;
 	vtol.b             = 2.90;
 	vtol.c             = 0.19;
-	vtol.S_prop        = 0.2027;
+% 	vtol.S_wing        = 21.55;
+% 	vtol.b             = 21.90;
+% 	vtol.c             = 2.19;
+%     vtol.Jx   = 2000;
+% 	vtol.Jy   = 2000;
+% 	vtol.Jz   = 2500;
+% 	vtol.Jxz  = 0;
+	
+    vtol.S_prop        = 0.2027;
 	vtol.rho           = 1.2682;
 	vtol.e             = 0.9;
 	vtol.AR            = vtol.b^2/vtol.S_wing;

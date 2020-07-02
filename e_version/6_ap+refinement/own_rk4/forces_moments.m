@@ -96,9 +96,10 @@ function out = forces_moments(x, delta, wind, P)
 %     CLalpha = (1-sigma_alpha)*(vtol.C_L_0 + vtol.C_L_alpha*alpha) + ...
 %         sigma_alpha*(2*sign(alpha)*((sin(alpha))^2)*cos(alpha));
     
+%     CLalpha = vtol.C_L_0 + vtol.C_L_alpha * alpha;
+%     CDalpha = vtol.C_D_0 + vtol.C_D_alpha * alpha;
     CLalpha = vtol.C_L_0 + vtol.C_L_alpha * alpha;
-    CDalpha = vtol.C_D_0 + vtol.C_D_alpha * alpha;
-
+    CDalpha = vtol.C_D_0 + vtol.C_D_alpha * abs(alpha); % RRP suggested to make it abs(alpha) because it should be sign agnostic
 
     C_X_alpha = -CDalpha*cos(alpha) + CLalpha*sin(alpha);
     C_Xq_alpha = -vtol.C_D_q*cos(alpha) + vtol.C_L_q*sin(alpha);
@@ -107,7 +108,8 @@ function out = forces_moments(x, delta, wind, P)
     C_Zq_alpha = -vtol.C_D_q*sin(alpha) - vtol.C_L_q*cos(alpha);
     C_Z_delta_e_alpha = -vtol.C_D_delta_e*sin(alpha) - vtol.C_L_delta_e*cos(alpha);
 
-    fa_x = 0.5*rho*Va^2*S*(C_X_alpha + C_Xq_alpha*(vtol.c/(2*Va))*q + C_X_delta_e_alpha*delta_e);
+%         fa_x = 0.5*rho*Va^2*S*(C_X_alpha + C_Xq_alpha*(vtol.c/(2*Va))*q + C_X_delta_e_alpha*delta_e);
+    fa_x = 0.5*rho*Va^2*S*(C_X_alpha + C_Xq_alpha*(vtol.c/(2*Va))*q + C_X_delta_e_alpha*abs(delta_e)); % RRP suggested to make it abs(delta_e) because it should be sign agnostic
     fa_y = 0.5*rho*Va^2*S*(vtol.C_Y_0 + vtol.C_Y_beta*beta + vtol.C_Y_p*(vtol.b/(2*Va))*p ...
            + vtol.C_Y_r*(vtol.b/(2*Va))*r + vtol.C_Y_delta_a*delta_a + vtol.C_Y_delta_r*delta_r);
     fa_z = 0.5*rho*Va^2*S*(C_Z_alpha + C_Zq_alpha*(vtol.c/(2*Va))*q + C_Z_delta_e_alpha*delta_e);

@@ -20,12 +20,14 @@ iu = [];
 % define constant outputs
 y0 = [...
     Va;...       % 1 - Va
-    0;...    % 2 - alpha
+%     4*pi/180;...        % 2 - alpha
+    0;
     0;...        % 3 - beta
     ];
 
 % specify which outputs to hold constant
 iy = [1,3];
+% iy = [1,3];
 
 % define constant derivatives
 dx0 = [0; 0; Va*sin(gamma); 0; 0; 0; 0; 0; Va/R*cos(gamma); 0; 0; 0];
