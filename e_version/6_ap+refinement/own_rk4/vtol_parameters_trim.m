@@ -3,8 +3,8 @@
 % compute trim conditions using 'vtolsim_trim.slx'
 % nominal airspeed vtol.Va0 specified above with aircraft parameters
     vtol.Va0 = 35;
-%     gamma = 15*pi/180;   % desired flight path angle (radians)
-    gamma = 0;
+    gamma = 15*pi/180;   % desired flight path angle (radians)
+%     gamma = 0;
     R     = Inf;        % desired radius (m) - use (+) for right handed orbit, 
                         %                          (-) for left handed orbit 
                         
@@ -144,7 +144,11 @@ vtol.C_Y_r         = 0.0;
 vtol.C_ell_r       = 0.25;
 vtol.C_n_r         = -0.095;
 vtol.C_Y_delta_a   = 0.075;
-vtol.C_ell_delta_a = 0.17;
+
+% vtol.C_ell_delta_a = 0.17; % Such high value causing aileron saturation
+% at 35 m/s. So reduced the value to 0.1 assuming that 0.17 is wrong for this cruise velocity.
+vtol.C_ell_delta_a = 0.1;
+
 vtol.C_n_delta_a   = -0.011;
 vtol.C_Y_delta_r   = 0.19;
 vtol.C_ell_delta_r = 0.0024;

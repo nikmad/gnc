@@ -49,8 +49,8 @@ persistent pWo_prev;
 
 % throttle_max = 2.5;
 % throttle_limit = 2.5;
-throttle_max = 3.5;
-throttle_limit = 3.5;
+throttle_max = 2.0;
+throttle_limit = 2.5;
 
 flag = 2;
 if t==0
@@ -64,7 +64,7 @@ if t==0
     Kr_prev = AP.yaw_damper_kp;
     pWo_prev = AP.p_wo;
     Kr_prev = .996;
-    pWo_prev = 1.73;
+    pWo_prev = .73;
 %     Kr_prev = 1.5996;
 %     pWo_prev = 1.573;
 
@@ -129,6 +129,9 @@ elseif (h >= h_takeoff && h < h_c - h_hold)
 %     h2= h
 elseif (h >= h_c-h_hold && h < h_c + h_hold)
     [delta_t, intg, diff, err] = airspeed_with_throttle(Va_c, Va, AP, vtol,throttle_limit, intg_prev(4), diff_prev(4), err_prev(4));
+    if delta_t < 0
+        delta_t = 0.0;
+    end
     intg_prev(4) = intg;
     diff_prev(4) = diff;
     err_prev(4) = err;  
