@@ -362,7 +362,7 @@ function [delta_r, xi_new, Ts_new, Kr_new, pWo_new] = yaw_damper(r, xi, Ts, Kr, 
 % end
 
 xi = xi + Ts*(-p_wo*xi + Kr*r);
-delta_r = -p_wo*xi + Kr*r;
+delta_r = sat(-p_wo*xi + Kr*r, 45*pi/180);
 
 xi_new = xi;
 Ts_new = Ts;

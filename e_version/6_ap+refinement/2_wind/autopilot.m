@@ -49,8 +49,8 @@ persistent pWo_prev;
 
 % throttle_max = 2.5;
 % throttle_limit = 2.5;
-throttle_max = 1.0;
-throttle_limit = 1.5;
+throttle_max = 23.0;
+throttle_limit = 23.5;
 
 flag = 2;
 if t==0
@@ -63,8 +63,8 @@ if t==0
     Ts_prev = AP.Ts;
     Kr_prev = AP.yaw_damper_kp;
     pWo_prev = AP.p_wo;
-    Kr_prev = .996;
-    pWo_prev = .73;
+%     Kr_prev = .996;
+%     pWo_prev = .73;
 %     Kr_prev = 1.5996;
 %     pWo_prev = 1.573;
 
@@ -219,7 +219,7 @@ kp  = AP.roll_kp;
 %ki  = 0; % in ppt it was mentioned not to use integrator on Roll loop though it is given in the textbook
 kd  = AP.roll_kd;
 
-limit = 45*pi/180;
+limit = 30*pi/180;
 
 %[delta_a, intg_new, err_new] = pidloop_rate(y_c, y, ydot, kp, ki, kd, limit, Ts, intg, err);
 [delta_a] = pidloop_rate(y_c, y, ydot, kp, kd, limit);
@@ -243,7 +243,7 @@ kp  = AP.pitch_kp;
 %ki  = 0; 
 kd  = AP.pitch_kd;
 
-limit = 45*pi/180;
+limit = 30*pi/180;
 
 %[delta_e, intg_new, err_new] = pidloop_rate(y_c, y, ydot, kp, ki, kd, limit, Ts, intg, err);
 [delta_e] = pidloop_rate(y_c, y, ydot, kp, kd, limit);
@@ -335,7 +335,7 @@ kp  = AP.sideslip_kp;
 ki  = AP.sideslip_ki; 
 kd  = 0;
 
-limit = 45*pi/180;
+limit = 20*pi/180;
 
 [delta_r, intg_new, diff_new, err_new] = pidloop(y_c, y, kp, ki, kd, limit, Ts, tau, intg, diff, err);
 
@@ -362,7 +362,7 @@ function [delta_r, xi_new, Ts_new, Kr_new, pWo_new] = yaw_damper(r, xi, Ts, Kr, 
 % end
 
 xi = xi + Ts*(-p_wo*xi + Kr*r);
-delta_r = -p_wo*xi + Kr*r;
+delta_r = sat(-p_wo*xi + Kr*r, 20*pi/180);
 
 xi_new = xi;
 Ts_new = Ts;

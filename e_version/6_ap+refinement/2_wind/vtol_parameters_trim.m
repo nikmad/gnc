@@ -2,7 +2,7 @@
 
 % compute trim conditions using 'vtolsim_trim.slx'
 % nominal airspeed vtol.Va0 specified above with aircraft parameters
-    vtol.Va0 = 35;
+    vtol.Va0 = 111;
     gamma = 15*pi/180;   % desired flight path angle (radians)
 %     gamma = 0;
     R     = Inf;        % desired radius (m) - use (+) for right handed orbit, 
@@ -14,7 +14,7 @@
     
     vtol.pn0    = 0;     % initial North position
 	vtol.pe0    = 0;     % initial East position
-	vtol.pd0    = 0;  % initial Down position (negative altitude)
+	vtol.pd0    = -120;  % initial Down position (negative altitude)
 	vtol.u0     = vtol.Va0;     % initial velocity along body x-axis
 	vtol.v0     = 0;     % initial velocity along body y-axis
 	vtol.w0     = 0;     % initial velocity along body z-axis
@@ -35,23 +35,23 @@
 %   Appendix-E coefficients
 % 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
 	vtol.gravity = 9.81;
-	vtol.mass = 11.0;
-% 	vtol.mass = 2477.0;
-	vtol.Jx   = 0.8244;
-	vtol.Jy   = 1.135;
-	vtol.Jz   = 1.759;
-	vtol.Jxz  = 0.1204;
-	vtol.S_wing        = 0.55;
-	vtol.b             = 2.90;
-	vtol.c             = 0.19;
-% 	vtol.S_wing        = 21.55;
-% 	vtol.b             = 21.90;
-% 	vtol.c             = 2.19;
-%     vtol.Jx   = 2000;
-% 	vtol.Jy   = 2000;
-% 	vtol.Jz   = 2500;
-% 	vtol.Jxz  = 0;
-	
+% 	vtol.mass = 11.0;
+% 	vtol.Jx   = 0.8244;
+% 	vtol.Jy   = 1.135;
+% 	vtol.Jz   = 1.759;
+% 	vtol.Jxz  = 0.1204;
+% 	vtol.S_wing        = 0.55;
+% 	vtol.b             = 2.90;
+% 	vtol.c             = 0.19;
+	vtol.mass = 2477.0;
+    vtol.Jx   = 2000;
+	vtol.Jy   = 2000;
+	vtol.Jz   = 2500;
+	vtol.Jxz  = 0;
+	vtol.S_wing        = 21.55;
+	vtol.b             = 21.90;
+	vtol.c             = 2.19;
+
     vtol.S_prop        = 0.2027;
 	vtol.rho           = 1.2682;
 	vtol.e             = 0.9;
@@ -124,7 +124,7 @@ vtol.C_D_q         = 0.0;
 vtol.C_m_q         = -38.21;
 vtol.C_L_delta_e   = 0.13;
 vtol.C_D_delta_e   = 0.0135;
-vtol.C_m_delta_e   = -0.99;
+
 vtol.M             = 50;
 vtol.alpha0        = 0.47;
 vtol.epsilon       = 0.16;
@@ -147,7 +147,11 @@ vtol.C_Y_delta_a   = 0.075;
 
 % vtol.C_ell_delta_a = 0.17; % Such high value causing aileron saturation
 % at 35 m/s. So reduced the value to 0.1 assuming that 0.17 is wrong for this cruise velocity.
-vtol.C_ell_delta_a = 0.1;
+vtol.C_ell_delta_a = 0.12;
+vtol.C_n_delta_r   = -0.069;
+% vtol.C_n_delta_r   = -0.1;
+% vtol.C_m_delta_e   = -0.99;
+vtol.C_m_delta_e   = -0.99;
 
 vtol.C_n_delta_a   = -0.011;
 vtol.C_Y_delta_r   = 0.19;
