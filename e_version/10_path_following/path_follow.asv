@@ -23,8 +23,8 @@
 %
 function out = path_follow(in)
     % path following gains
-    chi_inf = 30*pi/180;  % approach angle for large distance from straight-line path
-    k_path    = 0.1;        % proportional gain for path following
+    chi_infty = 40*pi/180;  % approach angle for large distance from straight-line path
+    k_path    = 0.05;        % proportional gain for path following
     k_orbit   = 1.7;       % proportional gain for orbit following
     gravity   = 9.81;
 
@@ -88,16 +88,14 @@ function out = path_follow(in)
              epy=n_lon'*([pn;pe;-h]-r_path);
              chi_c = chi_q-chi_inf*2*atan(k_path*epy)/pi; 
                   
-          phi_ff =-0*pi/180;
+          phi_ff =-0*pi/180 ;
            
         case 2 % follow orbit specified by c, rho, lam
-        
-          % commanded altitude is the height of the orbit  
+
           h_c = -c_orbit(3);
-          % distance from orbit center
-          d_s = sqrt((pn-c_orbit(1))^2+(pe-c_orbit(2))^2); 
-     
-          % the roll angle feedforward command
+          d_s = sqrt((pn-c_orbit(1))^2+(pe-c_orbit(2))^2 + (-h-c_orbit(3))^2); % distance from orbit center
+          
+          % compute wrapped version of angular position on orbit
           phi_ff = atan2((pe-c_orbit(2)),(pn-c_orbit(1)));
           while (phi_ff-chi)<-pi
               phi_ff=phi_ff+2*pi;
@@ -106,9 +104,17 @@ function out = path_follow(in)
               phi_ff=phi_ff-2*pi;
           end
           
-          % heading command
           chi_c = phi_ff+lam_orbit*((pi/2)+(atan((k_orbit*(d_s-rho_orbit)/rho_orbit))));
-%           orbit_error = 
+
+            orbit_error = 
+            % heading command
+            chi_c = 
+         
+            % commanded altitude is the height of the orbit
+            h_c = 
+                    
+            % the roll angle feedforward command 
+            phi_ff = 
     end
   
     % command airspeed equal to desired airspeed
