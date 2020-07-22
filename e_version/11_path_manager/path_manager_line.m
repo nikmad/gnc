@@ -52,8 +52,7 @@ function out = path_manager_line(in,PLAN,start_of_simulation)
   state     =  in(1+NN:16+NN);
   NN = NN + 16;
   t         = in(1+NN);
- 
-  
+   
   out = [flag; Va_d; r; q; c; rho; lambda; state; flag_need_new_waypoints];
 
   

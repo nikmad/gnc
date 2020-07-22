@@ -30,7 +30,6 @@ function out = path_planner_chap11(in, PLAN)
   NN = NN + 17;
   % t         =  in(1+NN);
 
-
   num_waypoints = 4;
   % format for each point is [pn, pe, pd, chi, Va^d] where the position
   % of the waypoint is (pn, pe, pd), the desired course at the waypoint

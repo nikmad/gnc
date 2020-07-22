@@ -72,5 +72,4 @@ function out = path_manager(in,PLAN)
     end
   end
   
-
 end
