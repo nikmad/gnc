@@ -241,7 +241,7 @@ AP.phi_max = 45*pi/180;
 atp.Va0 = vtol.Va0;
 
 % number of waypoints in data structure
-atp.size_waypoint_array = 5;
+atp.size_waypoint_array = 3;
 atp.R_min = vtol.Va0^2/vtol.gravity/tan(AP.phi_max);
 
 % create random city map
