@@ -27,10 +27,10 @@ function out = path_manager(in,atp)
       flag_need_new_waypoints = 1;
       out = [flag; Va_d; r; q; c; rho; lambda; state; flag_need_new_waypoints]; % 33
   else
-%     waypoints = reshape(in(2+NN:5*atp.size_waypoint_array+1+NN),5,atp.size_waypoint_array);
+    waypoints = reshape(in(2+NN:5*atp.size_waypoint_array+1+NN),5,atp.size_waypoint_array);
   
-    if 1
-    %     if abs(waypoints(4,1))>=2*pi
+%     if 1
+    if abs(waypoints(4,1))>=2*pi
         % follows straight-lines and switches at waypoints
         out = path_manager_fillet(in,atp,start_of_simulation);   %33
         % smooths through waypoints with fillets

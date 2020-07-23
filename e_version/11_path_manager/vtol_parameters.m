@@ -238,7 +238,7 @@ u_trim = [0.00717546520515350;0.00119325168647462;-0.000190228529727838;0.850374
 
 AP.phi_max = 45*pi/180;
 
-atp.Va0 = vtol.Va0;
+atp.Va0 = 50;
 
 % number of waypoints in data structure
 atp.size_waypoint_array = 3;
