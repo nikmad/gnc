@@ -59,7 +59,7 @@ function out = path_follow(in)
     we      = in(15+NN);
     psi     = in(16+NN);
     
-    NN = NN + 16;
+    NN = NN + 19;
     
     t         = in(1+NN);
   

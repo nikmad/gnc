@@ -1,38 +1,9 @@
-% path_manager_dubins 
-%   - follow Dubins paths between waypoint configurations
-%
-% Modified:  
-%   - 4/1/2010 - RWB
-%   - 3/198/2019 - RWB
-%
-% input is:
-%   num_waypoints - number of waypoint configurations
-%   waypoints    - an array of dimension 5 by PLAN.size_waypoint_array.
-%                - the first num_waypoints rows define waypoint
-%                  configurations
-%                - format for each waypoint configuration:
-%                  [wn, we, wd, chi_d, Va_d]
-%                  where the (wn, we, wd) is the NED position of the
-%                  waypoint, chi_d is the desired course at the waypoint,
-%                  and Va_d is the desired airspeed along the path. 
-%
-% output is:
-%   flag - if flag==1, follow waypoint path
-%          if flag==2, follow orbit
-%   
-%   Va^d - desired airspeed
-%   r    - inertial position of start of waypoint path
-%   q    - unit vector that defines inertial direction of waypoint path
-%   c    - center of orbit
-%   rho  - radius of orbit
-%   lambda = direction of orbit (+1 for CW, -1 for CCW)
-%
-function out = path_manager_dubins(in,PLAN,start_of_simulation)
+function out = path_manager_dubins(in,airtaxipath,start_of_simulation)
 
   NN = 0;
   num_waypoints = in(1+NN);
-  waypoints = reshape(in(2+NN:5*PLAN.size_waypoint_array+1+NN),5,PLAN.size_waypoint_array);
-  NN = NN + 1 + 5*PLAN.size_waypoint_array;
+  waypoints = reshape(in(2+NN:5*airtaxipath.size_waypoint_array+1+NN),5,airtaxipath.size_waypoint_array);
+  NN = NN + 1 + 5*airtaxipath.size_waypoint_array;
   pn        = in(1+NN);
   pe        = in(2+NN);
   h         = in(3+NN);

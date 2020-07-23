@@ -21,7 +21,6 @@ function out = path_planner_gui(in,P,map)
   NN = NN + 17;
   % t         =  in(1+NN);
 
-
   num_waypoints = 5;
    if 1,
     wpp= [...

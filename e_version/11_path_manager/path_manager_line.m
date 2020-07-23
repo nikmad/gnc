@@ -1,32 +1,3 @@
-% path_manager_line
-%   - follow lines between waypoints.
-%
-% Modified:  
-%   - 3/25/2010 - RWB
-%   - 3/19/2019 - RWB
-%
-% input is:
-%   num_waypoints - number of waypoint configurations
-%   waypoints    - an array of dimension 5 by P.size_waypoint_array.
-%                - the first num_waypoints rows define waypoint
-%                  configurations
-%                - format for each waypoint configuration:
-%                  [wn, we, wd, dont_care, Va_d]
-%                  where the (wn, we, wd) is the NED position of the
-%                  waypoint, and Va_d is the desired airspeed along the
-%                  path.
-%
-% output is:
-%   flag - if flag==1, follow waypoint path
-%          if flag==2, follow orbit
-%   
-%   Va^d - desired airspeed
-%   r    - inertial position of start of waypoint path
-%   q    - unit vector that defines inertial direction of waypoint path
-%   c    - center of orbit
-%   rho  - radius of orbit
-%   lambda = direction of orbit (+1 for CW, -1 for CCW)
-%
 function out = path_manager_line(in,PLAN,start_of_simulation)
 
   NN = 0;

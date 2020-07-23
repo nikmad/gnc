@@ -1,31 +1,8 @@
-% path follow
-%  - follow straight line path or orbit
-%
-% Modified:
-%
-% input is:
-%   flag - if flag==1, follow waypoint path
-%          if flag==2, follow orbit
-%   
-%   Va^d   - desired airspeed
-%   r      - inertial position of start of waypoint path
-%   q      - unit vector that defines inertial direction of waypoint path
-%   c      - center of orbit
-%   rho    - radius of orbit
-%   lambda - direction of orbit (+1 for CW, -1 for CCW)
-%   xhat   - estimated MAV states (pn, pe, pd, Va, alpha, beta, phi, theta, chi, p, q, r, Vg, wn, we, psi)
-%
-% output is:
-%  Va_c - airspeed command
-%  h_c  - altitude command
-%  chi_c - heading command
-%  phi_ff - feed forward roll command
-%
 function out = path_follow(in)
     % path following gains
     chi_inf = 30*pi/180;  % approach angle for large distance from straight-line path
-    k_path    = 0.1;        % proportional gain for path following
-    k_orbit   = 1.7;       % proportional gain for orbit following
+    k_path    = 1.1;        % proportional gain for path following
+    k_orbit   = 2.7;       % proportional gain for orbit following
     gravity   = 9.81;
 
     NN = 0;

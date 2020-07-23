@@ -234,6 +234,25 @@ u_trim = [0.00717546520515350;0.00119325168647462;-0.000190228529727838;0.850374
      [AP] = compute_autopilot_gains(trans_func, A_lon, B_lon, A_lat, B_lat, vtol);
      
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+AP.phi_max = 45*pi/180;
+
+atp.Va0 = vtol.Va0;
+
+% number of waypoints in data structure
+atp.size_waypoint_array = 5;
+atp.R_min = vtol.Va0^2/vtol.gravity/tan(AP.phi_max);
+
+% create random city map
+city_width      = 2000;  % city size 
+building_height = 300;   % maximum height
+num_blocks      = 5;    % number of blocks in city
+street_width    = 1;   % percent of block that is street.
+
+atp.map = createWorld(city_width, building_height, num_blocks, street_width);
+
+
 
      
      
