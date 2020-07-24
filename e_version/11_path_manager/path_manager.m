@@ -12,8 +12,8 @@ function out = path_manager(in,atp)
   if num_waypoints==0 % start of simulation
       flag   = 1;  % following straight line path
       Va_d   = atp.Va0; % desired airspeed along waypoint path
-%       NN     = NN + 1 + 5*atp.size_waypoint_array;
-      NN = 1+NN;
+      NN     = NN + 1 + 5*atp.size_waypoint_array;
+%       NN = 1+NN;
       pn        = in(1+NN);
       pe        = in(2+NN);
       h         = in(3+NN);

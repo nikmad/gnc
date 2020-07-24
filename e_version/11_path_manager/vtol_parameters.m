@@ -238,10 +238,10 @@ u_trim = [0.00717546520515350;0.00119325168647462;-0.000190228529727838;0.850374
 
 AP.phi_max = 45*pi/180;
 
-atp.Va0 = 50;
+atp.Va0 = 35;
 
 % number of waypoints in data structure
-atp.size_waypoint_array = 3;
+atp.size_waypoint_array = 100;
 atp.R_min = vtol.Va0^2/vtol.gravity/tan(AP.phi_max);
 
 % create random city map

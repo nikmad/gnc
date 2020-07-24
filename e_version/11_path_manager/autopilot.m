@@ -49,8 +49,8 @@ persistent pWo_prev;
 
 % throttle_max = 2.5;
 % throttle_limit = 2.5;
-throttle_max = 2.0;
-throttle_limit = 2.5;
+throttle_max = 1.0;
+throttle_limit = 1.5;
 
 flag = 2;
 if t==0
