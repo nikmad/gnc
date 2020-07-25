@@ -25,7 +25,7 @@ function out = path_manager(in,atp)
       lambda    = 0;
       state     =  in(1+NN:16+NN);
       flag_need_new_waypoints = 1;
-      out = [flag; Va_d; r; q; c; rho; lambda; state; flag_need_new_waypoints]; % 33
+      out = [flag; Va_d; r; q; c; rho; lambda; state; flag_need_new_waypoints]; % 30
   else
     waypoints = reshape(in(2+NN:5*atp.size_waypoint_array+1+NN),5,atp.size_waypoint_array);
   

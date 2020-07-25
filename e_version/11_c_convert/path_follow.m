@@ -1,7 +1,7 @@
 function out = path_follow(in)
     % path following gains
     chi_inf = 30*pi/180;  % approach angle for large distance from straight-line path
-    k_path    = 0.1;        % proportional gain for path following
+    k_path    = .1;        % proportional gain for path following
     k_orbit   = .7;       % proportional gain for orbit following
     gravity   = 9.81;
 
