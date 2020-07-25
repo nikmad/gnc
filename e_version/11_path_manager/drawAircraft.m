@@ -23,7 +23,7 @@ function drawAircraft(uu)
     
     % first time function is called, initialize plot and persistent vars
     if t==0
-        figure(1), clf
+        figure(3), clf
         [Vertices, Faces, facecolors] = defineSpacecraftBody;
         spacecraft_handle = drawSpacecraftBody(Vertices,Faces,facecolors,...
                                                pn,pe,pd,phi,theta,psi,...
