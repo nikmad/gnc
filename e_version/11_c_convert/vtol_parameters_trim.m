@@ -14,7 +14,7 @@
     
     vtol.pn0    = 0;     % initial North position
 	vtol.pe0    = 0;     % initial East position
-	vtol.pd0    = 0;  % initial Down position (negative altitude)
+	vtol.pd0    = -120;  % initial Down position (negative altitude)
 	vtol.u0     = vtol.Va0;     % initial velocity along body x-axis
 	vtol.v0     = 0;     % initial velocity along body y-axis
 	vtol.w0     = 0;     % initial velocity along body z-axis
@@ -35,7 +35,7 @@
 %   Appendix-E coefficients
 % 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
 	vtol.gravity = 9.81;
-    vtol.mass = 11.0;
+	vtol.mass = 11.0;
 	vtol.Jx   = 0.8244;
 	vtol.Jy   = 1.135;
 	vtol.Jz   = 1.759;
@@ -51,8 +51,8 @@
 % 	vtol.S_wing        = 21.55;
 % 	vtol.b             = 21.90;
 % 	vtol.c             = 2.19;
-    
-	vtol.S_prop        = 0.2027;
+
+    vtol.S_prop        = 0.2027;
 	vtol.rho           = 1.2682;
 	vtol.e             = 0.9;
 	vtol.AR            = vtol.b^2/vtol.S_wing;
@@ -147,22 +147,16 @@ vtol.C_Y_delta_a   = 0.075;
 
 % vtol.C_ell_delta_a = 0.17; % Such high value causing aileron saturation
 % at 35 m/s. So reduced the value to 0.1 assuming that 0.17 is wrong for this cruise velocity.
-vtol.C_ell_delta_a = 0.06;
-% vtol.C_n_delta_r   = -0.069;
+vtol.C_ell_delta_a = 0.12;
 vtol.C_n_delta_r   = -0.069;
+% vtol.C_n_delta_r   = -0.1;
 % vtol.C_m_delta_e   = -0.99;
 vtol.C_m_delta_e   = -0.99;
 
 vtol.C_n_delta_a   = -0.011;
 vtol.C_Y_delta_r   = 0.19;
 vtol.C_ell_delta_r = 0.0024;
-
-
-% vtol.C_ell_beta    = -0.013;
-% vtol.C_ell_p       = -0.051;
-% vtol.C_ell_r       = 0.025;
-% vtol.C_ell_delta_a = 0.17;
-% vtol.C_ell_delta_r = 0.0024;
+vtol.C_n_delta_r   = -0.069;
 
 	% Parameters for propulsion thrust and torque models
 	vtol.D_prop = 0.508;     % prop diameter in m
@@ -188,70 +182,39 @@ vtol.C_ell_delta_r = 0.0024;
 	vtol.C_T0 = 0.09357;
     %vtol.C_T0 = 1.1;
     
-%     [x_trim,u_trim,y_trim,dx_trim] = compute_trim('vtolsim_trim', vtol.Va0, gamma, R);
-% x_trim = ;
-% y_trim = ;
-% u_trim = ;
-% x_trim = [-6.49412735651667e-19;-1.89023386605556e-18;-7.08801968609821e-21;24.9715506011084;0;1.19233408752810;-0.00105283494365042;-0.214087951499671;-8.82589263945641e-20;5.93526532702691e-22;-1.26934759908545e-21;1.86059633830992e-21];
-% y_trim = [25.0000000000000;0.0477114630404312;0];
-% u_trim = [-0.118413544172506;0.0113916266907877;-0.00181605642896615;0.390555072059526];
-% x_trim = [-3.12801987404505e-20;-1.38411186942073e-19;-6.18634078607259e-22;44.9942259979256;-2.43772173372454e-26;-0.720851474019738;0.000805942704631727;-0.277818989435158;-1.95283233776795e-19;-4.43640103716278e-24;2.46656575241327e-23;-6.64999383418818e-25];
-% y_trim = [45;-0.0160196068155070;-5.41715940827675e-28];
-% u_trim = [0.0579734572469589;-0.00264870725133006;0.000422257677748270;1.22347014383771];
-x_trim = [-2.44983631910445e-21;1.63879088259825e-20;1.68808157122805e-22;34.9999046341372;-8.41794242333320e-27;0.0817043530336400;-0.000218533898618586;-0.259464975648029;6.33157202970083e-21;-1.30411612842414e-24;-5.12443247328518e-25;1.33967619123344e-24];
-y_trim = [35;0.00233441220689709;-2.40512640666663e-28];
-u_trim = [0.00717546520515350;0.00119325168647462;-0.000190228529727838;0.850374370516102];
-
-    vtol.x_trim = x_trim;
-    vtol.u_trim = u_trim;
-    
-    % set initial conditions to trim conditions
-    % initial conditions
-    vtol.pn0    = 0;           % initial North position
-    vtol.pe0    = 0;           % initial East position
-    vtol.pd0    = 0;   
-    vtol.u0     = x_trim(4);   % initial velocity along body x-axis
-    vtol.v0     = x_trim(5);   % initial velocity along body y-axis
-    vtol.w0     = x_trim(6);   % initial velocity along body z-axis
-    vtol.phi0   = x_trim(7);   % initial roll angle
-    vtol.theta0 = x_trim(8);   % initial pitch angle
-    vtol.psi0   = x_trim(9);   % initial yaw angle
-    vtol.p0     = x_trim(10);  % initial body frame roll rate
-    vtol.q0     = x_trim(11);  % initial body frame pitch rate
-    vtol.r0     = x_trim(12);  % initial body frame yaw rate
-    
-    vtol.Va_trim     = sqrt(x_trim(4)^2 + x_trim(5)^2 + x_trim(6)^2); % In the absence of wind, Vg = Va.
-  
-    %    compute different transfer functions 
-     [T_phi_delta_a, T_chi_phi, T_theta_delta_e, T_h_theta, T_h_Va, T_Va_delta_t, T_Va_theta, T_v_delta_r]...
-      = compute_tf_model(x_trim, u_trim, y_trim, vtol);
-  
-     trans_func = [T_phi_delta_a T_chi_phi T_theta_delta_e T_h_theta T_h_Va T_Va_delta_t T_Va_theta T_v_delta_r];
-     
-%    linearize the equations of motion around trim conditions
-     [A_lon, B_lon, A_lat, B_lat] = compute_ss_model('vtolsim_trim', x_trim, u_trim);
-     
-     [AP] = compute_autopilot_gains(trans_func, A_lon, B_lon, A_lat, B_lat, vtol);
-     
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-AP.phi_max = 45*pi/180;
-
-atp.Va0 = 35;
-
-% number of waypoints in data structure
-atp.size_waypoint_array = 100;
-atp.R_min = vtol.Va0^2/vtol.gravity/tan(AP.phi_max);
-
-% create random city map
-city_width      = 2000;  % city size 
-building_height = 300;   % maximum height
-num_blocks      = 5;    % number of blocks in city
-street_width    = 1;   % percent of block that is street.
-
-atp.map = createWorld(city_width, building_height, num_blocks, street_width);
-
+    [x_trim,u_trim,y_trim,dx_trim] = compute_trim('vtolsim_trim', vtol.Va0, gamma, R);
+%     vtol.x_trim = x_trim;
+%     vtol.u_trim = u_trim;
+%     
+%     % set initial conditions to trim conditions
+%     % initial conditions
+%     vtol.pn0    = 0;           % initial North position
+%     vtol.pe0    = 0;           % initial East position
+%     vtol.pd0    = 0;   
+%     vtol.u0     = x_trim(4);   % initial velocity along body x-axis
+%     vtol.v0     = x_trim(5);   % initial velocity along body y-axis
+%     vtol.w0     = x_trim(6);   % initial velocity along body z-axis
+%     vtol.phi0   = x_trim(7);   % initial roll angle
+%     vtol.theta0 = x_trim(8);   % initial pitch angle
+%     vtol.psi0   = x_trim(9);   % initial yaw angle
+%     vtol.p0     = x_trim(10);  % initial body frame roll rate
+%     vtol.q0     = x_trim(11);  % initial body frame pitch rate
+%     vtol.r0     = x_trim(12);  % initial body frame yaw rate
+%     
+%     vtol.Va_trim     = sqrt(x_trim(4)^2 + x_trim(5)^2 + x_trim(6)^2); % In the absence of wind, Vg = Va.
+%   
+%     
+% %    compute different transfer functions 
+%      [T_phi_delta_a, T_chi_phi, T_theta_delta_e, T_h_theta, T_h_Va, T_Va_delta_t, T_Va_theta, T_v_delta_r]...
+%       = compute_tf_model(x_trim, u_trim, y_trim, vtol);
+%   
+%      trans_func = [T_phi_delta_a T_chi_phi T_theta_delta_e T_h_theta T_h_Va T_Va_delta_t T_Va_theta T_v_delta_r];
+%      
+% %    linearize the equations of motion around trim conditions
+%      [A_lon, B_lon, A_lat, B_lat] = compute_ss_model('vtolsim_trim', x_trim, u_trim);
+%      
+%      [AP] = compute_autopilot_gains(trans_func, A_lon, B_lon, A_lat, B_lat, vtol);
+%      
 
 
      
