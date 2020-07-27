@@ -35,10 +35,14 @@ function out = path_follow(in)
     wn      = in(14+NN);
     we      = in(15+NN);
     psi     = in(16+NN);
+  
+    flag_need_new_waypoints = in(17+NN);
     
-    NN = NN + 16;
+%     NN = 19+NN; % states are taken from 'path' input rather than the 'states' input. Hence these 19 variables are not used
+%     
+%     t         = in(1+NN);
     
-    t         = in(1+NN);
+    t = in(end);
   
     switch flag
         case 1 % follow straight line path specified by r and q

@@ -45,16 +45,14 @@ function out = path_manager(in,atp)
       flag_need_new_waypoints = 1;
       out = [flag; Va_d; r; q; c; rho; lambda; state; flag_need_new_waypoints]; % 30
   else
-      % nkm - the following line takes array and converts it into a matrix 
-      % of 5 rows x num_waypoint columns that has all the waypoint
+      % nkm - the following line takes the array and converts into a matrix of 5 rowthat has all the waypoint
       % information concatenated into single array with 5 elements defining
       % each waypoint starting from 2nd element while the 1st element is
       % the number that tells the total number of waypoints input in path
       % planner.
       waypoints = reshape(in(2+NN:5*atp.size_waypoint_array+1+NN),5,atp.size_waypoint_array);
     
-%   The following line checks if the course angle demand is greater than
-%   2*pi.
+%     if 1
     if abs(waypoints(4,1))>=2*pi
         % follows straight-lines and switches at waypoints
         out = path_manager_fillet(in,atp,start_of_simulation);   %33

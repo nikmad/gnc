@@ -55,7 +55,7 @@ function out = path_manager_fillet(in,atp,start_of_simulation)
   q_p    = (w_ip-w_i)/norm(w_ip-w_i);
   angle  = acos(-q_n'*q_p);
 
-    % define transition state machine
+% define transition state machine
   switch state_transition,
       case 1, % follow straight line from wpp_a to wpp_b
           flag   = 1;  % following straight line path
