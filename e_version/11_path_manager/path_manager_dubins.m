@@ -52,6 +52,9 @@ function out = path_manager_dubins(in,atp,start_of_simulation)
   
   p_s   = waypoints(1:3,ptr_a); 
   p_e   = waypoints(1:3,ptr_a+1);
+
+  chi_s = waypoints(4,ptr_a);
+  chi_e = waypoints(4,ptr_a+1);
   
   % Rotation matrix for rotation about z-axis by 90 deg.
   Rz1 = [0 -1 0; 1 0 0; 0 0 1];
@@ -59,7 +62,17 @@ function out = path_manager_dubins(in,atp,start_of_simulation)
   Rz2 = [0 1 0; -1 0 0; 0 0 1];
   
   if (norm(p_s-p_e) >= 3*R) && (R >= atp.R_min) 
-      c_rs = p_s + R * Rz1 * [cos()];
+      c_rs = p_s + R * Rz1 * [cos(chi_s); sin(chi_s); 0];
+      c_ls = p_s + R * Rz2 * [cos(chi_s); sin(chi_s); 0];
+      c_re = p_e + R * Rz1 * [cos(chi_e); sin(chi_e); 0];
+      c_le = p_e + R * Rz2 * [cos(chi_e); sin(chi_e); 0];
+  end
+
+  nue = dot()/norm();
+
+
+
+
       
 
   
