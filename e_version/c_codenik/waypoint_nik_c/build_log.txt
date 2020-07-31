@@ -1,0 +1,99 @@
+waypoint_funtions.c: In function ‘path_manager_fillet’:
+waypoint_funtions.c:139:17: warning: passing argument 1 of ‘MatrixMultiply’ from incompatible pointer type [-Wincompatible-pointer-types]
+  MatrixMultiply(q_n_trans,1,3,q_p,3,1,temp_angle);
+                 ^~~~~~~~~
+In file included from waypoint_funtions.c:3:0:
+math_util.h:14:13: note: expected ‘float *’ but argument is of type ‘float (*)[3]’
+ extern void MatrixMultiply(float *,unsigned int ,unsigned int ,float *,unsigned int ,unsigned int ,float *);
+             ^~~~~~~~~~~~~~
+waypoint_funtions.c:139:31: warning: passing argument 4 of ‘MatrixMultiply’ from incompatible pointer type [-Wincompatible-pointer-types]
+  MatrixMultiply(q_n_trans,1,3,q_p,3,1,temp_angle);
+                               ^~~
+In file included from waypoint_funtions.c:3:0:
+math_util.h:14:13: note: expected ‘float *’ but argument is of type ‘float (*)[1]’
+ extern void MatrixMultiply(float *,unsigned int ,unsigned int ,float *,unsigned int ,unsigned int ,float *);
+             ^~~~~~~~~~~~~~
+waypoint_funtions.c:139:39: warning: passing argument 7 of ‘MatrixMultiply’ from incompatible pointer type [-Wincompatible-pointer-types]
+  MatrixMultiply(q_n_trans,1,3,q_p,3,1,temp_angle);
+                                       ^~~~~~~~~~
+In file included from waypoint_funtions.c:3:0:
+math_util.h:14:13: note: expected ‘float *’ but argument is of type ‘float (*)[1]’
+ extern void MatrixMultiply(float *,unsigned int ,unsigned int ,float *,unsigned int ,unsigned int ,float *);
+             ^~~~~~~~~~~~~~
+waypoint_funtions.c:170:19: warning: passing argument 1 of ‘MatrixMultiply’ from incompatible pointer type [-Wincompatible-pointer-types]
+    MatrixMultiply(temp1x2,1,2,q_n_tem,2,1,halfplane);
+                   ^~~~~~~
+In file included from waypoint_funtions.c:3:0:
+math_util.h:14:13: note: expected ‘float *’ but argument is of type ‘float (*)[2]’
+ extern void MatrixMultiply(float *,unsigned int ,unsigned int ,float *,unsigned int ,unsigned int ,float *);
+             ^~~~~~~~~~~~~~
+waypoint_funtions.c:170:31: warning: passing argument 4 of ‘MatrixMultiply’ from incompatible pointer type [-Wincompatible-pointer-types]
+    MatrixMultiply(temp1x2,1,2,q_n_tem,2,1,halfplane);
+                               ^~~~~~~
+In file included from waypoint_funtions.c:3:0:
+math_util.h:14:13: note: expected ‘float *’ but argument is of type ‘float (*)[1]’
+ extern void MatrixMultiply(float *,unsigned int ,unsigned int ,float *,unsigned int ,unsigned int ,float *);
+             ^~~~~~~~~~~~~~
+waypoint_funtions.c:170:43: warning: passing argument 7 of ‘MatrixMultiply’ from incompatible pointer type [-Wincompatible-pointer-types]
+    MatrixMultiply(temp1x2,1,2,q_n_tem,2,1,halfplane);
+                                           ^~~~~~~~~
+In file included from waypoint_funtions.c:3:0:
+math_util.h:14:13: note: expected ‘float *’ but argument is of type ‘float (*)[1]’
+ extern void MatrixMultiply(float *,unsigned int ,unsigned int ,float *,unsigned int ,unsigned int ,float *);
+             ^~~~~~~~~~~~~~
+waypoint_funtions.c:211:19: warning: passing argument 1 of ‘MatrixMultiply’ from incompatible pointer type [-Wincompatible-pointer-types]
+    MatrixMultiply(temp1x2,1,2,q_n_tem,2,1,halfplane); 
+                   ^~~~~~~
+In file included from waypoint_funtions.c:3:0:
+math_util.h:14:13: note: expected ‘float *’ but argument is of type ‘float (*)[2]’
+ extern void MatrixMultiply(float *,unsigned int ,unsigned int ,float *,unsigned int ,unsigned int ,float *);
+             ^~~~~~~~~~~~~~
+waypoint_funtions.c:211:31: warning: passing argument 4 of ‘MatrixMultiply’ from incompatible pointer type [-Wincompatible-pointer-types]
+    MatrixMultiply(temp1x2,1,2,q_n_tem,2,1,halfplane); 
+                               ^~~~~~~
+In file included from waypoint_funtions.c:3:0:
+math_util.h:14:13: note: expected ‘float *’ but argument is of type ‘float (*)[1]’
+ extern void MatrixMultiply(float *,unsigned int ,unsigned int ,float *,unsigned int ,unsigned int ,float *);
+             ^~~~~~~~~~~~~~
+waypoint_funtions.c:211:43: warning: passing argument 7 of ‘MatrixMultiply’ from incompatible pointer type [-Wincompatible-pointer-types]
+    MatrixMultiply(temp1x2,1,2,q_n_tem,2,1,halfplane); 
+                                           ^~~~~~~~~
+In file included from waypoint_funtions.c:3:0:
+math_util.h:14:13: note: expected ‘float *’ but argument is of type ‘float (*)[1]’
+ extern void MatrixMultiply(float *,unsigned int ,unsigned int ,float *,unsigned int ,unsigned int ,float *);
+             ^~~~~~~~~~~~~~
+waypoint_funtions.c: In function ‘path_manager’:
+waypoint_funtions.c:279:23: warning: ‘sizeof’ on array function parameter ‘in’ will return size of ‘float *’ [-Wsizeof-array-argument]
+  int size_of_in=sizeof(in)/sizeof(float);
+                       ^
+waypoint_funtions.c:259:25: note: declared here
+ void path_manager(float in[],struct atp atp1,float out[])
+                         ^~
+waypoint_funtions.c: In function ‘path_follow’:
+waypoint_funtions.c:577:18: warning: passing argument 1 of ‘cross_product’ from incompatible pointer type [-Wincompatible-pointer-types]
+    cross_product(temp1x3_2,temp1x3_1,prod);
+                  ^~~~~~~~~
+waypoint_funtions.c:9:6: note: expected ‘float *’ but argument is of type ‘float (*)[3]’
+ void cross_product(float Vec1[],float Vec2[], float Vec_prod[1][3]);
+      ^~~~~~~~~~~~~
+waypoint_funtions.c:619:19: warning: passing argument 1 of ‘MatrixMultiply’ from incompatible pointer type [-Wincompatible-pointer-types]
+    MatrixMultiply(n_lon_transposed,1,3,temp3x1_1,3,1,epy);
+                   ^~~~~~~~~~~~~~~~
+In file included from waypoint_funtions.c:3:0:
+math_util.h:14:13: note: expected ‘float *’ but argument is of type ‘float (*)[3]’
+ extern void MatrixMultiply(float *,unsigned int ,unsigned int ,float *,unsigned int ,unsigned int ,float *);
+             ^~~~~~~~~~~~~~
+waypoint_funtions.c:619:40: warning: passing argument 4 of ‘MatrixMultiply’ from incompatible pointer type [-Wincompatible-pointer-types]
+    MatrixMultiply(n_lon_transposed,1,3,temp3x1_1,3,1,epy);
+                                        ^~~~~~~~~
+In file included from waypoint_funtions.c:3:0:
+math_util.h:14:13: note: expected ‘float *’ but argument is of type ‘float (*)[1]’
+ extern void MatrixMultiply(float *,unsigned int ,unsigned int ,float *,unsigned int ,unsigned int ,float *);
+             ^~~~~~~~~~~~~~
+waypoint_funtions.c:619:54: warning: passing argument 7 of ‘MatrixMultiply’ from incompatible pointer type [-Wincompatible-pointer-types]
+    MatrixMultiply(n_lon_transposed,1,3,temp3x1_1,3,1,epy);
+                                                      ^~~
+In file included from waypoint_funtions.c:3:0:
+math_util.h:14:13: note: expected ‘float *’ but argument is of type ‘float (*)[1]’
+ extern void MatrixMultiply(float *,unsigned int ,unsigned int ,float *,unsigned int ,unsigned int ,float *);
+             ^~~~~~~~~~~~~~
