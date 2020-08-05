@@ -21,7 +21,6 @@ function out=airdata(uu)
     p           = 180/pi*uu(11);     % body angular rate along x-axis (degrees/s)
     q           = 180/pi*uu(12);     % body angular rate along y-axis (degrees/s)
     r           = 180/pi*uu(13);     % body angular rate along z-axis (degrees/s)
-
     
     rpy = quat_to_euler([e0; e1; e2; e3]);
     phi = rpy(1);
