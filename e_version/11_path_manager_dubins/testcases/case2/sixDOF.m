@@ -84,7 +84,7 @@ function dydt = sixDOF(y,uu,vtol)
 theta1 = mod(abs(theta),2*pi);
 theta2 = floor(abs(theta)/(2*pi))*(2*pi);
 
-if     ((floor(theta1/(pi/2))==0) &&   (pi/2-theta1 < sensitive90zone))
+if     ((floor(theta1/(pi/2))==0) &&   (pi/2-theta1 < sensitive90zone)) 
 	theta = sign(theta)*(pi/2 - sensitive90zone + theta2);
 
 elseif ((floor(theta1/(pi/2))==1) &&   (theta1-pi/2 < sensitive90zone))
