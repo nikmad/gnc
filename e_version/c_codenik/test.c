@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "test.h"
+#include "math_util.h"
 
 struct vt vtol_dynamics();
 float absolut_(float);
@@ -38,7 +39,6 @@ struct vt vtol_dynamics()
 	//_x = absolut_(_x);
 	//_x = floor(_x);
 
-
 	printf("\nDivision of %f/%f is = %f\n", _x, _y, _x/_y);
 	printf("Modulus of %f/%f is = %f\n", _x, _y, _a);
 	
@@ -56,6 +56,42 @@ struct vt vtol_dynamics()
 	//*y = *stf;
 	//float y[] = {states_in.pn,states_in.pe,states_in.pd,states_in.u,states_in.v,states_in.w,states_in.phi,states_in.theta,states_in.psi,states_in.p,states_in.q,states_in.r};
 	//float y[] = states_in;
+
+	float R1[3][3];
+	R1[0][0] = 0.0;
+	R1[0][1] = 1.4;
+	R1[0][2] = 2.4;
+	
+	R1[1][0] = 3.4;
+	R1[1][1] = 2.4;
+	R1[1][2] = 3.4;
+	
+	R1[2][0] = 2.4;
+	R1[2][1] = 3.4;
+	R1[2][2] = 2.4;
+
+	float R2[3][3];
+	R2[0][0] = 0.0;
+	R2[0][1] = 1.4;
+	R2[0][2] = 2.4;
+	
+	R2[1][0] = 3.4;
+	R2[1][1] = 2.4;
+	R2[1][2] = 3.4;
+	
+	R2[2][0] = 2.4;
+	R2[2][1] = 3.4;
+	R2[2][2] = 2.4;
+
+	float R3[3][3];
+
+	array_initd((float*)R1,9);
+	array_initd((float*)R2,9);
+	array_initd((float*)R3,9);
+
+	MatrixMultiply(R1,3,3,R2,3,3,R3);
+
+	printf("Matrix check %f\n", R3[2][1]);
 
 	return kola;
 }

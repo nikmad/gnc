@@ -55,7 +55,6 @@
 % 	vtol.p0     = [0.0240559865672830];     % initial body frame roll rate
 % 	vtol.q0     = [0.00152678517627963];     % initial body frame pitch rate
 % 	vtol.r0     = [0.00501322065101718];     % initial body frame yaw rate
-
 	   
 	%physical parameters of airframe
 	vtol.gravity = 9.81;

@@ -6,10 +6,12 @@ Created: 31/Jul/2020
 #include <stdio.h>
 #include <math.h>
 #include "vtol_parameters.h"
+#include "math_util.h"
 
 //_______________________________________________________
 // declaring functions 
 
+struct force_n_moments forces_moments(struct states, struct actuators, struct wnd);
 struct states vtol_dynamics(struct states, struct force_n_moments);
 struct states rk4(struct states, struct force_n_moments);
 struct state_rates sixDOF(float *, float *);
@@ -24,29 +26,9 @@ int main()
 
 	struct states states_in = {0,0,0,0,0,0,0,0,0,0,0,0};
 	struct states states_out, states_prevMemory;
-	struct force_n_moments fm_in = {0,0,2.0,0,0,0};
+	struct force_n_moments fm_in = {0,0,2.0, 0,0.01,0, 0,0,0, 0,0,0};
 	int i;
 	float t;
-
-	//states_in.pn = 0.0;
-	//states_in.pe = 0.0;
-	//states_in.pd = 0.0;
-	//states_in.u = vtol.Va0;
-	//states_in.v = 0.0;
-	//states_in.w = 0.0;
-	//states_in.phi = 0.0;
-	//states_in.theta = 0.0;
-	//states_in.psi = 0.0;
-	//states_in.p = 0.0;
-	//states_in.q = 0.0;
-	//states_in.r = 0.0;
-
-	//fm_in.fx = 0.0;
-	//fm_in.fy = 0.0;
-	//fm_in.fz = 0.0;
-	//fm_in.l = 0.0;
-	//fm_in.m = 0.0;
-	//fm_in.n = 0.0;
 
 	FILE *fptr;
 	fptr = fopen("nikstates.txt", "w+");
@@ -54,6 +36,7 @@ int main()
 	for(i=0; i<100; i++)
 	{
 		t = i*0.01;
+		fm_in = forces_moments(states_in, delta, wind);	
 	    states_out = vtol_dynamics(states_in, fm_in);
 		fprintf(fptr, "%3.3f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", t, states_out.pn, states_out.pe, states_out.pd, states_out.u, states_out.v, states_out.w, states_out.phi, states_out.theta, states_out.psi, states_out.p, states_out.q, states_out.r);
 		states_in = states_out;
@@ -354,6 +337,59 @@ struct state_rates sixDOF(float *states_in, float* fm_in)
 	};
 
 	return body_rates;
+}
+
+//__________________________________________________________
+
+struct force_n_moments forces_moments(struct states states_in, struct actuators delta, struct wnd wind)
+{
+	float R_v_v1[3][3];
+	R_v_v1[0][0] = cosf(psi);
+	R_v_v1[0][1] = sinf(psi);
+	R_v_v1[0][2] = 0;
+	
+	R_v_v1[1][0] = -sinf(psi);
+	R_v_v1[1][1] = cosf(psi);
+	R_v_v1[1][2] = 0;
+	
+	R_v_v1[2][0] = 0;
+	R_v_v1[2][1] = 0;
+	R_v_v1[2][2] = 1;
+
+	float R_v1_v2[3][3];
+	R_v1_v2[0][0] = cosf(theta);
+	R_v1_v2[0][1] = 0;
+	R_v1_v2[0][2] = -sinf(theta);
+	
+	R_v1_v2[1][0] = 0;
+	R_v1_v2[1][1] = 1;
+	R_v1_v2[1][2] = 0;
+	
+	R_v1_v2[2][0] = sinf(theta);
+	R_v1_v2[2][1] = 0;
+	R_v1_v2[2][2] = cosf(theta);
+
+	float R_v2_b[3][3];
+	R_v2_b[0][0] = 1;
+	R_v2_b[0][1] = 0;
+	R_v2_b[0][2] = 0;
+	
+	R_v2_b[1][0] = 0;
+	R_v2_b[1][1] = cosf(phi);
+	R_v2_b[1][2] = sinf(phi);
+	
+	R_v2_b[2][0] = 0;
+	R_v2_b[2][1] = -sinf(phi);
+	R_v2_b[2][2] = cosf(phi);
+
+	float temp3X3_1[3][3];
+	float R_v_b;
+
+	MatrixMultiply(R_v1_v2,3,3,R_v_v1,3,3,temp3X3_1);
+	MatrixMultiply(R_v2_b,3,3,temp3X3_1,3,3,R_v_b);
+
+	float temp3x1_1[3][1];
+	
 }
 
 //__________________________________________________________

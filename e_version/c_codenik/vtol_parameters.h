@@ -143,9 +143,35 @@ struct force_n_moments{
 	float fx;
 	float fy;
 	float fz;
+	
 	float l;
 	float m;
 	float n;
+	
+	float Va;
+	float alpha;
+	float beta;
+
+	//Total wind in NED (inertial)
+	float w_n;
+	float w_e;
+	float w_d;
+};
+
+struct actuators{
+	float delta_e; 
+	float delta_a; 
+	float delta_r; 
+	float delta_t;
+};
+
+struct wnd{
+	float w_ns; //steady wind - North   
+	float w_es; //steady wind - East   
+	float w_ds; //steady wind - Down   
+	float u_wg; //gust along body x-axis
+	float v_wg; //gust along body y-axis
+	float w_wg; //gust along body z-axis
 };
 
 struct simulation_params{
