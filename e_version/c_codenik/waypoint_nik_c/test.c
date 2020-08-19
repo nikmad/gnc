@@ -99,6 +99,8 @@ struct vt vtol_dynamics()
 	transposed3x3(R3);
 	printf("Matrix check R3'[2][1] %f\n", R3[2][1]);
 
+	printf("Powf check %f\n", powf(5,2.6));
+
 	return kola;
 }
 

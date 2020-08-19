@@ -192,7 +192,7 @@ const struct vt vtol =
 	//
 	////physical parameters
 	9.81,	//float g;
-	11.0,	//float m;
+	11.0,	//float m = mass;
 	//
 	0.8244,	//float Jx;
 	1.135,	//float Jy;

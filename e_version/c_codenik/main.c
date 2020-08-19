@@ -27,6 +27,9 @@ int main()
 	struct states states_in = {0,0,0,0,0,0,0,0,0,0,0,0};
 	struct states states_out, states_prevMemory;
 	struct force_n_moments fm_in = {0,0,2.0, 0,0.01,0, 0,0,0, 0,0,0};
+	struct actuators delta = {0,0,0.1,0};
+	struct wnd _wind = {0,1,2,0,0,0};
+
 	int i;
 	float t;
 
@@ -36,7 +39,7 @@ int main()
 	for(i=0; i<100; i++)
 	{
 		t = i*0.01;
-		fm_in = forces_moments(states_in, delta, wind);	
+		fm_in = forces_moments(states_in, delta, _wind);	
 	    states_out = vtol_dynamics(states_in, fm_in);
 		fprintf(fptr, "%3.3f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", t, states_out.pn, states_out.pe, states_out.pd, states_out.u, states_out.v, states_out.w, states_out.phi, states_out.theta, states_out.psi, states_out.p, states_out.q, states_out.r);
 		states_in = states_out;
@@ -346,12 +349,12 @@ struct force_n_moments forces_moments(struct states states_in, struct actuators 
 	struct force_n_moments fm_out;
 
 	float R_v_v1[3][3];
-	R_v_v1[0][0] = cosf(psi);
-	R_v_v1[0][1] = sinf(psi);
+	R_v_v1[0][0] = cosf(states_in.psi);
+	R_v_v1[0][1] = sinf(states_in.psi);
 	R_v_v1[0][2] = 0;
 	
-	R_v_v1[1][0] = -sinf(psi);
-	R_v_v1[1][1] = cosf(psi);
+	R_v_v1[1][0] = -sinf(states_in.psi);
+	R_v_v1[1][1] = cosf(states_in.psi);
 	R_v_v1[1][2] = 0;
 	
 	R_v_v1[2][0] = 0;
@@ -359,17 +362,17 @@ struct force_n_moments forces_moments(struct states states_in, struct actuators 
 	R_v_v1[2][2] = 1;
 
 	float R_v1_v2[3][3];
-	R_v1_v2[0][0] = cosf(theta);
+	R_v1_v2[0][0] = cosf(states_in.theta);
 	R_v1_v2[0][1] = 0;
-	R_v1_v2[0][2] = -sinf(theta);
+	R_v1_v2[0][2] = -sinf(states_in.theta);
 	
 	R_v1_v2[1][0] = 0;
 	R_v1_v2[1][1] = 1;
 	R_v1_v2[1][2] = 0;
 	
-	R_v1_v2[2][0] = sinf(theta);
+	R_v1_v2[2][0] = sinf(states_in.theta);
 	R_v1_v2[2][1] = 0;
-	R_v1_v2[2][2] = cosf(theta);
+	R_v1_v2[2][2] = cosf(states_in.theta);
 
 	float R_v2_b[3][3];
 	R_v2_b[0][0] = 1;
@@ -377,15 +380,15 @@ struct force_n_moments forces_moments(struct states states_in, struct actuators 
 	R_v2_b[0][2] = 0;
 	
 	R_v2_b[1][0] = 0;
-	R_v2_b[1][1] = cosf(phi);
-	R_v2_b[1][2] = sinf(phi);
+	R_v2_b[1][1] = cosf(states_in.phi);
+	R_v2_b[1][2] = sinf(states_in.phi);
 	
 	R_v2_b[2][0] = 0;
-	R_v2_b[2][1] = -sinf(phi);
-	R_v2_b[2][2] = cosf(phi);
+	R_v2_b[2][1] = -sinf(states_in.phi);
+	R_v2_b[2][2] = cosf(states_in.phi);
 
 	float temp3X3_1[3][3];
-	float R_v_b;
+	float R_v_b[3][3];
 
 	//Creating the rotation matrix
 	MatrixMultiply(R_v1_v2,3,3,R_v_v1,3,3,temp3X3_1);
@@ -419,12 +422,107 @@ struct force_n_moments forces_moments(struct states states_in, struct actuators 
 	//Total wind vector in NED frame
 	float V_v[3][1];
 	transposed3x3(R_v_b);
-	float R_b_v[3][3] = R_v_b;
+	float R_b_v[3][3];
+
+	//R_b_v[][] = R_v_b[][];
+
+	int i, j;
+	for(i=0; i<3; i++)
+	for(j=0; j<3; j++)
+	{
+		R_b_v[i][j] = R_v_b[i][j];
+	}
+
 	MatrixMultiply(R_b_v,3,3,V_w,3,1,V_v);
 
 	fm_out.w_n = V_v[0][0];
 	fm_out.w_e = V_v[1][0];
 	fm_out.w_d = V_v[2][0];
+
+	// compute external forces and torques on aircraft
+
+    //====================================================
+    // Gravity force
+    //====================================================
+	float fg_x, fg_y, fg_z;
+
+	fg_x = -vtol.m * vtol.g * sinf(states_in.theta);
+	fg_y = vtol.m * vtol.g * cosf(states_in.theta) * sinf(states_in.phi);
+	fg_z = vtol.m * vtol.g * cosf(states_in.theta) * cosf(states_in.phi);
+
+	//====================================================
+    // Aerodynamic forces
+    //====================================================
+
+    float CDalpha = vtol.CDp  + (powf(vtol.CL0 + vtol.CLalpha*abs(fm_out.alpha),2))/(pi*vtol.e*vtol.AR);
+   	float sigma_alpha = (1 + exp(-vtol.M*(fm_out.alpha-vtol.alpha0)) + exp(vtol.M*(fm_out.alpha+vtol.alpha0)))/((1+exp(-vtol.M*(fm_out.alpha-vtol.alpha0)))*(1+exp(vtol.M*(fm_out.alpha+vtol.alpha0))));
+   	float CLalpha = (1-sigma_alpha)*(vtol.CL0 + vtol.CLalpha*fm_out.alpha) + sigma_alpha*(2*sign(fm_out.alpha)*powf(sinf(fm_out.alpha),2)*cosf(fm_out.alpha));
+    
+    float CXalpha = -CDalpha*cosf(fm_out.alpha) + CLalpha*sinf(fm_out.alpha);
+    float CXq_alpha = -vtol.CDq*cosf(fm_out.alpha) + vtol.CLq*sinf(fm_out.alpha);
+    float CXdelta_e_alpha = -vtol.CDdelta_e*cosf(fm_out.alpha) + vtol.CLdelta_e*sinf(fm_out.alpha);
+    float CZalpha = -CDalpha*sinf(fm_out.alpha) - CLalpha*cosf(fm_out.alpha);
+    float CZq_alpha = -vtol.CDq*sinf(fm_out.alpha) - vtol.CLq*cosf(fm_out.alpha);
+    float CZdelta_e_alpha = -vtol.CDdelta_e*sinf(fm_out.alpha) - vtol.CLdelta_e*cosf(fm_out.alpha);
+
+    float fa_x = 0.5*vtol.rho*powf(fm_out.Va,2)*vtol.S_wing*(CXalpha + CXq_alpha*(vtol.c/(2*fm_out.Va))*states_in.q + CXdelta_e_alpha*abs(delta.delta_e)); 
+    float fa_y = 0.5*vtol.rho*powf(fm_out.Va,2)*vtol.S_wing*(vtol.CY0 + vtol.CYbeta*fm_out.beta + vtol.CYp*(vtol.b/(2*fm_out.Va))*states_in.p + vtol.CYr*(vtol.b/(2*fm_out.Va))*states_in.r + vtol.CYdelta_a*delta.delta_a + vtol.CYdelta_r*delta.delta_r);
+    float fa_z = 0.5*vtol.rho*powf(fm_out.Va,2)*vtol.S_wing*(CZalpha + CZq_alpha*(vtol.c/(2*fm_out.Va))*states_in.q + CZdelta_e_alpha*delta.delta_e);
+
+    //====================================================
+    // Engines/Motors(propulsion system) forces
+    //====================================================
+    float C_prop = 1.0;
+    float k_motor = 80;
+
+    float Vin = vtol.Vmax * delta.delta_t;
+
+    //parameters of quadratic equation solution
+    float a_omega = vtol.rho*powf(vtol.D_prop,5)*vtol.CQ0/powf(2*pi,2);
+    float b_omega = vtol.rho*powf(vtol.D_prop,4)*vtol.CQ1*fm_out.Va/(2*pi) + powf(vtol.KQ,2)/vtol.Rmotor;
+    float c_omega = vtol.rho*powf(vtol.D_prop,3)*vtol.CQ2*powf(fm_out.Va,2) - vtol.KQ * Vin/vtol.Rmotor + vtol.KQ * vtol.i0;
+    
+    float Omega_p = (-b_omega + sqrt(powf(b_omega,2)-4*a_omega*c_omega))/(2*a_omega);
+    float Tp = vtol.rho*powf(vtol.D_prop,4)*vtol.CT0*powf(Omega_p,2)/(4*pi*pi)+ vtol.rho*powf(vtol.D_prop,3)*vtol.CT1*fm_out.Va*Omega_p/(2*pi) + vtol.rho*powf(vtol.D_prop,2)*vtol.CT2*powf(fm_out.Va,2);
+    float Qp = vtol.rho*powf(vtol.D_prop,5)*vtol.CQ0*powf(Omega_p,2)/(4*pi*pi)+ vtol.rho*powf(vtol.D_prop,4)*vtol.CQ1*fm_out.Va*Omega_p/(2*pi) + vtol.rho*powf(vtol.D_prop,3)*vtol.CQ2*powf(fm_out.Va,2);
+
+    float fp_x = Tp; 
+    float fp_y = 0.0;
+    float fp_z = 0.0;
+
+    //====================================================
+    // Total Force in Body frame
+    //====================================================
+    fm_out.fx =  fg_x+fa_x+fp_x; // fx
+    fm_out.fy =  fg_y+fa_y+fp_y; // fy
+    fm_out.fz =  fg_z+fa_z+fp_z; // fz
+
+    //====================================================
+    // Aerodynamic Moments
+    //====================================================
+    float ell_a = 0.5*vtol.rho*powf(fm_out.Va,2)*vtol.S_wing*vtol.b*(vtol.Cl0 + vtol.Clbeta*fm_out.beta + vtol.Clp*(vtol.b/(2*fm_out.Va))*states_in.p + vtol.Clr*(vtol.b/(2*fm_out.Va))*states_in.r + vtol.Cldelta_a*delta.delta_a + vtol.Cldelta_r*delta.delta_r);
+    float m_a = 0.5*vtol.rho*powf(fm_out.Va,2)*vtol.S_wing*vtol.c*(vtol.Cm0 + vtol.Cmalpha*fm_out.alpha + vtol.Cmq*(vtol.c/(2*fm_out.Va))*states_in.q + vtol.Cmdelta_e*delta.delta_e);
+    float n_a = 0.5*vtol.rho*powf(fm_out.Va,2)*vtol.S_wing*vtol.b*(vtol.Cn0 + vtol.Cnbeta*fm_out.beta + vtol.Cnp*(vtol.b/(2*fm_out.Va))*states_in.p + vtol.Cnr*(vtol.b/(2*fm_out.Va))*states_in.r + vtol.Cndelta_a*delta.delta_a + vtol.Cndelta_r*delta.delta_r);
+
+    //====================================================
+    // Engines/motors(propulsion system) Moments
+    //====================================================
+    float k_T_p = 0;
+    float k_omega = 0;
+
+    float ell_p = Qp;
+    float m_p = 0;
+    float n_p = 0;
+
+    //====================================================
+    // Total Moments in Body frame
+    //====================================================
+
+     fm_out.l = ell_a+ell_p;
+     fm_out.m = m_a+m_p;   
+     fm_out.n = n_a+n_p;
+
+     return fm_out;
 }
 
 //__________________________________________________________
