@@ -72,26 +72,32 @@ struct vt vtol_dynamics()
 
 	float R2[3][3];
 	R2[0][0] = 0.0;
-	R2[0][1] = 1.4;
-	R2[0][2] = 2.4;
+	R2[0][1] = 0.4;
+	R2[0][2] = 0.4;
 	
-	R2[1][0] = 3.4;
-	R2[1][1] = 2.4;
-	R2[1][2] = 3.4;
+	R2[1][0] = 0.4;
+	R2[1][1] = 0.4;
+	R2[1][2] = 0.4;
 	
-	R2[2][0] = 2.4;
-	R2[2][1] = 3.4;
-	R2[2][2] = 2.4;
+	R2[2][0] = 0.4;
+	R2[2][1] = 0.4;
+	R2[2][2] = 0.4;
 
 	float R3[3][3];
 
-	array_initd((float*)R1,9);
-	array_initd((float*)R2,9);
-	array_initd((float*)R3,9);
+	//array_initd((float*)R1,9);
+	//array_initd((float*)R2,9);
+	//array_initd((float*)R3,9);
 
 	MatrixMultiply(R1,3,3,R2,3,3,R3);
 
-	printf("Matrix check %f\n", R3[2][1]);
+	printf("Matrix check R3[2][1] %f\n", R3[2][1]);
+
+	float p = acos(-1);
+	printf("sqrt testing = %f\n", p);
+
+	transposed3x3(R3);
+	printf("Matrix check R3'[2][1] %f\n", R3[2][1]);
 
 	return kola;
 }

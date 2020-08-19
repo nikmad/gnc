@@ -314,7 +314,7 @@ struct state_rates sixDOF(float *states_in, float* fm_in)
 	phidot = p + q*sinf(phi)*tanf(theta) + r*cosf(phi)*tanf(theta);
 	thetadot = q*cosf(phi)-r*sinf(phi);
 	//psidot = q*sinf(phi)*sec(theta) + r*cosf(phi)*sec(theta);
-	psidot = q*sinf(phi)*(1/cosf(theta)) + r*cosf(phi)*(1/cosf(theta));
+	psidot = q*sinf(phi)*sec(theta) + r*cosf(phi)*sec(theta);
         
     pdot = c1*p*q-c2*q*r + c3*ell+c4*n;
     qdot = c5*p*r-c6*(p*p-r*r) + m/Iy;
@@ -343,6 +343,8 @@ struct state_rates sixDOF(float *states_in, float* fm_in)
 
 struct force_n_moments forces_moments(struct states states_in, struct actuators delta, struct wnd wind)
 {
+	struct force_n_moments fm_out;
+
 	float R_v_v1[3][3];
 	R_v_v1[0][0] = cosf(psi);
 	R_v_v1[0][1] = sinf(psi);
@@ -385,11 +387,44 @@ struct force_n_moments forces_moments(struct states states_in, struct actuators 
 	float temp3X3_1[3][3];
 	float R_v_b;
 
+	//Creating the rotation matrix
 	MatrixMultiply(R_v1_v2,3,3,R_v_v1,3,3,temp3X3_1);
 	MatrixMultiply(R_v2_b,3,3,temp3X3_1,3,3,R_v_b);
 
-	float temp3x1_1[3][1];
-	
+	float temp3x1_1[3][1], temp3x1_2[3][1];
+	temp3x1_1[0][0] = wind.w_ns;
+	temp3x1_1[1][0] = wind.w_es;
+	temp3x1_1[2][0] = wind.w_ds;
+
+	//Converting steady wind from NED to body frame
+	MatrixMultiply(R_v_b,3,3,temp3x1_1,3,1,temp3x1_2);
+
+	//Total wind vecotr in body-frame: adding the steady components and wind gust components in body frame
+	float V_w[3][1];
+	V_w[0][0] = temp3x1_2[0][0] + wind.u_wg;
+	V_w[1][0] = temp3x1_2[1][0] + wind.v_wg;
+	V_w[2][0] = temp3x1_2[2][0] + wind.w_wg;
+
+	//Body-frame components of the airspeed vector
+	float u_r, v_r, w_r;
+	u_r = states_in.u - V_w[0][0];
+	v_r = states_in.v - V_w[1][0];
+	w_r = states_in.w - V_w[2][0];
+
+	//compute air data
+	fm_out.Va = sqrt(u_r*u_r+v_r*v_r+w_r*w_r);
+	fm_out.alpha = atan(w_r/u_r);
+	fm_out.beta = asin(v_r/fm_out.Va);
+
+	//Total wind vector in NED frame
+	float V_v[3][1];
+	transposed3x3(R_v_b);
+	float R_b_v[3][3] = R_v_b;
+	MatrixMultiply(R_b_v,3,3,V_w,3,1,V_v);
+
+	fm_out.w_n = V_v[0][0];
+	fm_out.w_e = V_v[1][0];
+	fm_out.w_d = V_v[2][0];
 }
 
 //__________________________________________________________
