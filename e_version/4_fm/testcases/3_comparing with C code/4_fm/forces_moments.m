@@ -56,12 +56,11 @@ function out = forces_moments(x, delta, wind, P)
     w_r = w-V_w(3);
 
     % compute air data (BODY frame)
-%     Va = sqrt(u_r^2+v_r^2+w_r^2);
-%     alpha = atan2(w_r, u_r);
-%     beta = asin(v_r/Va);
+    Va = sqrt(u_r^2+v_r^2+w_r^2);
+    alpha = atan2(w_r, u_r);
+    beta = asin(v_r/Va);
     
-
-    
+   
 %     Va = 0.001;
 %     alpha = 0;
 %     beta = 0;
@@ -152,8 +151,16 @@ function out = forces_moments(x, delta, wind, P)
     Torque(1) = ell_a+ell_p;
     Torque(2) = m_a+m_p;   
     Torque(3) = n_a+n_p;
+    
+    % compute air data (INERTIAL frame)
+    Va_inertial = R_v_b' * [u_r; v_r; w_r];
+    
+    Va_i = sqrt(Va_inertial(1)^2 + Va_inertial(2)^2 + Va_inertial(3)^2);
+    alpha_i = atan2(Va_inertial(3), Va_inertial(1));
+    beta_i = asin(Va_inertial(2)/Va);
 
-   out = [Force'; Torque'; Va; alpha; beta; w_n; w_e; w_d];
+   %out = [Force'; Torque'; Va; alpha; beta; w_n; w_e; w_d];
+   out = [Force'; Torque'; Va_i; alpha_i; beta_i; w_n; w_e; w_d];
    
 end
 
