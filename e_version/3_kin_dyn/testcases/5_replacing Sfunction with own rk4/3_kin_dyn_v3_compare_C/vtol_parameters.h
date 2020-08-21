@@ -185,7 +185,7 @@ struct simulation_params{
 //------------------------
 const struct vt vtol = 
 {
-	35.0,	//float Va0;
+	10.0,	//float Va0;
 	15*pi/180,	//float gamma;
 	INFINITY, 	//float R;
 	0.01,	//float Ts;

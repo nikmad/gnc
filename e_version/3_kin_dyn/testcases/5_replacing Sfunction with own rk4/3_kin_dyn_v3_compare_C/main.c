@@ -26,23 +26,26 @@ int main()
 
 	struct states states_in = {0,0,0,10,0,0,0,0,0,0,0,0};
 	struct states states_out, states_prevMemory;
-	struct force_n_moments fm_in;
-	//= {0,0,2.0,0,0.01,0, 0,0,0, 0,0,0};
+	struct force_n_moments fm_in = {0,0,0, 0,0,0, 0,0,0, 0,0,0};
 	struct actuators delta = {0.047,0,0,0};
 	struct wnd _wind = {0.001,0.001,0.001,0.001,0.001,0.001};
 
 	int i;
 	float t;
 
+	float Va = states_in.u; //DUMMY VALUE ONLY FOR TESTING
+
 	FILE *fptr;
 	fptr = fopen("nikstates.txt", "w+");
 
-	for(i=0; i<3000; i++)
+	for(i=0; i<7000; i++)
 	{
 		t = i*0.01;
-		fm_in = forces_moments(states_in, delta, _wind);	
+		//fm_in = forces_moments(states_in, delta, _wind);	
 	    states_out = vtol_dynamics(states_in, fm_in);
-		fprintf(fptr, "%3.3f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", t, states_out.pn, states_out.pe, states_out.pd, states_out.u, states_out.v, states_out.w, states_out.phi, states_out.theta, states_out.psi, states_out.p, states_out.q, states_out.r);
+		//               1     2    3    4    5    6    7    8    9     10  11   12   13   14    15    16   17  18   19   20   21
+		//               t     pn   pe   pd   u    v    w   phi  theta psi  p    q    r    Va  alpha beta chi delE delA delR delT
+		fprintf(fptr, "%3.3f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", t, states_out.pn, states_out.pe, states_out.pd, states_out.u, states_out.v, states_out.w, states_out.phi, states_out.theta, states_out.psi, states_out.p, states_out.q, states_out.r, Va, 0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 		states_in = states_out;
    		//fputs("This is testing for fputs...\n", fptr);
 	}
@@ -126,7 +129,7 @@ struct states rk4(struct states states_in, struct force_n_moments fm_in)
 
 	for (i=0; i<num_states; ++i)
 	{
-	    yt[i] = y[i] + h/2 * K1[i];
+	    yt[i] = y[i] + (h/2) * K1[i];
 	}
 
 
@@ -152,7 +155,7 @@ struct states rk4(struct states states_in, struct force_n_moments fm_in)
 
 	for (i=0; i<num_states; ++i)
 	{
-		yt[i] = y[i] + h/2 * K2[i];
+		yt[i] = y[i] + (h/2) * K2[i];
 	}
 
 	//_______________________________________________________
@@ -207,7 +210,7 @@ struct states rk4(struct states states_in, struct force_n_moments fm_in)
 	{
 		// The following line gives: u_j+1 = u_j + 1/6*(K1 + 2*(K2+K3) + K4)
 		// - nkm
-	    y[i] = y[i] + h/6*( K1[i] + 2.0*( K2[i] + K3[i] ) + K4[i] );
+	    y[i] = y[i] + (h/6)*( K1[i] + 2.0*( K2[i] + K3[i] ) + K4[i] );
 	}
 
 	struct states states_out = 
@@ -263,6 +266,7 @@ struct state_rates sixDOF(float *states_in, float* fm_in)
     float ell   = *(fm_in+3);
     float m     = *(fm_in+4);
     float n     = *(fm_in+5);
+	//printf("Test fx = %f\n",fx);
 
     float mass = vtol.m;
     float Ix = vtol.Jx;
