@@ -38,9 +38,9 @@ int main()
 	FILE *fptr;
 	fptr = fopen("nikstates.txt", "w+");
 
-	for(i=0; i<7000; i++)
+	for(i=0; i<140; i++)
 	{
-		t = i*0.01;
+		t = i*0.5;
 		//fm_in = forces_moments(states_in, delta, _wind);	
 	    states_out = vtol_dynamics(states_in, fm_in);
 		//               1     2    3    4    5    6    7    8    9     10  11   12   13   14    15    16   17  18   19   20   21

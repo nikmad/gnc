@@ -251,7 +251,7 @@ const struct vt vtol =
 	//
 	0.08,	//float Cldelta_a;
 	-0.032,	//float Cndelta_r;
-	-0.99,	//float Cmdelta_e;
+	-0.5,	//float Cmdelta_e;
 	//
 	0.06,	//float Cndelta_a;
 	-0.17, 	//float CYdelta_r;
