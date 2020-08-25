@@ -14,6 +14,11 @@ Created: 31/Jul/2020
 //_______________________________________________________
 // defining structures 
 
+struct dot{
+float u;
+float v;
+};
+
 struct vt{
  float Va0;
  float gamma;

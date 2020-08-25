@@ -23,7 +23,7 @@
     vtol.pn0    = 0;     % initial North position
 	vtol.pe0    = 0;     % initial East position
 	vtol.pd0    = 0;  % initial Down position (negative altitude)
-	vtol.u0     = 10;     % initial velocity along body x-axis
+	vtol.u0     = 0;     % initial velocity along body x-axis
 	vtol.v0     = 0;     % initial velocity along body y-axis
 	vtol.w0     = 0;     % initial velocity along body z-axis
 	vtol.phi0   = 0;     % initial roll angle
