@@ -31,7 +31,7 @@ int main()
 
 
 	int i;
-	float t;
+	float t = 0.0;
 
 	float y[2] = {1,1};
 	float *yf;
@@ -40,6 +40,8 @@ int main()
 
 	FILE *fptr;
 	fptr = fopen("nikstates.txt", "w+");
+
+	fprintf(fptr, "%3.3f   %f   %f\n", t, 0.0, 0.0);
 
 	for(i=1; i<3; i++)
 	{

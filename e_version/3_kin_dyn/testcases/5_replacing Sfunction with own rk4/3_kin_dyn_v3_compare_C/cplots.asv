@@ -2,7 +2,7 @@ function cplots()
 %
 %   M = readmatrix('nikstates.txt')
     M=importdata('nikstates.txt');
-%     save('nikstates', 'M');
+     save('nikstates', 'M');
   
   figure(2);
   

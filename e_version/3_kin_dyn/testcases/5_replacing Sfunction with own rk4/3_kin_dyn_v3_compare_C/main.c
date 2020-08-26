@@ -26,19 +26,21 @@ int main()
 
 	struct states states_in = {0,0,0,0,0,0,0,0,0,0,0,0};
 	struct states states_out, states_prevMemory;
-	struct force_n_moments fm_in = {0,0,0, 0,0,0, 0,0,0, 0,0,0};
+	struct force_n_moments fm_in = {0.5023,0,0, 0,0,0, 0,0,0, 0,0,0};
 	struct actuators delta = {0.047,0,0,0};
 	struct wnd _wind = {0.001,0.001,0.001,0.001,0.001,0.001};
 
 	int i;
-	float t;
+	float t = 0.0;
 
 	float Va = states_in.u; //DUMMY VALUE ONLY FOR TESTING
 
 	FILE *fptr;
 	fptr = fopen("nikstates.txt", "w+");
 
-	for(i=1; i<700; i++)
+	fprintf(fptr, "%3.3f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", t, states_in.pn, states_in.pe, states_in.pd, states_in.u, states_in.v, states_in.w, states_in.phi, states_in.theta, states_in.psi, states_in.p, states_in.q, states_in.r, Va, 0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+
+	for(i=1; i<5001; i++)
 	{
 		t = i*SIM.rk4_stepsize;
 		//fm_in = forces_moments(states_in, delta, _wind);	
