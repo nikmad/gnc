@@ -40,7 +40,7 @@ int main()
 
 	fprintf(fptr, "%3.3f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", t, states_in.pn, states_in.pe, states_in.pd, states_in.u, states_in.v, states_in.w, states_in.phi, states_in.theta, states_in.psi, states_in.p, states_in.q, states_in.r, Va, 0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 
-	for(i=1; i<5001; i++)
+	for(i=1; i<501; i++)
 	{
 		t = i*SIM.rk4_stepsize;
 		//fm_in = forces_moments(states_in, delta, _wind);	
