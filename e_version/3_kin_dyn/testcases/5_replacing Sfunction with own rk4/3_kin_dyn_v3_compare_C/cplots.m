@@ -19,7 +19,7 @@ function cplots()
   ylabel('Pe');
   
   subplot(8,2,4)
-  plot(M(:,1),M(:,15),'.-b');
+  plot(M(:,1),(180/pi)*M(:,15),'.-b');
   ylabel('\alpha');
   
   subplot(8,2,5)
@@ -27,43 +27,43 @@ function cplots()
    ylabel('h');
     
   subplot(8,2,6)
-  plot(M(:,1),-M(:,16),'.-g');
+  plot(M(:,1),-(180/pi)*M(:,16),'.-g');
    ylabel('\beta');
   
   subplot(8,2,7)
-  plot(M(:,1),M(:,8),'.-g');
+  plot(M(:,1),(180/pi)*M(:,8),'.-g');
    ylabel('\phi');
     
   subplot(8,2,8)
-  plot(M(:,1),M(:,11),'.-g');
+  plot(M(:,1),(180/pi)*M(:,11),'.-g');
    ylabel('p');
   
   subplot(8,2,9)
-  plot(M(:,1),M(:,9),'.-r');
+  plot(M(:,1),(180/pi)*M(:,9),'.-r');
    ylabel('\theta');
     
   subplot(8,2,10)
-  plot(M(:,1),M(:,12),'.-r');
+  plot(M(:,1),(180/pi)*M(:,12),'.-r');
    ylabel('q');
     
   subplot(8,2,11)
-  plot(M(:,1),M(:,17),'.-r');
+  plot(M(:,1),(180/pi)*M(:,17),'.-r');
      ylabel('\chi');
     
   subplot(8,2,12)
-  plot(M(:,1),M(:,13),'.-r');
+  plot(M(:,1),(180/pi)*M(:,13),'.-r');
      ylabel('r');
     
   subplot(8,2,13)
-  plot(M(:,1),M(:,18),'.-r');  
+  plot(M(:,1),(180/pi)*M(:,18),'.-r');  
      ylabel('\delta_e');
   
   subplot(8,2,14)
-  plot(M(:,1),M(:,19),'.-r');
+  plot(M(:,1),(180/pi)*M(:,19),'.-r');
        ylabel('\delta_a');
     
   subplot(8,2,15)
-  plot(M(:,1),M(:,20),'.-r');
+  plot(M(:,1),(180/pi)*M(:,20),'.-r');
        ylabel('\delta_r');
   
   subplot(8,2,16)
