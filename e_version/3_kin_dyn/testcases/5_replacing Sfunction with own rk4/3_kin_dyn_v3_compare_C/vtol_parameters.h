@@ -286,7 +286,7 @@ const struct simulation_params SIM =
 	0.02,	//float ts_control;
 	0.1,	//float ts_plotting;
 	0.1,	//float ts_video;
-	0.1	//float rk4_stepsize;
+	0.01	//float rk4_stepsize;
 };
 //---------------------
 
