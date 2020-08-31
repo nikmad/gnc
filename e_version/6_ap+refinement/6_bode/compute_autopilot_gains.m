@@ -18,7 +18,7 @@ AP.Ts  = vtol.Ts;
     %ROLL
     AP.delta_a_max = 30*pi/180;
     AP.e_phi_max   = 15*pi/180; 
-    AP.zeta_phi     = .85;
+    AP.zeta_phi     = 5.38;
     %AP.zeta_phi     = 3.85;
     
     %COURSE (this is the outer loop in which there is the inner ROLL loop)
