@@ -93,7 +93,7 @@ struct vt vtol_dynamics()
 
 	printf("Matrix check R3[2][1] %f\n", R3[2][1]);
 
-	float p = acos(-1);
+	float p = cos(30);
 	printf("sqrt testing = %f\n", p);
 
 	transposed3x3(R3);
