@@ -30,7 +30,7 @@ int main()
 	struct actuators delta = {0,0,0,0};
 	struct wnd _wind = {0.0000000001,0.0000000001,0.0000000001,0.0000000001,0.0000000001,0.0000000001};
 	int i;
-	float t = 0.0, t_tot = 200.0;
+	float t = 0.0, t_tot = 400.0;
 
 	//float Va = states_in.u; //DUMMY VALUE ONLY FOR TESTING
 
