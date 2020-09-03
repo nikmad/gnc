@@ -1,4 +1,4 @@
-function plotvtolstatevariables(uu)
+function plots(uu)
 
     % process inputs to function
     hx          = uu(1);       
@@ -32,7 +32,7 @@ function plotvtolstatevariables(uu)
   % first time function is called, initialize plot and persistent vars
     if t==0
         
-        figure(1); clf(1)
+        figure(2); clf
         
         set(gcf,'color',[77/255,77/255,77/255]);
         
