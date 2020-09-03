@@ -11,6 +11,5 @@ function yi = init_states(t, vtol)
 	yi(9) = vtol.psi0;
 	yi(10) = vtol.p0;
 	yi(11) = vtol.q0;
-%     yi(11) = 45*pi/180;
 	yi(12) = vtol.r0;  
 end
