@@ -31,7 +31,7 @@ int main()
 	struct wnd _wind = {0.001,0.001,0.001,0.001,0.001,0.001};
 
 	int i;
-	float t = 0.0, t_tot = 50.0;
+	float t = 0.0, t_tot = 295.0;
 
 	float Va = states_in.u; //DUMMY VALUE ONLY FOR TESTING
 

@@ -27,10 +27,10 @@ int main()
 	struct states states_in = {0,0,0,0,0,0,0,0,0,0,0,0};
 	struct states states_out, states_prevMemory;
 	struct force_n_moments fm_in = {0,0,0, 0,0,0, 0,0,0, 0,0,0};
-	struct actuators delta = {0,0,0,0};
+	struct actuators delta = {15*pi/180,0*pi/180,0*pi/180,0*pi/180};
 	struct wnd _wind = {0.0000000001,0.0000000001,0.0000000001,0.0000000001,0.0000000001,0.0000000001};
 	int i;
-	float t = 0.0, t_tot = 60.0;
+	float t = 0.0, t_tot = 30.0;
 
 	//float Va = states_in.u; //DUMMY VALUE ONLY FOR TESTING
 

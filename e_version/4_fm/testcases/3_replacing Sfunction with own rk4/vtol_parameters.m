@@ -29,11 +29,6 @@
 	vtol.phi0   = 0;     % initial roll angle
 	vtol.theta0 = 0;     % initial pitch angle
 	vtol.psi0   = 0;     % initial yaw angle
-% 	e = Euler2Quaternion(vtol.phi0,vtol.theta0,vtol.psi0);
-% 	vtol.e0     = e(1);  % initial quaternion
-% 	vtol.e1     = e(2);
-% 	vtol.e2     = e(3);
-% 	vtol.e3     = e(4);
 	vtol.p0     = 0;     % initial body frame roll rate
 	vtol.q0     = 0;     % initial body frame pitch rate
 	vtol.r0     = 0;     % initial body frame yaw rate
