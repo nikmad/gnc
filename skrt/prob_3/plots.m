@@ -39,73 +39,73 @@ function plots(uu)
         subplot(3,4,2,'color',[0.275,0.509,0.706])
         hold on
         grid on
-        hx_handle = graph_y(t, hx, [], 'g');
+        hx_handle = graph_y(t, hx, [], 'r');
         title('h_x','fontweight','bold', 'fontsize', 20, 'color', [255/255,179/255,25/255]);
         
         subplot(3,4,6,'color',[0.275,0.509,0.706])
         hold on
         grid on
-        hy_handle = graph_y(t, hy, [], 'g');
+        hy_handle = graph_y(t, hy, [], 'r');
         title('h_y','fontweight','bold', 'fontsize', 20, 'color', [255/255,179/255,25/255]);
         
         subplot(3,4,10,'color',[0.275,0.509,0.706])
         hold on
         grid on
-        hz_handle = graph_y(t, hz, [], 'g');
+        hz_handle = graph_y(t, hz, [], 'r');
         title('h_z','fontweight','bold', 'fontsize', 20, 'color', [255/255,179/255,25/255]);
 
         subplot(3,4,3,'color',[0.275,0.509,0.706])
         hold on
         grid on
-        wx_handle = graph_y(t, wx, [], 'g');
+        wx_handle = graph_y(t, wx, [], 'r');
         title('\omega_x','fontweight','bold', 'fontsize', 20, 'color', [255/255,179/255,25/255]);
 
         subplot(3,4,7,'color',[0.275,0.509,0.706])
         hold on
         grid on
-        wy_handle = graph_y(t, wy, [], 'g');
+        wy_handle = graph_y(t, wy, [], 'r');
         title('\omega_y','fontweight','bold', 'fontsize', 20, 'color', [255/255,179/255,25/255]);
 
         subplot(3,4,11,'color',[0.275,0.509,0.706])
         hold on
         grid on
-        wz_handle = graph_y(t, wz, [], 'g');
+        wz_handle = graph_y(t, wz, [], 'r');
         title('\omega_z','fontweight','bold', 'fontsize', 20, 'color', [255/255,179/255,25/255]);
 
         subplot(3,4,4,'color',[0.275,0.509,0.706])
         hold on
         grid on
-        phi_handle = graph_y(t, phi, [], 'g');
+        phi_handle = graph_y(t, phi, [], 'r');
         title('\phi','fontweight','bold', 'fontsize', 20, 'color', [255/255,179/255,25/255]);
         
         subplot(3,4,8,'color',[0.275,0.509,0.706])
         hold on
         grid on
-        theta_handle = graph_y(t, theta, [], 'g');
+        theta_handle = graph_y(t, theta, [], 'r');
         title('\theta','fontweight','bold', 'fontsize', 20, 'color', [255/255,179/255,25/255]);
         
         subplot(3,4,12,'color',[0.275,0.509,0.706])
         hold on
         grid on
-        psi_handle = graph_y(t, psi, [], 'g');
+        psi_handle = graph_y(t, psi, [], 'r');
         title('\psi','fontweight','bold', 'fontsize', 20, 'color', [255/255,179/255,25/255]);
         
         subplot(3,4,1,'color',[0.275,0.509,0.706])
         hold on
         grid on
-        tauX_handle = graph_y(t, tauX, [], 'g');
+        tauX_handle = graph_y(t, tauX, [], 'r');
         title('\tau_x','fontweight','bold', 'fontsize', 20, 'color', [255/255,179/255,25/255]);
         
         subplot(3,4,5,'color',[0.275,0.509,0.706])
         hold on
         grid on
-        tauY_handle = graph_y(t, tauY, [], 'g');
+        tauY_handle = graph_y(t, tauY, [], 'r');
         title('\tau_y','fontweight','bold', 'fontsize', 20, 'color', [255/255,179/255,25/255]);
         
         subplot(3,4,9,'color',[0.275,0.509,0.706])
         hold on
         grid on
-        tauZ_handle = graph_y(t, tauZ, [], 'g');
+        tauZ_handle = graph_y(t, tauZ, [], 'r');
         title('\tau_z','fontweight','bold', 'fontsize', 20, 'color', [255/255,179/255,25/255]);
         
     % at every other time step, redraw state variables

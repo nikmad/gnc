@@ -8,7 +8,7 @@ scraft.sim_timestep = 1; % sec
 
 % Prob 3a
 scraft.hx0 =    0;
-scraft.hy0 =    -5;
+scraft.hy0 =    0;
 scraft.hz0 =    0;
 scraft.wx0 =    0;
 scraft.wy0 =    -scraft.n;
