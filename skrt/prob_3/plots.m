@@ -32,7 +32,7 @@ function plots(uu)
   % first time function is called, initialize plot and persistent vars
     if t==0
         
-        figure(1); 
+        figure(1);
         
         set(gcf,'color',[77/255,77/255,77/255]);
         

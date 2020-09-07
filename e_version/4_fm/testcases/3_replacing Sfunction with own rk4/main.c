@@ -27,10 +27,10 @@ int main()
 	struct states states_in = {0,0,0,0,0,0,0,0,0,0,0,0};
 	struct states states_out, states_prevMemory;
 	struct force_n_moments fm_in = {0,0,0, 0,0,0, 0,0,0, 0,0,0};
-	struct actuators delta = {15*pi/180,0*pi/180,0*pi/180,0*pi/180};
+	struct actuators delta = {15*pi/180, 0*pi/180, 0*pi/180, 1};
 	struct wnd _wind = {0.0000000001,0.0000000001,0.0000000001,0.0000000001,0.0000000001,0.0000000001};
 	int i;
-	float t = 0.0, t_tot = 30.0;
+	float t = 0.0, t_tot = 295.0;
 
 	//float Va = states_in.u; //DUMMY VALUE ONLY FOR TESTING
 
@@ -40,7 +40,7 @@ int main()
 	FILE *fptr;
 	fptr = fopen("nikstates.txt", "w+");
 
-	fprintf(fptr, "%3.3f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", t, states_in.pn, states_in.pe, states_in.pd, states_in.u, states_in.v, states_in.w, states_in.phi, states_in.theta, states_in.psi, states_in.p, states_in.q, states_in.r, fm_in.Va, 0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+	fprintf(fptr, "%3.3f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", t, states_in.pn, states_in.pe, states_in.pd, states_in.u, states_in.v, states_in.w, states_in.phi, states_in.theta, states_in.psi, states_in.p, states_in.q, states_in.r, fm_in.Va, fm_in.alpha,fm_in.beta,chi,delta.delta_e,delta.delta_a,delta.delta_r,delta.delta_t);
 
 	for(i=1; i<(int)(t_tot/SIM.rk4_stepsize)+1; i++)
 	{
@@ -50,7 +50,7 @@ int main()
 		states_out = vtol_dynamics(states_in, fm_in);
 		//               1     2    3    4    5    6    7    8    9     10  11   12   13   14    15   16   17  18   19   20   21
 		//               t     pn   pe   pd   u    v    w   phi  theta psi  p    q    r    Va  alpha beta chi delE delA delR delT
-		fprintf(fptr, "%3.3f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", t, states_out.pn, states_out.pe, states_out.pd, states_out.u, states_out.v, states_out.w, states_out.phi, states_out.theta, states_out.psi, states_out.p, states_out.q, states_out.r, fm_in.Va, fm_in.alpha, fm_in.beta,chi,0.0,0.0,0.0,0.0);
+		fprintf(fptr, "%3.3f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", t, states_out.pn, states_out.pe, states_out.pd, states_out.u, states_out.v, states_out.w, states_out.phi, states_out.theta, states_out.psi, states_out.p, states_out.q, states_out.r, fm_in.Va, fm_in.alpha, fm_in.beta,chi,delta.delta_e,delta.delta_a,delta.delta_r,delta.delta_t);
 		states_in = states_out;
    		//fputs("This is testing for fputs...\n", fptr);
 	}
@@ -412,7 +412,7 @@ struct force_n_moments forces_moments(struct states states_in, struct actuators 
 	//Converting steady wind from NED to body frame
 	MatrixMultiply(R_v_b,3,3,temp3x1_1,3,1,temp3x1_2);
 
-	//Total wind vecotr in body-frame: adding the steady components and wind gust components in body frame
+	//Total wind vector in body-frame: adding the steady components and wind gust components in body frame
 	float V_w[3][1];
 	V_w[0][0] = temp3x1_2[0][0] + wind.u_wg;
 	V_w[1][0] = temp3x1_2[1][0] + wind.v_wg;

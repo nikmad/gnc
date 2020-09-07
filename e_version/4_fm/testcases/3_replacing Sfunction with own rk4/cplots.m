@@ -7,19 +7,19 @@ function cplots()
   figure(2);
   
   subplot(8,2,1)
-  plot(M(:,1),M(:,2),'.-r');
+  plot(M(:,1),M(:,2),'.-g');
   ylabel('Pn');
   
   subplot(8,2,2)
-  plot(M(:,1),M(:,14),'.-r');
+  plot(M(:,1),M(:,14),'.-g');
   ylabel('Va');
   
   subplot(8,2,3)
-  plot(M(:,1),M(:,3),'.-b');
+  plot(M(:,1),M(:,3),'.-g');
   ylabel('Pe');
   
   subplot(8,2,4)
-  plot(M(:,1),(180/pi)*M(:,15),'.-b');
+  plot(M(:,1),(180/pi)*M(:,15),'.-g');
   ylabel('\alpha');
   
   subplot(8,2,5)
@@ -39,35 +39,35 @@ function cplots()
    ylabel('p');
   
   subplot(8,2,9)
-  plot(M(:,1),(180/pi)*M(:,9),'.-r');
+  plot(M(:,1),(180/pi)*M(:,9),'.-g');
    ylabel('\theta');
     
   subplot(8,2,10)
-  plot(M(:,1),(180/pi)*M(:,12),'.-r');
+  plot(M(:,1),(180/pi)*M(:,12),'.-g');
    ylabel('q');
     
   subplot(8,2,11)
-  plot(M(:,1),(180/pi)*M(:,17),'.-r');
+  plot(M(:,1),(180/pi)*M(:,17),'.-g');
      ylabel('\chi');
     
   subplot(8,2,12)
-  plot(M(:,1),(180/pi)*M(:,13),'.-r');
+  plot(M(:,1),(180/pi)*M(:,13),'.-g');
      ylabel('r');
     
   subplot(8,2,13)
-  plot(M(:,1),(180/pi)*M(:,18),'.-r');  
+  plot(M(:,1),(180/pi)*M(:,18),'.-g');  
      ylabel('\delta_e');
   
   subplot(8,2,14)
-  plot(M(:,1),(180/pi)*M(:,19),'.-r');
+  plot(M(:,1),(180/pi)*M(:,19),'.-g');
        ylabel('\delta_a');
     
   subplot(8,2,15)
-  plot(M(:,1),(180/pi)*M(:,20),'.-r');
+  plot(M(:,1),(180/pi)*M(:,20),'.-g');
        ylabel('\delta_r');
   
   subplot(8,2,16)
-  plot(M(:,1),M(:,21),'.-r');
+  plot(M(:,1),M(:,21),'.-g');
        ylabel('\delta_t');
 
 %  for i=1:length(M)

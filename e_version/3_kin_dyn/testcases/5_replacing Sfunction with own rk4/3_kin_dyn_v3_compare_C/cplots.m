@@ -15,11 +15,11 @@ function cplots()
   ylabel('Va');
   
   subplot(8,2,3)
-  plot(M(:,1),M(:,3),'.-b');
+  plot(M(:,1),M(:,3),'.-r');
   ylabel('Pe');
   
   subplot(8,2,4)
-  plot(M(:,1),(180/pi)*M(:,15),'.-b');
+  plot(M(:,1),(180/pi)*M(:,15),'.-r');
   ylabel('\alpha');
   
   subplot(8,2,5)

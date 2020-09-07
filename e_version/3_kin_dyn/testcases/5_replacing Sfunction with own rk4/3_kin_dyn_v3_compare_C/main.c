@@ -26,7 +26,7 @@ int main()
 
 	struct states states_in = {0,0,0,0,0,0,0,0,0,0,0,0};
 	struct states states_out, states_prevMemory;
-	struct force_n_moments fm_in = {1,0,0, 0,0.1,0.1, 0,0,0, 0,0,0};
+	struct force_n_moments fm_in = {0,1,0, 0.08,0.1,0, 0,0,0, 0,0,0};
 	struct actuators delta = {0.047,0,0,0};
 	struct wnd _wind = {0.001,0.001,0.001,0.001,0.001,0.001};
 
