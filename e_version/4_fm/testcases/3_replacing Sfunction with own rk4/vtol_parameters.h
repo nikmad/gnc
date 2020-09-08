@@ -9,7 +9,7 @@ Created: 31/Jul/2020
 #ifndef MYLIB_CONSTANTS_H
 
 //#define pi acos(-1)
-#define pi 3.141592653589793238
+#define pi 3.14
 
 //_______________________________________________________
 // defining structures 

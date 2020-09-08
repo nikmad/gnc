@@ -27,10 +27,10 @@ int main()
 	struct states states_in = {0,0,0,0,0,0,0,0,0,0,0,0};
 	struct states states_out, states_prevMemory;
 	struct force_n_moments fm_in = {0,0,0, 0,0,0, 0,0,0, 0,0,0};
-	struct actuators delta = {15*pi/180, 0*pi/180, 0*pi/180, 1};
+	struct actuators delta = {0*pi/180, 15*pi/180, 0*pi/180, 0};
 	struct wnd _wind = {0.0000000001,0.0000000001,0.0000000001,0.0000000001,0.0000000001,0.0000000001};
 	int i;
-	float t = 0.0, t_tot = 295.0;
+	float t = 0.0, t_tot = 50.0;
 
 	//float Va = states_in.u; //DUMMY VALUE ONLY FOR TESTING
 
@@ -326,7 +326,6 @@ struct state_rates sixDOF(float *states_in, float* fm_in)
 
 	phidot = p + q*sinf(phi)*tanf(theta) + r*cosf(phi)*tanf(theta);
 	thetadot = q*cosf(phi)-r*sinf(phi);
-	//psidot = q*sinf(phi)*sec(theta) + r*cosf(phi)*sec(theta);
 	psidot = q*sinf(phi)*sec(theta) + r*cosf(phi)*sec(theta);
         
     pdot = c1*p*q-c2*q*r + c3*ell+c4*n;
@@ -403,6 +402,12 @@ struct force_n_moments forces_moments(struct states states_in, struct actuators 
 	//Creating the rotation matrix
 	MatrixMultiply(R_v1_v2,3,3,R_v_v1,3,3,temp3X3_1);
 	MatrixMultiply(R_v2_b,3,3,temp3X3_1,3,3,R_v_b);
+
+	//FILE *fptr1;
+	//fptr1 = fopen("matmulC.txt", "a");
+	//fprintf(fptr1, "%6.4f %6.4f %6.4f %6.4f %6.4f %6.4f ", wind.w_ns, wind.w_es, wind.w_ds, wind.u_wg, wind.v_wg, wind.w_wg);
+	//fprintf(fptr1, "%6.4f %6.4f %6.4f %6.4f %6.4f %6.4f %6.4f %6.4f %6.4f\n", R_v_b[0][0], R_v_b[0][1], R_v_b[0][2], R_v_b[1][0], R_v_b[1][1], R_v_b[1][2], R_v_b[2][0], R_v_b[2][1], R_v_b[2][2]);
+	//fclose(fptr1);
 
 	float temp3x1_1[3][1], temp3x1_2[3][1];
 	temp3x1_1[0][0] = wind.w_ns;

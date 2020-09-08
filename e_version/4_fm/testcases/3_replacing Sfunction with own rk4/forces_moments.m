@@ -46,7 +46,15 @@ function out = forces_moments(x, delta, wind, P)
     R_v1_v2=[cos(theta) 0 -sin(theta); 0 1 0; sin(theta) 0 cos(theta)];
     R_v2_b=[1 0 0; 0 cos(phi) sin(phi); 0 -sin(phi) cos(phi)];
     R_v_b=R_v2_b*R_v1_v2*R_v_v1;
-
+%     
+%     fileID = fopen('matmulM.txt','a');
+%     formatSpec = '%6.4f %6.4f %6.4f %6.4f %6.4f %6.4f ';
+%     fprintf(fileID, formatSpec, w_ns, w_es, w_ds, u_wg, v_wg, w_wg);
+%     formatSpec = '%6.4f %6.4f %6.4f ';
+%     fprintf(fileID, formatSpec, R_v_b);
+%     fprintf(fileID, '\n')
+%     fclose(fileID);
+    
     % Total wind vector in body-frame
     V_w = R_v_b * [w_ns; w_es; w_ds] + [u_wg; v_wg; w_wg]; % V_w = [u_w; v_w; w_w]
 
