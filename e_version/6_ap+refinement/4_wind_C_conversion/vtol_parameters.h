@@ -8,8 +8,8 @@ Created: 31/Jul/2020
 
 #ifndef MYLIB_CONSTANTS_H
 
-//#define PI acos(-1)
-//#define PI 3.141592653589793238
+//#define pi acos(-1)
+#define pi 3.141592653589793238
 
 //_______________________________________________________
 // defining structures 
@@ -186,7 +186,7 @@ struct simulation_params{
 const struct vt vtol = 
 {
 	10.0,	//float Va0;
-	15*PI/180,	//float gamma;
+	15*pi/180,	//float gamma;
 	INFINITY, 	//float R;
 	0.01,	//float Ts;
 	//

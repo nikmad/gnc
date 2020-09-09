@@ -1,63 +1,8 @@
-/*
-Author: Nikhil Madduri (nikhil.madduri@gmail.com)
-Created: 31/Jul/2020
-*/
-
-#include <stdio.h>
 #include <math.h>
-#include "vtol_parameters.h"
+#include <stdio.h>
+
 #include "math_util.h"
-
-//_______________________________________________________
-// declaring functions 
-
-struct force_n_moments forces_moments(struct states, struct actuators, struct wnd);
-struct states vtol_dynamics(struct states, struct force_n_moments);
-struct states rk4(struct states, struct force_n_moments);
-struct state_rates sixDOF(float *, float *);
-float absolut_(float);
-float modulo_(float, float);
-float sign_(float);
-
-//_______________________________________________________
-int main()
-{
-	//float rk4_stepsize = 0.01;
-
-	struct states states_in = {0,0,0,0,0,0,0,0,0,0,0,0};
-	struct states states_out, states_prevMemory;
-	struct force_n_moments fm_in = {0,0,0, 0,0,0, 0,0,0, 0,0,0};
-	struct actuators delta = {0*pi/180, 0*pi/180, 15*pi/180, 0};
-	struct wnd _wind = {0.0000000001,0.0000000001,0.0000000001,0.0000000001,0.0000000001,0.0000000001};
-	int i;
-	float t = 0.0, t_tot = 50.0;
-
-	//float Va = states_in.u; //DUMMY VALUE ONLY FOR TESTING
-
-	float chi = 0.0;
-
-
-	FILE *fptr;
-	fptr = fopen("nikstates.txt", "w+");
-
-	fprintf(fptr, "%3.3f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", t, states_in.pn, states_in.pe, states_in.pd, states_in.u, states_in.v, states_in.w, states_in.phi, states_in.theta, states_in.psi, states_in.p, states_in.q, states_in.r, fm_in.Va, fm_in.alpha,fm_in.beta,chi,delta.delta_e,delta.delta_a,delta.delta_r,delta.delta_t);
-
-	for(i=1; i<(int)(t_tot/SIM.rk4_stepsize)+1; i++)
-	{
-		t = i*SIM.rk4_stepsize;
-		fm_in = forces_moments(states_in, delta, _wind);
-		states_out = vtol_dynamics(states_in, fm_in);
-		chi = (float)atan2((fm_in.Va*sinf(states_out.psi)+fm_in.w_e),(fm_in.Va*cosf(states_out.psi)+fm_in.w_n));
-		//               1     2    3    4    5    6    7    8    9     10  11   12   13   14    15   16   17  18   19   20   21
-		//               t     pn   pe   pd   u    v    w   phi  theta psi  p    q    r    Va  alpha beta chi delE delA delR delT
-		fprintf(fptr, "%3.3f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", t, states_out.pn, states_out.pe, states_out.pd, states_out.u, states_out.v, states_out.w, states_out.phi, states_out.theta, states_out.psi, states_out.p, states_out.q, states_out.r, fm_in.Va, fm_in.alpha, fm_in.beta,chi,delta.delta_e,delta.delta_a,delta.delta_r,delta.delta_t);
-		states_in = states_out;
-   	}
-
-	fclose(fptr);
-	
-	return 0;
-}
+#include "functions_vtol.h"
 
 //_______________________________________________________
 
@@ -302,17 +247,17 @@ struct state_rates sixDOF(float *states_in, float* fm_in)
 	
 	//____________________________________________________________
 
-	float theta1 = (float)modulo_(absolut_(theta),2*pi);
-	float theta2 = (float)floor(absolut_(theta)/(2*pi))*(2*pi);
+	float theta1 = (float)modulo_(absolut_(theta),2*PI);
+	float theta2 = (float)floor(absolut_(theta)/(2*PI))*(2*PI);
 
-	if ((floor(theta1/(pi/2))==0) && (pi/2-theta1 < sensitive90zone))
-		{theta = sign_(theta)*(pi/2 - sensitive90zone + theta2);}
-	else if ((floor(theta1/(pi/2))==1) &&   (theta1-pi/2 < sensitive90zone))
-		{theta = sign_(theta)*(pi/2 + sensitive90zone + theta2);}
-	else if ((floor(theta1/(pi/2))==2) && (3*pi/2-theta1 < sensitive90zone))
-		{theta = sign_(theta)*(3*pi/2 - sensitive90zone + theta2);}
-	else if ((floor(theta1/(pi/2))==3) && (theta1-3*pi/2 < sensitive90zone))
-		{theta = sign_(theta)*(3*pi/2 + sensitive90zone + theta2);}
+	if ((floor(theta1/(PI/2))==0) && (PI/2-theta1 < sensitive90zone))
+		{theta = sign_(theta)*(PI/2 - sensitive90zone + theta2);}
+	else if ((floor(theta1/(PI/2))==1) &&   (theta1-PI/2 < sensitive90zone))
+		{theta = sign_(theta)*(PI/2 + sensitive90zone + theta2);}
+	else if ((floor(theta1/(PI/2))==2) && (3*PI/2-theta1 < sensitive90zone))
+		{theta = sign_(theta)*(3*PI/2 - sensitive90zone + theta2);}
+	else if ((floor(theta1/(PI/2))==3) && (theta1-3*PI/2 < sensitive90zone))
+		{theta = sign_(theta)*(3*PI/2 + sensitive90zone + theta2);}
 
 	phidot = p + q*sinf(phi)*tanf(theta) + r*cosf(phi)*tanf(theta);
 	thetadot = q*cosf(phi)-r*sinf(phi);
@@ -459,7 +404,7 @@ struct force_n_moments forces_moments(struct states states_in, struct actuators 
     // Aerodynamic forces
     //====================================================
 
-    float CDalpha = vtol.CDp  + (powf(vtol.CL0 + vtol.CLalpha*abs(fm_out.alpha),2))/(pi*vtol.e*vtol.AR);
+    float CDalpha = vtol.CDp  + (powf(vtol.CL0 + vtol.CLalpha*abs(fm_out.alpha),2))/(PI*vtol.e*vtol.AR);
    	float sigma_alpha = (1 + exp(-vtol.M*(fm_out.alpha-vtol.alpha0)) + exp(vtol.M*(fm_out.alpha+vtol.alpha0)))/((1+exp(-vtol.M*(fm_out.alpha-vtol.alpha0)))*(1+exp(vtol.M*(fm_out.alpha+vtol.alpha0))));
    	float CLalpha = (1-sigma_alpha)*(vtol.CL0 + vtol.CLalpha*fm_out.alpha) + sigma_alpha*(2*sign(fm_out.alpha)*powf(sinf(fm_out.alpha),2)*cosf(fm_out.alpha));
     
@@ -483,13 +428,13 @@ struct force_n_moments forces_moments(struct states states_in, struct actuators 
     float Vin = vtol.Vmax * delta.delta_t;
 
     //parameters of quadratic equation solution
-    float a_omega = vtol.rho*powf(vtol.D_prop,5)*vtol.CQ0/powf(2*pi,2);
-    float b_omega = vtol.rho*powf(vtol.D_prop,4)*vtol.CQ1*fm_out.Va/(2*pi) + powf(vtol.KQ,2)/vtol.Rmotor;
+    float a_omega = vtol.rho*powf(vtol.D_prop,5)*vtol.CQ0/powf(2*PI,2);
+    float b_omega = vtol.rho*powf(vtol.D_prop,4)*vtol.CQ1*fm_out.Va/(2*PI) + powf(vtol.KQ,2)/vtol.Rmotor;
     float c_omega = vtol.rho*powf(vtol.D_prop,3)*vtol.CQ2*powf(fm_out.Va,2) - vtol.KQ * Vin/vtol.Rmotor + vtol.KQ * vtol.i0;
     
     float Omega_p = (-b_omega + sqrt(powf(b_omega,2)-4*a_omega*c_omega))/(2*a_omega);
-    float Tp = vtol.rho*powf(vtol.D_prop,4)*vtol.CT0*powf(Omega_p,2)/(4*pi*pi)+ vtol.rho*powf(vtol.D_prop,3)*vtol.CT1*fm_out.Va*Omega_p/(2*pi) + vtol.rho*powf(vtol.D_prop,2)*vtol.CT2*powf(fm_out.Va,2);
-    float Qp = vtol.rho*powf(vtol.D_prop,5)*vtol.CQ0*powf(Omega_p,2)/(4*pi*pi)+ vtol.rho*powf(vtol.D_prop,4)*vtol.CQ1*fm_out.Va*Omega_p/(2*pi) + vtol.rho*powf(vtol.D_prop,3)*vtol.CQ2*powf(fm_out.Va,2);
+    float Tp = vtol.rho*powf(vtol.D_prop,4)*vtol.CT0*powf(Omega_p,2)/(4*PI*PI)+ vtol.rho*powf(vtol.D_prop,3)*vtol.CT1*fm_out.Va*Omega_p/(2*PI) + vtol.rho*powf(vtol.D_prop,2)*vtol.CT2*powf(fm_out.Va,2);
+    float Qp = vtol.rho*powf(vtol.D_prop,5)*vtol.CQ0*powf(Omega_p,2)/(4*PI*PI)+ vtol.rho*powf(vtol.D_prop,4)*vtol.CQ1*fm_out.Va*Omega_p/(2*PI) + vtol.rho*powf(vtol.D_prop,3)*vtol.CQ2*powf(fm_out.Va,2);
 
     float fp_x = Tp; 
     float fp_y = 0.0;
