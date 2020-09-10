@@ -1,12 +1,7 @@
 #ifndef FUNCTIONS_VTOL_H
 #define FUNCTIONS_VTOL_H
 
-#include<stdlib.h>
-
-#ifndef MYLIB_CONSTANTS_H
-	#include "vtol_parameters.h"
-#define MYLIB_CONSTANTS_H
-#endif
+#include "parameters_vtol.h"
 
 //_______________________________________________________
 // declaring functions 
