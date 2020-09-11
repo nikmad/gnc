@@ -9,9 +9,9 @@ Created: 31/Jul/2020
 #endif
 
 #include <math.h>
-
-#ifndef MYLIB_CONSTANTS_H
 #include "math_util.h"
+
+#ifndef MYLIB_PARAMS_H
 
 //#define pi acos(-1)
 //#define pi 3.141592653589793238
@@ -19,7 +19,7 @@ Created: 31/Jul/2020
 //_______________________________________________________
 // defining structures 
 
-EXTERN struct vt{
+struct vt{
  float Va0;
  float gamma;
  float R;
@@ -114,7 +114,7 @@ EXTERN struct vt{
  float rho;
 };
 
-EXTERN struct states{
+struct states{
 	float pn;
 	float pe;
 	float pd;
@@ -144,7 +144,7 @@ struct state_rates{
 	float rdot;
 };
 
-EXTERN struct force_n_moments{
+struct force_n_moments{
 	float fx;
 	float fy;
 	float fz;
@@ -163,20 +163,20 @@ EXTERN struct force_n_moments{
 	float w_d;
 };
 
-EXTERN struct actuators{
+struct actuators{
 	float delta_e; 
 	float delta_a; 
 	float delta_r; 
 	float delta_t;
 };
 
-EXTERN struct trim_out{
+struct trim_out{
 	float Va; 
 	float alpha; 
 	float beta; 
 };
 
-EXTERN struct wnd{
+struct wnd{
 	float w_ns; //steady wind - North   
 	float w_es; //steady wind - East   
 	float w_ds; //steady wind - Down   
@@ -185,7 +185,7 @@ EXTERN struct wnd{
 	float w_wg; //gust along body z-axis
 };
 
-EXTERN struct simulation_params{
+struct simulation_params{
 	float ts_simulation;
 	float ts_control;
 	float ts_plotting;
@@ -193,10 +193,11 @@ EXTERN struct simulation_params{
 	float rk4_stepsize;
 };
 
-EXTERN const struct vt vtol;
-EXTERN const struct simulation_params SIM;
+const struct vt vtol;
+const struct simulation_params SIM;
 
-#define MYLIB_CONSTANTS_H
+//---------------------
+#define MYLIB_PARAMS_H
 #endif
 
 
