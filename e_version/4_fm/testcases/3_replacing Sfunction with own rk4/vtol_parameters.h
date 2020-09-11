@@ -5,6 +5,7 @@ Created: 31/Jul/2020
 
 // so that constants are not read from multiple files
 #include <math.h>
+#include "math_util.h"
 
 #ifndef MYLIB_CONSTANTS_H
 

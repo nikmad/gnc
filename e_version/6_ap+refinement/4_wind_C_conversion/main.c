@@ -32,6 +32,14 @@ int main()
 	struct trim_out y_trim = {35, 0.0023, 0};
 	struct actuators u_trim = {0.0072, 0.0012, -0.00019, 0.85};
 
+	// Initial states set to trim values
+	states_in = x_trim;
+	states_in.pn = 0;
+	states_in.pe = 0;
+	states_in.pd = -140;
+
+	float Va_trim = sqrt(x_trim.u*x_trim.u + x_trim.v*x_trim.v  + x_trim.w*x_trim.w);
+
 	FILE *fptr;
 	fptr = fopen("nikstates.txt", "w+");
 
