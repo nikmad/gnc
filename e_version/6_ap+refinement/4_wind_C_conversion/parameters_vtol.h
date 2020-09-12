@@ -193,6 +193,90 @@ struct simulation_params{
 	float rk4_stepsize;
 };
 
+struct trans_funcs{
+	//numerator coefficients
+	float b0;
+	float b1;
+	float b2;
+	float b3;
+	//denominator coefficients
+	float a0;
+	float a1;
+	float a2;
+	float a3;
+};
+
+struct ap_gains{
+    
+    //ROLL LOOP
+    float tau;
+    float delta_a_max;
+    float e_phi_max;
+    float zeta_phi;
+
+    float roll_kp;  
+    float omega_n_phi;  
+    float roll_kd;
+    
+    //SIDESLIP LOOP
+    float delta_r_max;
+    float e_beta_max; 
+    float zeta_sideslip;
+
+    float sideslip_kp;
+    float sideslip_ki;
+    float d_beta;
+
+    //YAW DAMPER
+    float omega_n_dr;
+    float p_wo;
+    float yaw_damper_tau_r;
+    float yaw_damper_kp;
+
+    //COURSE LOOP
+    float zeta_course;
+
+    float omega_n_chi;
+    float course_kp;
+    float course_ki;
+    float d_chi;
+    
+    //PITCH LOOP
+    float delta_e_max;
+    float e_theta_max;
+    float zeta_theta; 
+
+    float pitch_kp;
+    float omega_n_theta;
+    float pitch_kd;
+    float K_theta_DC;
+
+    //ALTITUDE FROM PITCH LOOP
+    float W_h;
+    float zeta_h;
+
+    float omega_n_h;
+    float altitude_ki;
+    float altitude_kp;
+    float d_h;
+
+    //AIRSPEED FROM PITCH LOOP
+    float W_V2;
+    float zeta_V2;
+
+    float omega_n_V2;
+    float kp_V2;
+    float ki_V2;
+
+    //AIRSPEED FROM THROTTLE LOOP
+    float zeta_V;
+    float omega_n_V;
+
+    float ki_V;
+    float kp_V;
+
+};
+
 const struct vt vtol;
 const struct simulation_params SIM;
 

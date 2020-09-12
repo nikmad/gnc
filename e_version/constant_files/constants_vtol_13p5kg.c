@@ -8,14 +8,14 @@
 
 const struct vt vtol = 
 {
-	35.0,	//float Va0;
+	10.0,	//float Va0;
 	15*PI/180,	//float gamma;
 	INFINITY, 	//float R;
 	0.01,	//float Ts;
 	//
 	////physical parameters
 	9.81,	//float g;
-	11,	//float m = mass;
+	13.5,	//float m = mass;
 	//
 	0.8244,	//float Jx;
 	1.135,	//float Jy;
@@ -41,44 +41,44 @@ const struct vt vtol =
 	0.5742,	//float gamma8;
 	//
 	////aerodynamic coefficients
-	0.23,	//float CL0;
-	0.043,	//float CD0;
-	0.0135,	//float Cm0;
+	0.28,	//float CL0;
+	0.03,	//float CD0;
+	-0.02338,	//float Cm0;
 	//
-	5.61,	//float CLalpha;
-	0.03,	//float CDalpha;
-	-2.74,	//float Cmalpha;
+	3.45,	//float CLalpha;
+	0.3,	//float CDalpha;
+	-0.38,	//float Cmalpha;
 	//
-	7.95,	//float CLq;
+	0,	//float CLq;
 	0.0,	//float CDq;
-	-38.21,	//float Cmq;
+	-3.6,	//float Cmq;
 	//
-	0.0,	//float CDp;
+	0.0437,	//float CDp;
 	//
-	0.13,	//float CLdelta_e;
-	0.0135,	//float CDdelta_e;
+	-0.36,	//float CLdelta_e;
+	0.0,	//float CDdelta_e;
 	//
 	0.0,	//float CY0;
 	0.0,	//float Cl0;
 	0.0,	//float Cn0;
-	-0.83,	//float CYbeta;
-	-0.13,	//float Clbeta;
-	0.073,	//float Cnbeta;
+	-0.98,	//float CYbeta;
+	-0.12,	//float Clbeta;
+	0.25,	//float Cnbeta;
 	0.0,	//float CYp;	
-	-0.51,	//float Clp;
-	-0.069,	//float Cnp;
+	-0.26,	//float Clp;
+	0.022,	//float Cnp;
 	0.0,	//float CYr;
-	0.25,	//float Clr;
-	-0.095,	//float Cnr;
-	0.075,	//float CYdelta_a;
+	0.14,	//float Clr;
+	-0.35,	//float Cnr;
+	0.0,	//float CYdelta_a;
 	//
-	0.06,	//float Cldelta_a;
-	-0.069,	//float Cndelta_r;
-	-0.99,	//float Cmdelta_e;
+	0.08,	//float Cldelta_a;
+	-0.032,	//float Cndelta_r;
+	-0.5,	//float Cmdelta_e;
 	//
-	-0.011,	//float Cndelta_a;
-	0.19, 	//float CYdelta_r;
-	0.0024,	//float Cldelta_r;
+	0.06,	//float Cndelta_a;
+	-0.17, 	//float CYdelta_r;
+	0.105,	//float Cldelta_r;
 	//
 	50, 	//float M;
 	0.4712,	//float alpha0;

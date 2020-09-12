@@ -23,5 +23,6 @@ struct force_n_moments forces_moments(struct states, struct actuators, struct wn
 struct states vtol_dynamics(struct states, struct force_n_moments);
 struct states rk4(struct states, struct force_n_moments);
 struct state_rates sixDOF(float *, float *);
+struct trans_funcs* transfer_functions(struct states, struct trim_out, struct actuators);
 
 #endif
