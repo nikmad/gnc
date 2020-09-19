@@ -34,7 +34,6 @@ float sec(float z_r)
 {
   return 1 / cosf(z_r);
 }
-
 void array_initd(float* arr,int num)
 {	
 #ifdef DEBUG

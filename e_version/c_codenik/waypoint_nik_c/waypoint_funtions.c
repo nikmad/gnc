@@ -17,6 +17,13 @@ struct atp
 
 int main()
 {
+	float out[4];
+	float in[] = {1, 35, 10, 10, 10, 20, 10, 0, 100, 0, 0, 10, 1, 5, 5, 5, 30, 0.5, 0.1, 0.2, 0.2, 0.2, 0.1, 1, 1, 0.4, 20, 3, 2, 0.4};
+	atp1.size_waypoint_array = 100;
+	atp1.R_min = 35*35/9.81;
+	atp1.Va0 = 35;
+	path_follow(in, atp1, out);
+	printf("%f\n %f\n %f\n %f\n", out[0], out[1], out[2], out[3]);
 	return 0;
 }
 
@@ -44,13 +51,14 @@ void path_manager_fillet(float in[],struct atp atp1,int start_of_simulation,floa
 	float z[3][1];
 	float n_i[3][1];
 	int match=0;
-	float angle=0.0;	
+	float angle=0.0;
+	
 	
 	NN = NN + 1 + 5*atp1.size_waypoint_array;
 	float pn   = in[0+NN];
 	float pe   = in[1+NN];
 	float h    = in[2+NN];
-	float temp=-1.0;
+	float temp=-1.0 ;
 	
 	for(i=0;i<17;i++)
 	{
@@ -481,12 +489,14 @@ void path_planner(float in[], struct atp atp1,float out[])
 
 void path_follow(float in[], struct atp atp1,float out[])
 {
-	float chi_inf = 30.0*PI/180.0;  //approach angle for large distance from straight-line path
-    float k_path  = 0.1;        //proportional gain for path following
-    float k_orbit = 0.7;       //proportional gain for orbit following
+	float chi_inf = 60.0*PI/180.0;  //approach angle for large distance from straight-line path
+    float k_path  = 0.01;        //proportional gain for path following
+    float k_orbit = 2.5;       //proportional gain for orbit following
     float gravity = 9.81;
+
 	int NN=0;
 	int i=0,j=0;
+
 	//PATH input to path_follow
 	int flag  = (int)in[0+NN];
     float Va_d = in[1+NN];
@@ -495,6 +505,7 @@ void path_follow(float in[], struct atp atp1,float out[])
     float c_orbit[3][1]= {{in[8+NN]},{in[9+NN]},{in[10+NN]}};
     float rho_orbit = in[11+NN];
     float lam_orbit = in[12+NN];
+	
 	float s_i[3]={0.0,0.0,0.0};
 	
 	float n_lon_transposed[1][3]={0.0,0.0,0.0};

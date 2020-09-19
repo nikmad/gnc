@@ -1,4 +1,4 @@
-% initialize the VTOL viewer
+    % initialize the VTOL viewer
 
 % compute trim conditions using 'vtolsim_trim.slx'
 % nominal airspeed vtol.Va0 specified above with aircraft parameters
