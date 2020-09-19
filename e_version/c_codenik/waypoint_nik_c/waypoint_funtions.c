@@ -18,11 +18,12 @@ struct atp
 int main()
 {
 	float out[4];
-	float in[] = {1, 35, 10, 10, 10, 20, 10, 0, 100, 0, 0, 10, 1, 5, 5, 5, 30, 0.5, 0.1, 0.2, 0.2, 0.2, 0.1, 1, 1, 0.4, 20, 3, 2, 0.4};
+	float in[] = {2, 35, 10, 10, 10, 20, 10, 0, 100, 0, 0, 10, 1, 5, 5, 5, 30, 0.5, 0.1, 0.2, 0.2, 0.2, 0.1, 1, 1, 0.4, 20, 3, 2, 0.4};
 	atp1.size_waypoint_array = 100;
 	atp1.R_min = 35*35/9.81;
 	atp1.Va0 = 35;
 	path_follow(in, atp1, out);
+	//printf("%d\n %f\n %f\n", atp1.size_waypoint_array, atp1.R_min, atp1.Va0);
 	printf("%f\n %f\n %f\n %f\n", out[0], out[1], out[2], out[3]);
 	return 0;
 }
@@ -632,7 +633,7 @@ void path_follow(float in[], struct atp atp1,float out[])
            
 		//   chi_c = chi_q-chi_inf*2*atan(k_path*epy)/pi; 
 						
-			ch_c=chi_q-chi_inf*2*atanf(k_path*epy[0][0])/PI ;
+			chi_c=chi_q-chi_inf*2*atanf(k_path*epy[0][0])/PI ;
 		
 			float phi_ff =-0*PI/180;
 			break;
@@ -658,7 +659,7 @@ void path_follow(float in[], struct atp atp1,float out[])
          }
           
          // heading command
-          chi_c = phi_ff+lam_orbit*((PI/2)+(atan((k_orbit*(d_s-rho_orbit)/rho_orbit))));
+          chi_c = phi_ff+lam_orbit*((PI/2)+(atanf((k_orbit*(d_s-rho_orbit)/rho_orbit))));
 		//          orbit_error = 
 			break;
 		
