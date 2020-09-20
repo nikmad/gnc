@@ -17,17 +17,27 @@ struct atp
 
 int main()
 {
+	/*
+	// path_follow() testing
 	float out[4];
-	float in[] = {2, 35, 10, 10, 10, 20, 10, 0, 100, 0, 0, 10, 1, 5, 5, 5, 30, 0.5, 0.1, 0.2, 0.2, 0.2, 0.1, 1, 1, 0.4, 20, 3, 2, 0.4};
+	float in[] = {1, 35, 10, 10, 10, 20, 10, 0, 100, 0, 0, 10, 1, 5, 5, 5, 30, 0.5, 0.1, 0.2, 0.2, 0.2, 0.1, 1, 0.4, 20, 3, 2, 0.4, 3};
 	atp1.size_waypoint_array = 100;
 	atp1.R_min = 35*35/9.81;
 	atp1.Va0 = 35;
 	path_follow(in, atp1, out);
-	//printf("%d\n %f\n %f\n", atp1.size_waypoint_array, atp1.R_min, atp1.Va0);
+	*/
+	
+	//path_manager() testing
+	float out[30];
+	
+	atp1.size_waypoint_array = 100;
+	atp1.R_min = 35*35/9.81;
+	atp1.Va0 = 35;
+
+	path_manager();
 	printf("%f\n %f\n %f\n %f\n", out[0], out[1], out[2], out[3]);
 	return 0;
 }
-
 
 void path_manager_fillet(float in[],struct atp atp1,int start_of_simulation,float waypoints[5][WAYPOINT_SIZE],float out[])
 {
@@ -65,6 +75,7 @@ void path_manager_fillet(float in[],struct atp atp1,int start_of_simulation,floa
 	{
 		state[i]=in[i+NN];		
 	}
+
 	NN=NN+16;
 	t=in[NN];
 	
@@ -258,141 +269,8 @@ void path_manager_fillet(float in[],struct atp atp1,int start_of_simulation,floa
 		out[i+13]=state[i];		
 	}
 	
-	out[28]=(float)flag_need_new_waypoints;
-				  
-			  
+	out[28]=(float)flag_need_new_waypoints;			  
 }
-
-
-
-void path_manager(float in[],struct atp atp1,float out[])
-{
-	static int start_of_simulation;
-	float  state[16];
-	
-	int i=0,j=0;
-	float waypoints[5][atp1.size_waypoint_array];
-	int flag=0;
-	float  Va_d =0.0;
-	int  flag_need_new_waypoints=0.0;
-	
-	float pn=0.0;
-	float pe=0.0;
-	float h =0.0;
-	float  chi=0.0;
-	float  r[3][1]   = {{0.0},{0.0},{0.0}};
-	float  q[3][1]   = {{0.0},{0.0},{0.0}};
-	float  c[3][1]   = {{0.0},{0.0},{0.0}};
-	float  rho       = 0.0;
-	float  lambda    = 0.0;
-	int size_of_in=sizeof(in)/sizeof(float);
-	for(i=0;i<15;i++)
-	{
-		state[i]=0.0;
-	}
-	
-	for(i=0;i<5;i++)// Initializaton of waypoint array
-	{
-		for(j=0;j<atp1.size_waypoint_array;j++)
-		{
-			waypoints[i][j]=0.0;
-		}
-	}
-	
-	if(in[size_of_in-1]==0.0)//t
-	{
-		start_of_simulation=1;
-	}
-	
-	
-	int NN=0;
-	int  num_waypoints = (int)in[0+NN];
-	
-	if(num_waypoints==0)
-	{
-			flag   = 1; // % following straight line path
-			Va_d   = atp1.Va0;// % desired airspeed along waypoint path
-			NN     = NN + 1 + 5*atp1.size_waypoint_array;
-		//       NN = 1+NN;
-						
-			pn        = in[0+NN];
-			pe        = in[1+NN];
-			h         = in[2+NN];
-			chi       = in[8+NN];
-			r[0][0]   = pn;
-			r[1][0]   = pe;
-			r[2][0]   = -h;	  
-			  
-			q[0][0]   = cosf(chi);
-			q[1][0]   = sinf(chi);
-			q[2][0]   = 0;
-			 
-			 c[0][0]   = 0.0;
-			 c[1][0]   = 0.0;
-			 c[2][0]   = 0.0;
-			  
-			 rho       = 0.0;
-			 lambda    = 0.0;
-			
-			for(i=0;i<17;i++)
-			{
-				state[i]=in[i+NN];
-			}		
-		
-		//	state     =  in(1+NN:16+NN);
-			flag_need_new_waypoints = 1;
-			out[0]=	flag;
-			out[1]=Va_d;
-			out[2]=r[0][0];
-			out[3]=r[1][0];
-			out[4]=r[2][0];
-			
-			out[5]=q[0][0];
-			out[6]=q[1][0];
-			out[7]=q[2][0];
-			
-			out[8]=c[0][0];
-			out[9]=c[1][0];
-			out[10]=c[2][0];
-			
-			out[11]=rho;
-			out[12]=lambda;
-			
-			for(i=0;i<17;i++)
-			{
-				out[i+13]=state[i];
-			}
-			out[28]=(float)flag_need_new_waypoints;//doubt
-		
-	}
-	else
-	{
-		
-		//waypoints matrix being used in two function.
-		for(i=0;i<5;i++)
-		{
-			for(j=0;j<(5*atp1.size_waypoint_array)+1;j++)
-			{
-				waypoints[i][j]=in[1+(i*j)];
-			}
-		}
-	
-		
-		if(fabsf(waypoints[4][0]>=2*PI))
-		{
-			path_manager_fillet(in,atp1, start_of_simulation, waypoints,out);
-			start_of_simulation=0;
-		}
-		else
-		{
-			// % follows Dubins paths between waypoint configurations
-        //out = path_manager_dubins(in,atp,start_of_simulation); 
-        start_of_simulation=0;
-			
-		}
-	}
-}
-
 
 void path_planner(float in[], struct atp atp1,float out[])
 {
@@ -488,6 +366,136 @@ void path_planner(float in[], struct atp atp1,float out[])
 	}
 }
 
+void path_manager(float in[],struct atp atp1,float out[])
+{
+	static int start_of_simulation;
+	float  state[16];
+	
+	int i=0,j=0;
+	float waypoints[5][atp1.size_waypoint_array];
+	int flag=0;
+	float  Va_d =0.0;
+	int  flag_need_new_waypoints=0.0;
+	
+	float pn=0.0;
+	float pe=0.0;
+	float h =0.0;
+	float  chi=0.0;
+	float  r[3][1]   = {{0.0},{0.0},{0.0}};
+	float  q[3][1]   = {{0.0},{0.0},{0.0}};
+	float  c[3][1]   = {{0.0},{0.0},{0.0}};
+	float  rho       = 0.0;
+	float  lambda    = 0.0;
+	
+	int size_of_in=sizeof(in)/sizeof(float);
+	
+	for(i=0;i<15;i++)
+	{
+		state[i]=0.0;
+	}
+	
+	for(i=0;i<5;i++)// Initializaton of waypoint array
+	{
+		for(j=0;j<atp1.size_waypoint_array;j++)
+		{
+			waypoints[i][j]=0.0;
+		}
+	}
+	
+	if(in[size_of_in-1]==0.0)//t
+	{
+		start_of_simulation=1;
+	}
+	
+	
+	int NN=0;
+	int  num_waypoints = (int)in[0+NN];
+	
+	if(num_waypoints==0)
+	{
+			flag   = 1; // % following straight line path
+			Va_d   = atp1.Va0;// % desired airspeed along waypoint path
+			NN     = NN + 1 + 5*atp1.size_waypoint_array;
+		//       NN = 1+NN;
+						
+			pn        = in[0+NN];
+			pe        = in[1+NN];
+			h         = in[2+NN];
+			
+			chi       = in[8+NN];
+			
+			r[0][0]   = pn;
+			r[1][0]   = pe;
+			r[2][0]   = -h;	  
+			  
+			q[0][0]   = cosf(chi);
+			q[1][0]   = sinf(chi);
+			q[2][0]   = 0;
+			 
+			c[0][0]   = 0.0;
+			c[1][0]   = 0.0;
+			c[2][0]   = 0.0;
+			  
+			rho       = 0.0;
+			lambda    = 0.0;
+			
+			for(i=0;i<17;i++)
+			{
+				state[i]=in[i+NN];
+			}		
+		
+		//	state     =  in(1+NN:16+NN);
+			flag_need_new_waypoints = 1;
+			out[0]=	flag;
+			out[1]=Va_d;
+			out[2]=r[0][0];
+			out[3]=r[1][0];
+			out[4]=r[2][0];
+			
+			out[5]=q[0][0];
+			out[6]=q[1][0];
+			out[7]=q[2][0];
+			
+			out[8]=c[0][0];
+			out[9]=c[1][0];
+			out[10]=c[2][0];
+			
+			out[11]=rho;
+			out[12]=lambda;
+			
+			for(i=0;i<17;i++)
+			{
+				out[i+13]=state[i];
+			}
+			out[28]=(float)flag_need_new_waypoints;//doubt
+	}
+	else
+	{
+		//waypoints matrix being used in two function.
+		for(i=0;i<5;i++)
+		{
+			for(j=0;j<(5*atp1.size_waypoint_array)+1;j++)
+			{
+				waypoints[i][j]=in[1+(i*j)];
+			}
+		}
+		
+		//if(fabsf(waypoints[4][0]>=2*PI))	
+		if(fabsf(waypoints[3][0]>=2*PI))
+		{
+			path_manager_fillet(in,atp1, start_of_simulation, waypoints,out);
+			start_of_simulation=0;
+		}
+		else
+		{
+			// % follows Dubins paths between waypoint configurations
+        //out = path_manager_dubins(in,atp,start_of_simulation); 
+        start_of_simulation=0;
+			
+		}
+	}
+}
+
 void path_follow(float in[], struct atp atp1, float out[])
 {
 	float chi_inf = 60.0*PI/180.0;  //approach angle for large distance from straight-line path
@@ -534,7 +542,10 @@ void path_follow(float in[], struct atp atp1, float out[])
     float we      = in[14+NN];
     float psi     = in[15+NN];
 	
-	float t = in[0+NN];
+	float t = in[16+NN];
+
+	printf("time check: %f\n", t);
+
 	float chi_q=0.0;
 	float chi_c=0.0;
 	float prod[1][3]={0.0,0.0,0.0};
@@ -669,20 +680,19 @@ void path_follow(float in[], struct atp atp1, float out[])
 	out[3]=phi_ff;
 }
 
-
 void cross_product(float Vec1[],float Vec2[], float Vec_prod[][3])
 {
 	Vec_prod[0][0]=Vec1[1]*Vec2[2]-Vec2[1]*Vec1[2] ;
 	Vec_prod[0][1]=-(Vec1[0]*Vec2[2]-Vec2[0]*Vec1[2]);
 	Vec_prod[0][2]=Vec1[0]*Vec2[1]-Vec2[0]*Vec1[1];
 }
+
 float dot_product(float Vec1[],float Vec2[])
 {
 	int i=0;
 	float dot_prod_op=0.0;
 	dot_prod_op=Vec1[i]*Vec2[i]+Vec1[i+1]*Vec2[i+1]+Vec1[i+2]*Vec2[i+2];
 	return dot_prod_op;
-	
 }
 	
 int is_empty_matrix(float abb[5][WAYPOINT_SIZE])

@@ -28,10 +28,6 @@ function out = path_manager(in)
 
   persistent start_of_simulation
   
-  P.Va0 = 35;
-  P.size_waypoint_array = 100;
-  P.R_min = 35*35/9.81;
-  
   t = in(end);
   if t==0,
       start_of_simulation = 1;
@@ -41,8 +37,7 @@ function out = path_manager(in)
   num_waypoints = in(1+NN);
   if num_waypoints==0, % start of simulation
       flag   = 1;  % following straight line path
-      Va_d   = P.Va0; % desired airspeed along waypoint path
-%       Va_d = 35;
+%       Va_d   = P.Va0; % desired airspeed along waypoint path
       NN = NN + 1 + 5*P.size_waypoint_array;
       pn        = in(1+NN);
       pe        = in(2+NN);
