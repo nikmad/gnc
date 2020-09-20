@@ -488,7 +488,7 @@ void path_planner(float in[], struct atp atp1,float out[])
 	}
 }
 
-void path_follow(float in[], struct atp atp1,float out[])
+void path_follow(float in[], struct atp atp1, float out[])
 {
 	float chi_inf = 60.0*PI/180.0;  //approach angle for large distance from straight-line path
     float k_path  = 0.01;        //proportional gain for path following
@@ -549,15 +549,12 @@ void path_follow(float in[], struct atp atp1,float out[])
 	float d_s=0.0;
 	float phi_ff=0.0;
 	float epy[1][1];
-	float ch_c=0.0;
+	//float ch_c=0.0;
 	float temp1x3_2[1][3];
 	float temp3x1_1[3][1];
-	
-	
+		
 	NN = NN + 16;
-    
-   
-  
+      
     switch (flag)
 	{
         case 1: //follow straight line path specified by r and q
@@ -612,65 +609,55 @@ void path_follow(float in[], struct atp atp1,float out[])
 
             h_c = -r_path[2][0]-sqrtf(powf(s_n,2)+powf(s_e,2))*(q_path[2][0]/sqrtf(powf(q_path[0][0],2)+powf(q_path[1][0],2)));
 			// h_c = -r_path(3)-sqrt(s_n^2+s_e^2)*(q_path(3)/sqrt(q_path(1)^2+q_path(2)^2));
-            
-			
-			
+           			
 			n_lon_transposed[0][0]=n_lon[0][0];
 			n_lon_transposed[0][1]=n_lon[1][0];
 			n_lon_transposed[0][2]=n_lon[2][0];
-			
-			
-			
-			
+					
 			temp3x1_1[0][0]=pn-r_path[0][0];
 			temp3x1_1[1][0]=pe-r_path[1][0];
 			temp3x1_1[2][0]=-h-r_path[2][0];
-			
-			
-			
+						
 			MatrixMultiply(n_lon_transposed,1,3,temp3x1_1,3,1,epy);
 		//	epy=n_lon'*([pn;pe;-h]-r_path);
-           
-		//   chi_c = chi_q-chi_inf*2*atan(k_path*epy)/pi; 
-						
+        //   chi_c = chi_q-chi_inf*2*atan(k_path*epy)/pi; 
+					
 			chi_c=chi_q-chi_inf*2*atanf(k_path*epy[0][0])/PI ;
 		
-			float phi_ff =-0*PI/180;
-			break;
+			phi_ff =-0*PI/180;
+			//printf("test case 1 \n");
+		break;
            
-        case 2 :// follow orbit specified by c, rho, lam
+        case 2: // follow orbit specified by c, rho, lam
         
-          // commanded altitude is the height of the orbit  
-          h_c = -c_orbit[2][0];
-          // distance from orbit center
-          d_s = sqrtf(powf((pn-c_orbit[0][0]),2)+powf((pe-c_orbit[1][0]),2)); 
-     
-         // the roll angle feedforward command
-          phi_ff = atan2f((pe-c_orbit[1][0]),(pn-c_orbit[0][0]));
-         
-
-		 while((phi_ff-chi)<-PI)
-		 {
-              phi_ff=phi_ff+2*PI;
-         }
-          while((phi_ff-chi)>PI)
-		 {
-              phi_ff=phi_ff-2*PI;
-         }
-          
-         // heading command
-          chi_c = phi_ff+lam_orbit*((PI/2)+(atanf((k_orbit*(d_s-rho_orbit)/rho_orbit))));
-		//          orbit_error = 
-			break;
+	        // commanded altitude is the height of the orbit  
+	        h_c = -c_orbit[2][0];	
+	        // distance from orbit center
+	        d_s = sqrtf(powf((pn-c_orbit[0][0]),2)+powf((pe-c_orbit[1][0]),2)); 
+	     
+	        // the roll angle feedforward command
+	        phi_ff = atan2f((pe-c_orbit[1][0]),(pn-c_orbit[0][0]));
+	        //printf("test 1: %f\n", chi);
+			 
+			if((phi_ff-chi)<-PI)
+			{
+	            phi_ff=phi_ff+2*PI;
+	        }
+	        else if((phi_ff-chi)>PI)
+			{
+	            phi_ff=phi_ff-2*PI;
+	        }
+	         
+	        //printf("test 2: %f\n", phi_ff);
+	         // heading command
+	        chi_c = phi_ff+lam_orbit*((PI/2)+(atanf((k_orbit*(d_s-rho_orbit)/rho_orbit))));
+			//printf("test 3: %f\n", phi_ff);
+		break;
 		
 		default:
-		
-			break;
-		
-		
-		
+		printf("Default case\n");
 	}
-  
+  	//printf("test 4: %f\n", phi_ff);
     // command airspeed equal to desired airspeed
     Va_c = Va_d;
   
@@ -678,6 +665,7 @@ void path_follow(float in[], struct atp atp1,float out[])
     out[0]=Va_c;
 	out[1]=h_c;
 	out[2]=chi_c;
+	//printf("test 4: %f\n", phi_ff);
 	out[3]=phi_ff;
 }
 
