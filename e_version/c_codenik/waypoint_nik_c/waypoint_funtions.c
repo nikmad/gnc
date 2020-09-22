@@ -17,24 +17,25 @@ struct atp
 
 int main()
 {
-	/*
-	// path_follow() testing
-	float out[4];
-	float in[] = {1, 35, 10, 10, 10, 20, 10, 0, 100, 0, 0, 10, 1, 5, 5, 5, 30, 0.5, 0.1, 0.2, 0.2, 0.2, 0.1, 1, 0.4, 20, 3, 2, 0.4, 3};
 	atp1.size_waypoint_array = 100;
 	atp1.R_min = 35*35/9.81;
 	atp1.Va0 = 35;
+	/*
+	// path_follow() testing
+	float out[4];
+	float in[] = {2, 35, 10, 10, 10, 20, 10, 0, 100, 0, 0, 10, 1, 5, 5, 5, 30, 0.5, 0.1, 0.2, 0.2, 0.2, 0.1, 1, 0.4, 20, 3, 2, 0.4, 3};
 	path_follow(in, atp1, out);
+	printf("%f\n %f\n %f\n %f\n", out[0], out[1], out[2], out[3]);
 	*/
 	
 	//path_manager() testing
 	float out[30];
-	
-	atp1.size_waypoint_array = 100;
-	atp1.R_min = 35*35/9.81;
-	atp1.Va0 = 35;
-
-	path_manager();
+	printf("Testiugskfg1\n");
+	printf("%d\n %f\n %f\n", atp1.size_waypoint_array, atp1.R_min, atp1.Va0);
+	float in[] = {4,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 5, 5, 5, 30, 0.5, 0.1, 0.2, 0.2, 0.2, 0.1, 1, 0.4, 20, 3, 2, 0.4, 0};
+	printf("%d\n %f\n %f\n", atp1.size_waypoint_array, atp1.R_min, atp1.Va0);
+	path_manager(in, atp1, out);
+	printf("Testiugskfg2\n");
 	printf("%f\n %f\n %f\n %f\n", out[0], out[1], out[2], out[3]);
 	return 0;
 }
@@ -102,8 +103,8 @@ void path_manager_fillet(float in[],struct atp atp1,int start_of_simulation,floa
       ptr_b = 2;
       waypoints_old = waypoints;
       state_transition = 1;
-      flag_need_new_waypoints = 0;
-	end
+      flag_need_new_waypoints = 0;end
+	
 	*/
 	for(i=0;i<5;i++)
 	{
@@ -269,7 +270,7 @@ void path_manager_fillet(float in[],struct atp atp1,int start_of_simulation,floa
 		out[i+13]=state[i];		
 	}
 	
-	out[28]=(float)flag_need_new_waypoints;			  
+	out[29]=(float)flag_need_new_waypoints;			  
 }
 
 void path_planner(float in[], struct atp atp1,float out[])
@@ -352,7 +353,6 @@ void path_planner(float in[], struct atp atp1,float out[])
 		{
 			wpp[i][j]=-9999.0;
 		}
-		
 	}
 	k=1;
 	out[0]=num_waypoints;
@@ -406,13 +406,13 @@ void path_manager(float in[],struct atp atp1,float out[])
 	{
 		start_of_simulation=1;
 	}
-	
-	
+		
 	int NN=0;
 	int  num_waypoints = (int)in[0+NN];
-	
+		printf("Testiugskfg3m1\n");
 	if(num_waypoints==0)
 	{
+				printf("Testiugskfg3.0\n");
 			flag   = 1; // % following straight line path
 			Va_d   = atp1.Va0;// % desired airspeed along waypoint path
 			NN     = NN + 1 + 5*atp1.size_waypoint_array;
@@ -467,22 +467,31 @@ void path_manager(float in[],struct atp atp1,float out[])
 			{
 				out[i+13]=state[i];
 			}
-			out[28]=(float)flag_need_new_waypoints;//doubt
+			//out[28]=(float)flag_need_new_waypoints;//doubt
+			out[29]=(float)flag_need_new_waypoints;//doubt
 	}
 	else
 	{
+			//printf("Testiugskfg3.1\n");
+			//printf("atp1.size_waypoint_array = %d\n",atp1.size_waypoint_array);
 		//waypoints matrix being used in two function.
-		for(i=0;i<5;i++)
+		for(j=0;j<atp1.size_waypoint_array;j++)
 		{
-			for(j=0;j<(5*atp1.size_waypoint_array)+1;j++)
+			//printf("Testiugskfg3.2\n");
+			for(i=0;i<5;i++)
 			{
-				waypoints[i][j]=in[1+(i*j)];
+				waypoints[i][j]=in[1+j*5+i];
 			}
+			//printf("Testiugskfg3.2\n");
 		}
+						//printf("Testiugskfg3.2\n");
 		
 		//if(fabsf(waypoints[4][0]>=2*PI))	
-		if(fabsf(waypoints[3][0]>=2*PI))
+		//if(fabsf(waypoints[3][0]>=2*PI))
+		if(1)
+				//printf("Testiugskfg3.2\n");
 		{
+			//printf("Testiugskfg3\n");
 			path_manager_fillet(in,atp1, start_of_simulation, waypoints,out);
 			start_of_simulation=0;
 		}

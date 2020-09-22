@@ -1,4 +1,9 @@
 function out = path_follow(in)
+    
+% For testing:
+% >> pin = [2; 35; 10; 10; 10; 20; 10; 0; 100; 0; 0; 10; 1; 5; 5; 5; 30; 0.5; 0.1; 0.2; 0.2; 0.2; 0.1; 1; 1; 0.4; 20; 3; 2; 0.4]
+% >> path_follow(pin)
+    
     % path following gains
     chi_inf = 60*pi/180;  % approach angle for large distance from straight-line path
     k_path    = .01;  %0.1      % proportional gain for path following
