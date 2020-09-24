@@ -36,7 +36,7 @@ int main()
 	printf("%d\n %f\n %f\n", atp1.size_waypoint_array, atp1.R_min, atp1.Va0);
 	path_manager(in, atp1, out);
 	printf("Testiugskfg2\n");
-	printf("%f\n %f\n %f\n %f\n", out[0], out[1], out[2], out[3]);
+	printf("%f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n", out[0], out[1], out[2], out[3], out[4], out[5], out[6], out[7], out[8], out[9], out[10], out[11], out[12], out[13], out[14], out[15], out[16], out[17], out[18], out[19], out[20], out[21], out[22], out[23], out[24], out[25], out[26], out[27], out[28], out[29]);
 	return 0;
 }
 
