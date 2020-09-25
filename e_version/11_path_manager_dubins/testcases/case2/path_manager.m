@@ -23,7 +23,7 @@
 %   rho  - radius of orbit
 %   lambda = direction of orbit (+1 for CW, -1 for CCW)
 %
-%function out = path_manager(in,P)
+% function out = path_manager(in,P)
 function out = path_manager(in)
 
   persistent start_of_simulation
@@ -58,13 +58,12 @@ function out = path_manager(in)
       out = [flag; Va_d; r; q; c; rho; lambda; state; flag_need_new_waypoints];
   else
     waypoints = reshape(in(2+NN:5*P.size_waypoint_array+1+NN),5,P.size_waypoint_array);
-  
-%     if abs(waypoints(4,1))>=2*pi,
+
     if 1
         flag =1;
         Va_d = P.Va0;
         NN = NN +1 + 5*P.size_waypoint_array;
-         pn        = in(1+NN);
+        pn      = in(1+NN);
       pe        = in(2+NN);
       h         = in(3+NN);
       chi       = in(9+NN);
