@@ -20,6 +20,7 @@ int main()
 	atp1.size_waypoint_array = 100;
 	atp1.R_min = 35*35/9.81;
 	atp1.Va0 = 35;
+	
 	/*
 	// path_follow() testing
 	float out[4];
@@ -28,6 +29,7 @@ int main()
 	printf("%f\n %f\n %f\n %f\n", out[0], out[1], out[2], out[3]);
 	*/
 	
+	/* 
 	//path_manager() testing
 	float out[30];
 	printf("Testiugskfg1\n");
@@ -38,10 +40,48 @@ int main()
 		0,    1200, -100,  45*PI/180,   35,
 		1200, 1200, -100, -135*PI/180,  35,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 5, 5, 5, 30, 0.5, 0.1, 0.2, 0.2, 0.2, 0.1, 1, 0.4, 20, 3, 2, 0.4, 0};
-	printf("%d\n %f\n %f\n", atp1.size_waypoint_array, atp1.R_min, atp1.Va0);
-	path_manager(in, atp1, out);
+	*/
+
+	float in_pplanner[] = {5, 5, 5, 30, 0.5, 0.1, 0.2, 0.2, 0.2, 0.1, 1, 0.4, 20, 3, 2, 0.4, 3};
+	float out_pplanner[501];
+	path_planner(in_pplanner, atp1, out_pplanner);
+
+	float in_pmanager[518], out_pmanager[30];
+
+	int i=0, j=0, NN=0;
+	for(i=0; i<5*atp1.size_waypoint_array+1; i++)
+	{
+		in_pmanager[i] = out_pplanner[i];
+	}
+
+	NN = 5*atp1.size_waypoint_array+1; 
+
+	for(i=NN; i < NN+sizeof(in_pplanner)/sizeof(in_pplanner[0]); i++)
+	{
+		in_pmanager[i] = in_pplanner[j];
+		j++;
+	}
+
+	path_manager(in_pmanager, atp1, out_pmanager);
+	
+	/*
 	printf("Testiugskfg2\n");
 	printf("%f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n %f\n", out[0], out[1], out[2], out[3], out[4], out[5], out[6], out[7], out[8], out[9], out[10], out[11], out[12], out[13], out[14], out[15], out[16], out[17], out[18], out[19], out[20], out[21], out[22], out[23], out[24], out[25], out[26], out[27], out[28], out[29]);
+	*/
+	
+	float in_pfollow[31], out_pfollow[4]; 
+
+	for(i=0; i<sizeof(out_pmanager)/sizeof(out_pmanager[0]); i++)
+	{
+		in_pfollow[i] = out_pmanager[i];
+	}
+
+	in_pfollow[sizeof(out_pmanager)/sizeof(out_pmanager[0])-1] = in_pplanner[sizeof(in_pplanner)/sizeof(in_pplanner[0])-1];
+
+	path_follow(in_pfollow, atp1, out_pfollow);
+
+	printf(" Va_c = %f\n h_c = %f\n chi_c = %f\n phi_ff = %f\n", out_pfollow[0], out_pfollow[1], out_pfollow[2], out_pfollow[3]);
+
 	return 0;
 }
 
@@ -288,8 +328,9 @@ void path_planner(float in[], struct atp atp1,float out[])
 	
 	array_initd((float*)wpp,atp1.size_waypoint_array*5);
 	
-	static int flag_temp;
+	static int flag_temp=0;
 	
+	//below if is not satisfied hence would go to else - nik.
 	if(flag_temp==1)
 	{
 		wpp[0][0]=0.0;
