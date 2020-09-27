@@ -318,7 +318,8 @@ void path_manager_fillet(float in[],struct atp atp1,int start_of_simulation,floa
 	out[29]=(float)flag_need_new_waypoints;			  
 }
 
-void dubinsParameters(float start_node[], float end_node[], float R_min, ?? dubinspath)
+void dubinsParameters(float start_node[], float end_node[], float R_min)
+	//, ?? dubinspath)
 {
 	float ell;
 	ell = sqrtf(powf((start_node[0]-end_node[0]),2) + powf((start_node[1]-end_node[1]),2));
@@ -334,14 +335,15 @@ void dubinsParameters(float start_node[], float end_node[], float R_min, ?? dubi
 	float pe[] = {end_node[0],end_node[1],end_node[2]};
 	float chie = end_node[3];
 
-	float *Rmat1, *Rmat2, *Mat1, *Mat2;
-	Rmat1 = (float *) malloc(9*sizeof(float));
-	Rmat2 = (float *) malloc(9*sizeof(float));
+	//float *Rmat1, *Rmat2;
+	float *Mat1, *Mat2;
+	//Rmat1 = (float *) malloc(9*sizeof(float));
+	//Rmat2 = (float *) malloc(9*sizeof(float));
 	Mat1 = (float *) malloc(3*sizeof(float));
 	Mat2 = (float *) malloc(3*sizeof(float));
 
-	Rmat1 = rotz(PI/2, Rmat1);
-	Rmat2 = rotz(-PI/2, Rmat2);
+	//Rmat1 = rotz(PI/2, Rmat1);
+	//Rmat2 = rotz(-PI/2, Rmat2);
 
 	*Mat1 = cosf(chis);
 	*(Mat1+1) = sinf(chis);
@@ -357,10 +359,10 @@ void dubinsParameters(float start_node[], float end_node[], float R_min, ?? dubi
 	temp3x1_3 = (float *) malloc(3*sizeof(float));
 	temp3x1_4 = (float *) malloc(3*sizeof(float));
 
-	MatrixMultiply(Rmat1,3,3,Mat1,3,1,temp3x1_1);
-	MatrixMultiply(Rmat2,3,3,Mat1,3,1,temp3x1_2);
-	MatrixMultiply(Rmat1,3,3,Mat2,3,1,temp3x1_3);
-	MatrixMultiply(Rmat2,3,3,Mat2,3,1,temp3x1_4);
+	MatrixMultiply(rotz(PI/2),3,3,Mat1,3,1,temp3x1_1);
+	MatrixMultiply(rotz(-PI/2),3,3,Mat1,3,1,temp3x1_2);
+	MatrixMultiply(rotz(PI/2),3,3,Mat2,3,1,temp3x1_3);
+	MatrixMultiply(rotz(-PI/2),3,3,Mat2,3,1,temp3x1_4);
 
 	for(i=0; i<3; i++)
 	{
@@ -370,10 +372,202 @@ void dubinsParameters(float start_node[], float end_node[], float R_min, ?? dubi
 		cle[i] = pe[i] + R_min * temp3x1_4[i];
 	}
 
+	//compute L1
+	theta = modpi_(atan2f(cre[1]-crs[1], cre[0]-crs[0]) + 2*PI);
+	L1 = norm_n(crs[0]-cre[0], crs[1]-cre[1], crs[2]-cre[2]) + R_min*modpi_(2*PI+modpi_(theta-PI/2)-modpi_(chis-PI/2)) + R_min*modpi_(2*PI + modpi_(chie-PI/2) - modpi_(theta-PI/2));
+
+	//compute L2
+	ell = norm_n(cle[0]-crs[0], cle[1]-crs[1], cle[2]-crs[2]);
+	theta = modpi_(atan2f(cle[1]-crs[1], cle[0]-crs[0]) + 2*PI);
+	theta2 = theta - PI/2 + asinf(2*R_min/ell);
+
+	if(ell==0)
+		L2 = 9999;
+	else 
+	{
+		L2 = sqrtf(ell*ell-4*R_min*R_min) + R_min*modpi_(2*PI+modpi_(theta2) - modpi_(chis-PI/2)) + R_min*modpi_(2*PI + modpi_(theta2+PI) - modpi_(chie+PI/2));
+	}
+
+	//compute L3
+	ell = norm_n(cre[0]-cls[0], cre[1]-cls[1], cre[2]-cls[2]);
+	theta = modpi_(atan2f(cls[1]-cre[1], cls[0]-cre[0])+2*PI);
+	theta2 = acosf(2*R_min/ell);
+	if(ell==0)
+		L3 = 9999;
+	else 
+	{
+		L3 = sqrtf(ell*ell - 4*R_min*R_min) + R_min*modpi_(2*PI + modpi_(chis+PI/2) - modpi_(theta+theta2)) + R_min*(2*PI + modpi_(chie-PI/2) - modpi_(theta+theta2-PI));
+	}
+
+	//compute L4
+	theta = modpi_(atan2f(cls[1]-cle[1],cls[0]-cle[0])+2*PI);
+	L4 = norm_n(cls[0]-cle[0], cls[1]-cle[1], cls[2]-cle[2]) + R_min*modpi_(2*PI+modpi_(chis+PI/2) - modpi_(theta+PI/2)) +R_min*modpi_(2*PI + modpi_(theta+PI/2) - modpi_(chie+PI/2));
+
+	//Minimum distance of all 4 evaluations
+	struct L_idx Lmin;
+	Lmin = min_4(L1, L2, L3, L4);
+
+	float *e1, *_q1, *_q3, *temp3x1_5;
+	e1 = (float *) malloc(3*sizeof(float));
+	_q1 = (float *) malloc(3*sizeof(float));
+	_q3 = (float *) malloc(3*sizeof(float));
+	temp3x1_5 = (float *) malloc(3*sizeof(float));
+
+	*e1 = 1;
+	*(e1+1) = 0;
+	*(e2+2) = 0;
+
+	float cs[3], ce[3], _w1[3], _w2[3]; 
+	int lams, lame;
+	float norm_cecs;
+
+	switch(Lmin.indx)
+	{
+		case 1:
+			lams = 1;
+			lame = 1;
+			for(i=0; i<3; i++)
+			{
+				cs[i] = crs[i];
+				ce[i] = cre[i];
+			}
+			norm_cecs = norm_n(ce[0]-cs[0], ce[1]-cs[1], ce[2]-cs[2]); 
+			
+			for(i=0; i<3; i++)
+			{
+				*(_q1+i) = (ce[i]-cs[i])/norm_cecs;
+			}
+
+			MatrixMultiply(rotz(-PI/2),3,3,_q1,3,1,temp3x1_5);
+
+			for(i=0; i<3; i++)
+			{
+				_w1[i] = cs[i] + R_min*(*(temp3x1_5+i));
+				_w2[i] = ce[i] + R_min*(*(temp3x1_5+i));
+			}
+
+		break;
+
+		case 2:
+			lams = 1;
+			lame = -1;
+			for(i=0; i<3; i++)
+			{
+				cs[i] = crs[i];
+				ce[i] = cle[i];
+			}
+			ell = norm_n(ce[0]-cs[0], ce[1]-cs[1], ce[2]-cs[2]);
+			theta = atan2f(ce[1]-cs[1], ce[0]-cs[0]+2*PI);
+            theta2 = theta - PI/2 + asinf(2*R_min/ell);
+            MatrixMultiply(rotz(theta2+PI/2),3,3,e1,3,1,_q1);
+            MatrixMultiply(rotz(theta2),3,3,e1,3,1,temp3x1_5);
+            for(i=0; i<3; i++)
+			{
+				_w1[i] = cs[i] + R_min*(*(temp3x1_5+i));
+			}
+			MatrixMultiply(rotz(theta2+PI),3,3,e1,3,1,temp3x1_5);
+			for(i=0; i<3; i++)
+			{
+				_w2[i] = ce[i] + R_min*(*(temp3x1_5+i));
+			}
+		break;
+
+		case 3:
+			lams = -1;
+			lame = 1;
+			for(i=0; i<3; i++)
+			{
+				cs[i] = cls[i];
+				ce[i] = cre[i];
+			}
+			ell = norm_n(ce[0]-cs[0], ce[1]-cs[1], ce[2]-cs[2]);
+			theta = atan2f(ce[1]-cs[1],ce[0]-cs[0]+2*PI);
+            theta2 = acosf(2*R_min/ell);
+            MatrixMultiply(rotz(theta+theta2-PI/2),3,3,e1,3,1,_q1);
+            MatrixMultiply(rotz(theta+theta2),3,3,e1,3,1,temp3x1_5);
+            for(i=0; i<3; i++)
+			{
+				_w1[i] = cs[i] + R_min*(*(temp3x1_5+i));
+			}
+			MatrixMultiply(rotz(theta+theta2-PI),3,3,e1,3,1,temp3x1_5);
+			for(i=0; i<3; i++)
+			{
+				_w2[i] = ce[i] + R_min*(*(temp3x1_5+i));
+			}
+		break;
+
+		case 4:
+			lams = -1;
+			lame = -1;
+			for(i=0; i<3; i++)
+			{
+				cs[i] = cls[i];
+				ce[i] = cle[i];
+			}
+			norm_cecs = norm_n(ce[0]-cs[0], ce[1]-cs[1], ce[2]-cs[2]); 
+			
+			for(i=0; i<3; i++)
+			{
+				*(_q1+i) = (ce[i]-cs[i])/norm_cecs;
+			}
+			MatrixMultiply(rotz(PI/2),3,3,_q1,3,1,temp3x1_5);
+            for(i=0; i<3; i++)
+			{
+				_w1[i] = cs[i] + R_min*(*(temp3x1_5+i));
+			}
+			MatrixMultiply(rotz(PI/2),3,3,_q1,3,1,temp3x1_5);
+			for(i=0; i<3; i++)
+			{
+				_w2[i] = ce[i] + R_min*(*(temp3x1_5+i));
+			}
+		break;
+
+		default:
+		break;
+	}
+
+	MatrixMultiply(rotz(chie),3,3,e1,3,1,_q3);
 }
 
-float* rotz(float theta, float *Rmat)
+struct L_idx{
+	float L; //min(L1, L2, L3, L4)
+	int indx; // index of the min L
+};
+
+struct L_idx min_4(float L1, float L2, float L3, float L4)
 {
+	struct L_idx Lmin;
+	Lmin.L = L1<L2?(L1<L3?(L1<L4?L1:L4):(L3<L4?L3:L4)):(L2<L3?(L2<L4?L2:L4):(L3<L4?L3:L4));
+	if(Lmin.L == L1)
+		Lmin.indx = 1;
+	else if(Lmin.L == L2)
+		Lmin.indx = 2;
+	else if(Lmin.L == L3)
+		Lmin.indx = 3;
+	else if(Lmin.L == L4)
+		Lmin.indx = 4;
+	return Lmin;
+}
+
+float norm_n(float a, float b, float c)
+{
+	float N;
+	N = sqrtf(a*a+b*b+c*c);
+	return N;
+}
+
+float modpi_(float theta)
+{
+	float a;
+	a = theta - 2*PI*floor(theta/(2*PI));
+	return a;
+}
+
+float* rotz(float theta)
+{
+	float *Rmat;
+	Rmat = (float *) malloc(9*sizeof(float));
+
 	*Rmat = cosf(theta);
 	*(Rmat+1) = -sinf(theta);
 	*(Rmat+2) = 0;
@@ -388,7 +582,6 @@ float* rotz(float theta, float *Rmat)
 
 	return Rmat;
 }
-
 
 void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,float waypoints[5][WAYPOINT_SIZE],float out[])
 {

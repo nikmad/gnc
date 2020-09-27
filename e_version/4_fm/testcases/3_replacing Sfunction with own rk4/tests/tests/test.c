@@ -102,8 +102,18 @@ struct vt vtol_dynamics()
 	printf("Powf check %f\n", powf(5,2.6));
 
 	float in_pplanner[30];
-	in_pplanner[end] = 230;
-	printf("End = %f\n", in_pplanner[end]);
+	//in_pplanner[end] = 230;
+	//printf("End = %f\n", in_pplanner[end]);
+
+	float *e1;
+	e1 = (float *) malloc(3*sizeof(float));
+	
+	for(int i=0; i<3; i++)
+	{
+		*(e1+i) = 2;
+	}
+
+	printf("e1 = %f\n", e1[0]);
 
 	return kola;
 }

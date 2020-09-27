@@ -95,7 +95,7 @@ function dubinspath = dubinsParameters(start_node, end_node, R)
             theta2 = theta - pi/2 + asin(2*R/ell);
             q1 = rotz(theta2+pi/2)*e1;
             w1 = cs + R*rotz(theta2)*e1;
-            w2 = ce + R*rotz(theta2*pi)*e1;
+            w2 = ce + R*rotz(theta2+pi)*e1;
         case 3,
             cs = cls;
             lams = -1;
