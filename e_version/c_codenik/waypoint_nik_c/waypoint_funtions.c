@@ -318,16 +318,73 @@ void path_manager_fillet(float in[],struct atp atp1,int start_of_simulation,floa
 	out[29]=(float)flag_need_new_waypoints;			  
 }
 
+struct L_idx{
+	float L; //min(L1, L2, L3, L4)
+	int indx; // index of the min L
+};
+
+struct L_idx min_4(float L1, float L2, float L3, float L4)
+{
+	struct L_idx Lmin;
+	Lmin.L = L1<L2?(L1<L3?(L1<L4?L1:L4):(L3<L4?L3:L4)):(L2<L3?(L2<L4?L2:L4):(L3<L4?L3:L4));
+	if(Lmin.L == L1)
+		Lmin.indx = 1;
+	else if(Lmin.L == L2)
+		Lmin.indx = 2;
+	else if(Lmin.L == L3)
+		Lmin.indx = 3;
+	else if(Lmin.L == L4)
+		Lmin.indx = 4;
+	return Lmin;
+}
+
+float norm_n(float a, float b, float c)
+{
+	float N;
+	N = sqrtf(a*a+b*b+c*c);
+	return N;
+}
+
+float modpi_(float theta)
+{
+	float a;
+	a = theta - 2*PI*floor(theta/(2*PI));
+	return a;
+}
+
+float* rotz(float theta)
+{
+	float *Rmat;
+	Rmat = (float *) malloc(9*sizeof(float));
+
+	*Rmat = cosf(theta);
+	*(Rmat+1) = -sinf(theta);
+	*(Rmat+2) = 0;
+
+	*(Rmat+3) = sinf(theta);
+	*(Rmat+4) = cosf(theta);
+	*(Rmat+5) = 0;
+
+	*(Rmat+6) = 0;
+	*(Rmat+7) = 0;
+	*(Rmat+8) = 1;
+
+	return Rmat;
+}
+
 void dubinsParameters(float start_node[], float end_node[], float R_min)
 	//, ?? dubinspath)
 {
 	float ell;
+	float cle[3], cls[3], cre[3], crs[3];
+	float L1, L2, L3, L4, theta, theta2;
+	int i;
 	ell = sqrtf(powf((start_node[0]-end_node[0]),2) + powf((start_node[1]-end_node[1]),2));
 	
 	if(ell<2*R_min)
 	{
 		printf("The distance between nodes must be larger than 2R.\n");
-		dubinspath = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+		//dubinspath = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	}
 
 	float ps[] = {start_node[0],start_node[1],start_node[2]};
@@ -364,7 +421,7 @@ void dubinsParameters(float start_node[], float end_node[], float R_min)
 	MatrixMultiply(rotz(PI/2),3,3,Mat2,3,1,temp3x1_3);
 	MatrixMultiply(rotz(-PI/2),3,3,Mat2,3,1,temp3x1_4);
 
-	for(i=0; i<3; i++)
+	for(int i=0; i<3; i++)
 	{
 		crs[i] = ps[i] + R_min * temp3x1_1[i];
 		cls[i] = ps[i] + R_min * temp3x1_2[i];
@@ -415,7 +472,7 @@ void dubinsParameters(float start_node[], float end_node[], float R_min)
 
 	*e1 = 1;
 	*(e1+1) = 0;
-	*(e2+2) = 0;
+	*(e1+2) = 0;
 
 	float cs[3], ce[3], _w1[3], _w2[3]; 
 	int lams, lame;
@@ -529,59 +586,7 @@ void dubinsParameters(float start_node[], float end_node[], float R_min)
 	MatrixMultiply(rotz(chie),3,3,e1,3,1,_q3);
 }
 
-struct L_idx{
-	float L; //min(L1, L2, L3, L4)
-	int indx; // index of the min L
-};
 
-struct L_idx min_4(float L1, float L2, float L3, float L4)
-{
-	struct L_idx Lmin;
-	Lmin.L = L1<L2?(L1<L3?(L1<L4?L1:L4):(L3<L4?L3:L4)):(L2<L3?(L2<L4?L2:L4):(L3<L4?L3:L4));
-	if(Lmin.L == L1)
-		Lmin.indx = 1;
-	else if(Lmin.L == L2)
-		Lmin.indx = 2;
-	else if(Lmin.L == L3)
-		Lmin.indx = 3;
-	else if(Lmin.L == L4)
-		Lmin.indx = 4;
-	return Lmin;
-}
-
-float norm_n(float a, float b, float c)
-{
-	float N;
-	N = sqrtf(a*a+b*b+c*c);
-	return N;
-}
-
-float modpi_(float theta)
-{
-	float a;
-	a = theta - 2*PI*floor(theta/(2*PI));
-	return a;
-}
-
-float* rotz(float theta)
-{
-	float *Rmat;
-	Rmat = (float *) malloc(9*sizeof(float));
-
-	*Rmat = cosf(theta);
-	*(Rmat+1) = -sinf(theta);
-	*(Rmat+2) = 0;
-
-	*(Rmat+3) = sinf(theta);
-	*(Rmat+4) = cosf(theta);
-	*(Rmat+5) = 0;
-
-	*(Rmat+6) = 0;
-	*(Rmat+7) = 0;
-	*(Rmat+8) = 1;
-
-	return Rmat;
-}
 
 void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,float waypoints[5][WAYPOINT_SIZE],float out[])
 {
@@ -591,15 +596,15 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
   int num_waypoints= (int)in[1+NN];
   //waypoints = reshape(in(2+NN:5*P.size_waypoint_array+1+NN),5,P.size_waypoint_array);
   NN = NN + 1 + 5*atp1.size_waypoint_array;
-  float pn        = in(1+NN);
-  float pe        = in(2+NN);
-  float h         = in(3+NN);
+  float pn        = in[1+NN];
+  float pe        = in[2+NN];
+  float h         = in[3+NN];
   // Va      = in(4+NN);
   // alpha   = in(5+NN);
   // beta    = in(6+NN);
   // phi     = in(7+NN);
   // theta   = in(8+NN);
-  float chi     = in(9+NN);
+  float chi     = in[9+NN];
   // p       = in(10+NN);
   // q       = in(11+NN);
   // r       = in(12+NN);
@@ -614,15 +619,15 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 	}
 
   NN = NN + 16;
-  t  = in[NN]; 
+  int t  = in[NN]; 
   
  float p[3][1]={{pn},{pe},{-h}};
 
   static float waypoints_old[5][WAYPOINT_SIZE];   // stored copy of old waypoints
   static int ptr_a, ptr_b;           // waypoint pointer
   static int state_transition; // state of transition state machine
-  static int start_of_simulation;
-  persistent dubinspath
+  //static int start_of_simulation;
+  //persistent dubinspath
   static int flag_need_new_waypoints; // flag that request new waypoints from path planner
   static int flag_first_time_in_state;
   
@@ -641,6 +646,7 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
       	flag_first_time_in_state = 1;
 	}
 
+	int match;
 	for(i=0;i<5;i++)
 	{
 		for(j=0;j<WAYPOINT_SIZE;j++)
@@ -651,7 +657,7 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 				ptr_b = 1;
 				for(k=0;k<5;k++)
 				{
-					for(l=0;l<WAYPOINT_SIZE;l++)
+					for(int l=0;l<WAYPOINT_SIZE;l++)
 					{
 						waypoints_old[k][l] = waypoints[k][l];
 					}
@@ -662,7 +668,7 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 
 				float start_node[] = {waypoints[0][ptr_a], waypoints[1][ptr_a], waypoints[2][ptr_a], waypoints[3][ptr_a], 0, 0};
 				float end_node[]   = {waypoints[0][ptr_b], waypoints[1][ptr_b], waypoints[2][ptr_b], waypoints[3][ptr_b], 0, 0};
-				dubinsParameters(start_node, end_node, atp1.R_min, dubinspath); 
+				//dubinsParameters(start_node, end_node, atp1.R_min, dubinspath); 
 
 				match=1;
 				break;
