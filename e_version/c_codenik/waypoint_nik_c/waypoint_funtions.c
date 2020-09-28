@@ -661,7 +661,7 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
   NN = NN + 16;
   int t  = in[NN]; 
   
- float p[3][1]={{pn},{pe},{-h}};
+ //float p[3][1]={{pn},{pe},{-h}};
 
   static float waypoints_old[5][WAYPOINT_SIZE];   // stored copy of old waypoints
   static int ptr_a, ptr_b;           // waypoint pointer
@@ -720,23 +720,138 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 		}
 	}
 
+	float _p[] = {pn,pe,-h};
+	float *_p1, *_p2, *_p3;
+	float *_p4, *_p5;
+	float *_p6, *_p7, *_p8;
+	_p1 = (float *) malloc(3*sizeof(float));
+	_p2 = (float *) malloc(3*sizeof(float));
+	_p4 = (float *) malloc(3*sizeof(float));
+	_p6 = (float *) malloc(3*sizeof(float));
+	_p7 = (float *) malloc(3*sizeof(float));
+	
+	int flag;
+	float Va_d, rho, lambda;
+	float _r[3], _q[3], _c[3];
+
+	for(int i=0;i<3;i++){
+		*(_p1+i)= _p[i]-dubinspath.w1[i];
+		*(_p2+i)= dubinspath.q1[i];
+		*(_p4+i)= _p[i]-dubinspath.w2[i];
+		*(_p6+i)= _p[i]-dubinspath.w3[i];
+		*(_p7+i)= dubinspath.q3[i];
+	}
+
+	MatrixMultiply(_p1,1,3,_p2,3,1,_p3);
+	MatrixMultiply(_p4,1,3,_p2,3,1,_p5);
+	MatrixMultiply(_p6,1,3,_p7,3,1,_p8);
+ 
 	switch(state_transition)
 	{
-		int flag;
 
 		case 0:
+			flag = 2;
+			Va_d = waypoints[4][ptr_a];
+			rho = dubinspath.R;
+			lambda = dubinspath.lams;
+			
+			for(int i=0;i<3;i++)
+			{
+				_r[i] = -999;
+				_q[i] = -999;
+				_c[i] = dubinspath.cs[i];
+			}
+
+			if(flag_first_time_in_state==1)
+				{flag_first_time_in_state=0;}
 		break;
 
 		case 1:
+			flag = 2;
+			Va_d = waypoints[4][ptr_a];
+			rho = dubinspath.R;
+			lambda = dubinspath.lams;
+			
+			for(int i=0;i<3;i++)
+			{
+				_r[i] = -999;
+				_q[i] = -999;
+				_c[i] = dubinspath.cs[i];
+			}
+ 
+
+			if((*_p3>=0)&&(flag_first_time_in_state==1)){
+				state_transition = 2;
+				flag_first_time_in_state = 1; 			
+			}
+			else if(*_p3>=0){
+				state_transition = 3;
+				flag_first_time_in_state = 1;
+			}
+			else
+				flag_first_time_in_state = 0;
 		break;
 
 		case 2:
+			flag = 2;
+			Va_d = waypoints[4][ptr_a];
+			rho = dubinspath.R;
+			lambda = dubinspath.lams;
+			
+			for(int i=0;i<3;i++)
+			{
+				_r[i] = -999;
+				_q[i] = -999;
+				_c[i] = dubinspath.cs[i];
+			}
+
+			if(*_p3<0){
+				state_transition = 1;
+				flag_first_time_in_state = 1;
+			}
+			else 
+				flag_first_time_in_state = 0;
 		break;
 
 		case 3:
+			flag = 1;
+			Va_d = waypoints[4][ptr_a];
+			rho = -999;
+			lambda = -999;
+			for(int i=0;i<3;i++)
+			{
+				_r[i] = dubinspath.w1[i];
+				_q[i] = dubinspath.q1[i];
+				_c[i] = -999;
+			}
+			flag_first_time_in_state = 0;
+
+			if(*_p5>=0){
+				state_transition = 4;
+				flag_first_time_in_state = 1;
+			}
 		break;
 
 		case 4:
+			flag = 2;
+			Va_d = waypoints[4][ptr_a];
+			rho = dubinspath.R;
+			lambda = dubinspath.lame;
+			
+			for(int i=0;i<3;i++){
+				_r[i] = -999;
+				_q[i] = -999;
+				_c[i] = dubinspath.ce;
+			}
+			flag_first_time_in_state = 0;
+
+			if((*_p8 >= 0)&&(flag_first_time_in_state==1)){
+				state_transition = 5;
+				flag_first_time_in_state = 1;
+			}
+			else if(*_p8 >= 0){
+				if()
+			}
 		break;
 
 		case 5:
