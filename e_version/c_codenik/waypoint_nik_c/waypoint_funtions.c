@@ -372,8 +372,25 @@ float* rotz(float theta)
 	return Rmat;
 }
 
-void dubinsParameters(float start_node[], float end_node[], float R_min)
-	//, ?? dubinspath)
+struct dpath{
+	float ps[3];
+	float chis;
+	float pe[3];
+	float chie;
+	float R;
+	float L;
+	float cs[3];
+	float lams;
+	float ce[3];
+	float lame;
+	float w1[3];
+	float q1[3];
+	float w2[3];
+	float w3[3];
+	float q3[3];
+};
+
+void dubinsParameters(float start_node[], float end_node[], float R_min, struct dpath dubinspath)
 {
 	float ell;
 	float cle[3], cls[3], cre[3], crs[3];
@@ -474,7 +491,7 @@ void dubinsParameters(float start_node[], float end_node[], float R_min)
 	*(e1+1) = 0;
 	*(e1+2) = 0;
 
-	float cs[3], ce[3], _w1[3], _w2[3]; 
+	float cs[3], ce[3], _w1[3], _w2[3], _w3[3]; 
 	int lams, lame;
 	float norm_cecs;
 
@@ -584,9 +601,32 @@ void dubinsParameters(float start_node[], float end_node[], float R_min)
 	}
 
 	MatrixMultiply(rotz(chie),3,3,e1,3,1,_q3);
+	for(i=0; i<3; i++)
+	{
+		_w3[i] = pe[i];
+	}
+
+	dubinspath.chis = chis;
+    dubinspath.chie = chie;
+    dubinspath.R    = R_min;
+    dubinspath.L    = Lmin.L;
+    dubinspath.lams = lams;
+    dubinspath.lame = lame;
+
+    for(i=0;i<3;i++)
+    {
+	    dubinspath.ps[i]   = ps[i];
+	    dubinspath.pe[i]   = pe[i];
+	    dubinspath.cs[i]   = cs[i];
+	    dubinspath.ce[i]   = ce[i];
+	    dubinspath.w1[i]   = _w1[i];
+	    dubinspath.q1[i]   = _q1[i];
+	    dubinspath.w2[i]   = _w2[i];
+	    dubinspath.w3[i]   = _w3[i];
+	    dubinspath.q3[i]   = _q3[i];
+	}
+
 }
-
-
 
 void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,float waypoints[5][WAYPOINT_SIZE],float out[])
 {
@@ -627,7 +667,7 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
   static int ptr_a, ptr_b;           // waypoint pointer
   static int state_transition; // state of transition state machine
   //static int start_of_simulation;
-  //persistent dubinspath
+  static struct dpath dubinspath;
   static int flag_need_new_waypoints; // flag that request new waypoints from path planner
   static int flag_first_time_in_state;
   
@@ -668,7 +708,7 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 
 				float start_node[] = {waypoints[0][ptr_a], waypoints[1][ptr_a], waypoints[2][ptr_a], waypoints[3][ptr_a], 0, 0};
 				float end_node[]   = {waypoints[0][ptr_b], waypoints[1][ptr_b], waypoints[2][ptr_b], waypoints[3][ptr_b], 0, 0};
-				//dubinsParameters(start_node, end_node, atp1.R_min, dubinspath); 
+				dubinsParameters(start_node, end_node, atp1.R_min, dubinspath); 
 
 				match=1;
 				break;
@@ -679,8 +719,32 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 			break;
 		}
 	}
-	
 
+	switch(state_transition)
+	{
+		int flag;
+
+		case 0:
+		break;
+
+		case 1:
+		break;
+
+		case 2:
+		break;
+
+		case 3:
+		break;
+
+		case 4:
+		break;
+
+		case 5:
+		break;
+
+		default:
+		break;
+	}
  }
 
 void path_planner(float in[], struct atp atp1,float out[])
@@ -899,20 +963,20 @@ void path_manager(float in[],struct atp atp1,float out[])
 		
 		//if(fabsf(waypoints[4][0]>=2*PI))	
 		//if(fabsf(waypoints[3][0]>=2*PI))
-		if(1)
-				//printf("Testiugskfg3.2\n");
-		{
-			//printf("Testiugskfg3\n");
-			path_manager_fillet(in,atp1, start_of_simulation, waypoints,out);
-			start_of_simulation=0;
-		}
-		else
-		{
+		//if(1)
+		//		//printf("Testiugskfg3.2\n");
+		//{
+		//	//printf("Testiugskfg3\n");
+		//	path_manager_fillet(in,atp1, start_of_simulation, waypoints,out);
+		//	start_of_simulation=0;
+		//}
+		//else
+		//{
 			// % follows Dubins paths between waypoint configurations
-        //out = path_manager_dubins(in,atp,start_of_simulation); 
+        out = path_manager_dubins(in,atp,start_of_simulation); 
         start_of_simulation=0;
 			
-		}
+		//}
 	}
 }
 
