@@ -357,7 +357,7 @@ float* rotz(float theta)
 	float *Rmat;
 	Rmat = (float *) malloc(9*sizeof(float));
 
-	*Rmat = cosf(theta);
+	*Rmat 	  = cosf(theta);
 	*(Rmat+1) = -sinf(theta);
 	*(Rmat+2) = 0;
 
@@ -370,6 +370,7 @@ float* rotz(float theta)
 	*(Rmat+8) = 1;
 
 	return Rmat;
+	//free(Rmat);
 }
 
 struct dpath{
@@ -409,15 +410,21 @@ void dubinsParameters(float start_node[], float end_node[], float R_min, struct 
 	float pe[] = {end_node[0],end_node[1],end_node[2]};
 	float chie = end_node[3];
 
+	printf("Ps[] check = [%f %f %f]\n", ps[0], ps[1], ps[2]);
+	printf("Rmin check = %f\n", R_min);
+
 	//float *Rmat1, *Rmat2;
 	float *Mat1, *Mat2;
-	//Rmat1 = (float *) malloc(9*sizeof(float));
+	//float *test1;
+	//test1 = (float *) malloc(9*sizeof(float));
 	//Rmat2 = (float *) malloc(9*sizeof(float));
 	Mat1 = (float *) malloc(3*sizeof(float));
 	Mat2 = (float *) malloc(3*sizeof(float));
 
 	//Rmat1 = rotz(PI/2, Rmat1);
-	//Rmat2 = rotz(-PI/2, Rmat2);
+	//test1 = rotz(-PI/2);
+
+	//printf("Test1 = [%f %f %f %f %f %f %f %f %f]\n",*test1,*(test1+1),*(test1+2),*(test1+3),*(test1+4),*(test1+5),*(test1+6),*(test1+7),*(test1+8));
 
 	*Mat1 = cosf(chis);
 	*(Mat1+1) = sinf(chis);
@@ -438,6 +445,8 @@ void dubinsParameters(float start_node[], float end_node[], float R_min, struct 
 	MatrixMultiply(rotz(PI/2),3,3,Mat2,3,1,temp3x1_3);
 	MatrixMultiply(rotz(-PI/2),3,3,Mat2,3,1,temp3x1_4);
 
+    printf("temp3x1_2 = [%f %f %f]\n",temp3x1_2[0],temp3x1_2[1],temp3x1_2[2]);
+
 	for(int i=0; i<3; i++)
 	{
 		crs[i] = ps[i] + R_min * temp3x1_1[i];
@@ -445,6 +454,8 @@ void dubinsParameters(float start_node[], float end_node[], float R_min, struct 
 		cre[i] = pe[i] + R_min * temp3x1_3[i];
 		cle[i] = pe[i] + R_min * temp3x1_4[i];
 	}
+
+	printf("cls[i] = [%f %f %f]\n",cls[0],cls[1],cls[2]);
 
 	//compute L1
 	theta = modpi_(atan2f(cre[1]-crs[1], cre[0]-crs[0]) + 2*PI);
@@ -480,6 +491,7 @@ void dubinsParameters(float start_node[], float end_node[], float R_min, struct 
 	//Minimum distance of all 4 evaluations
 	struct L_idx Lmin;
 	Lmin = min_4(L1, L2, L3, L4);
+	printf("Checking Lmin = %f %d\n", Lmin.L, Lmin.indx);
 
 	float *e1, *_q1, *_q3, *temp3x1_5;
 	e1 = (float *) malloc(3*sizeof(float));
@@ -625,6 +637,18 @@ void dubinsParameters(float start_node[], float end_node[], float R_min, struct 
 	    dubinspath.w3[i]   = _w3[i];
 	    dubinspath.q3[i]   = _q3[i];
 	}
+	
+	free(Mat1);
+	free(Mat2);
+	free(temp3x1_1);
+	free(temp3x1_2);
+	free(temp3x1_3);
+	free(temp3x1_4);
+	free(temp3x1_5);
+	free(e1);
+	free(_q1);
+	free(_q3);
+
 }
 
 void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,float waypoints[5][WAYPOINT_SIZE],float out[])
@@ -708,6 +732,7 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 				float start_node[] = {waypoints[0][ptr_a], waypoints[1][ptr_a], waypoints[2][ptr_a], waypoints[3][ptr_a], 0, 0};
 				float end_node[]   = {waypoints[0][ptr_b], waypoints[1][ptr_b], waypoints[2][ptr_b], waypoints[3][ptr_b], 0, 0};
 				dubinsParameters(start_node, end_node, atp1.R_min, dubinspath); 
+					printf("dubinspath.cs[1] = [%f]\n",dubinspath.ps[2]);
 
 				match=1;
 				break;
@@ -780,7 +805,7 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 				_q[i] = -999;
 				_c[i] = dubinspath.cs[i];
 			}
- 
+ 	printf("_c[i] = [%f %f %f]\n",_c[0],_c[1],_c[2]);
 
 			if((*_p3>=0)&&(flag_first_time_in_state==1)){
 				state_transition = 2;
@@ -920,7 +945,16 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 		out[i+13]=state[i];		
 	}
 
-	out[29]=(float)flag_need_new_waypoints;		
+	out[29]=(float)flag_need_new_waypoints;	
+
+	free(_p1);
+	free(_p2);	
+	free(_p3);
+	free(_p4);
+	free(_p5);
+	free(_p6);
+	free(_p7);
+	free(_p8);
 }
 
 void path_planner(float in[], struct atp atp1,float out[])
@@ -1120,12 +1154,13 @@ void path_manager(float in[],struct atp atp1,float out[])
 			{
 				out[i+13]=state[i];
 			}
+			printf("Testiugskfg3.0\n");
 			//out[28]=(float)flag_need_new_waypoints;//doubt
 			out[29]=(float)flag_need_new_waypoints;//doubt
 	}
 	else
 	{
-			//printf("Testiugskfg3.1\n");
+			printf("Testiugskfg3.1\n");
 			//printf("atp1.size_waypoint_array = %d\n",atp1.size_waypoint_array);
 		//waypoints matrix being used in two function.
 		for(j=0;j<atp1.size_waypoint_array;j++)
@@ -1135,8 +1170,11 @@ void path_manager(float in[],struct atp atp1,float out[])
 			{
 				waypoints[i][j]=in[1+j*5+i];
 			}
-			//printf("Testiugskfg3.2\n");
+			
 		}
+					printf("Checking waypoints(0-4,0) = [%f %f %f %f]\n",waypoints[0][0],waypoints[1][0],waypoints[2][0],waypoints[3][0],waypoints[4][0]);
+
+					printf("Checking waypoints(0-4,1) = [%f %f %f %f]\n",waypoints[0][1],waypoints[1][1],waypoints[2][1],waypoints[3][1],waypoints[4][1]);
 						//printf("Testiugskfg3.2\n");
 		
 		//if(fabsf(waypoints[4][0]>=2*PI))	
@@ -1153,6 +1191,7 @@ void path_manager(float in[],struct atp atp1,float out[])
 			// % follows Dubins paths between waypoint configurations
         path_manager_dubins(in,atp1,start_of_simulation,waypoints,out); 
         start_of_simulation=0;
+        printf("check out[8,9,10] = [%f %f %f]\n", out[8], out[9], out[10]);
 			
 		//}
 	}
@@ -1169,6 +1208,7 @@ void path_follow(float in[], struct atp atp1, float out[])
 	int i=0,j=0;
 
 	//PATH input to path_follow
+	printf("check in[0] = %f\n", in[0]);
 	int flag  = (int)in[0+NN];
     float Va_d = in[1+NN];
     float r_path[3][1] = {{in[2+NN]},{in[3+NN]},{in[4+NN]}};
@@ -1177,6 +1217,8 @@ void path_follow(float in[], struct atp atp1, float out[])
     float rho_orbit = in[11+NN];
     float lam_orbit = in[12+NN];
 	
+    printf("checking in[8,9,10] = [%f %f %f]\n", in[8+NN], in[9+NN], in[10+NN]);
+
 	float s_i[3]={0.0,0.0,0.0};
 	
 	float n_lon_transposed[1][3]={0.0,0.0,0.0};
@@ -1305,6 +1347,7 @@ void path_follow(float in[], struct atp atp1, float out[])
         
 	        // commanded altitude is the height of the orbit  
 	        h_c = -c_orbit[2][0];	
+	        printf("checking C_rbit = [%f %f %f]\n", c_orbit[0][0], c_orbit[1][0], c_orbit[2][0]);
 	        // distance from orbit center
 	        d_s = sqrtf(powf((pn-c_orbit[0][0]),2)+powf((pe-c_orbit[1][0]),2)); 
 	     

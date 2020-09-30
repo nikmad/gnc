@@ -70,7 +70,7 @@ function out = path_manager_dubins(in,P,start_of_simulation)
   % if the waypoints have changed, update the waypoint pointer and plan new
   % Dubin's path
   if min(min(waypoints==waypoints_old))==0,
-      waypoints_old = waypoints;
+      waypoints_old = waypoints;    
       state_transition = 1;
       ptr_a = 1;
       ptr_b = 2;

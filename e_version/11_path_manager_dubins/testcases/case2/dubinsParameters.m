@@ -38,7 +38,6 @@ function dubinspath = dubinsParameters(start_node, end_node, R)
     pe   = end_node(1:3)';
     chie = end_node(4);
     
-
     crs = ps + R*rotz(pi/2)*[cos(chis),sin(chis),0]';
     cls = ps + R*rotz(-pi/2)*[cos(chis),sin(chis),0]';
     cre = pe + R*rotz(pi/2)*[cos(chie),sin(chie),0]';
