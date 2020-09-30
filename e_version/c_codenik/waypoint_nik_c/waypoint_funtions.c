@@ -42,7 +42,7 @@ int main()
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 5, 5, 5, 30, 0.5, 0.1, 0.2, 0.2, 0.2, 0.1, 1, 0.4, 20, 3, 2, 0.4, 0};
 	*/
 
-	float in_pplanner[] = {5, 5, 5, 30, 0.5, 0.1, 0.2, 0.2, 0.2, 0.1, 1, 0.4, 20, 3, 2, 0.4, 3};
+	float in_pplanner[17] = {5, 5, 5, 30, 0.5, 0.1, 0.2, 0.2, 0.2, 0.1, 1, 0.4, 20, 3, 2, 0.4, 0}; //17 floats = 16 states + 1 time
 	float out_pplanner[501];
 	path_planner(in_pplanner, atp1, out_pplanner);
 
@@ -55,6 +55,8 @@ int main()
 	}
 
 	NN = 5*atp1.size_waypoint_array+1; 
+
+	j = 0;
 
 	for(i=NN; i < NN+sizeof(in_pplanner)/sizeof(in_pplanner[0]); i++)
 	{
@@ -922,6 +924,7 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 }
 
 void path_planner(float in[], struct atp atp1,float out[])
+//void path_planner(struct atp atp1,float out[])
 {
 	float NN=0.0;
 	static int num_waypoints=0;
@@ -969,7 +972,7 @@ void path_planner(float in[], struct atp atp1,float out[])
 		num_waypoints=5; //starting from 0
 	}
 	else*/
-	{
+	//{
 		wpp[0][0]=0.0;
 		wpp[0][1]=0.0;
 		wpp[0][2]=-100.0;
@@ -995,7 +998,7 @@ void path_planner(float in[], struct atp atp1,float out[])
 		wpp[3][4]=atp1.Va0;		
 		
 		num_waypoints=4; //starting from 0
-	}
+	//}
 	for(i=num_waypoints;i<atp1.size_waypoint_array;i++)
 	{
 		for(j=0;j<5;j++)
@@ -1003,6 +1006,7 @@ void path_planner(float in[], struct atp atp1,float out[])
 			wpp[i][j]=-9999.0;
 		}
 	}
+
 	k=1;
 	out[0]=num_waypoints;
 	for(i=0;i<num_waypoints;i++)
@@ -1325,6 +1329,7 @@ void path_follow(float in[], struct atp atp1, float out[])
 		
 		default:
 		printf("Default case\n");
+		break;
 	}
   	//printf("test 4: %f\n", phi_ff);
     // command airspeed equal to desired airspeed
