@@ -109,8 +109,7 @@ void path_manager_fillet(float in[],struct atp atp1,int start_of_simulation,floa
 	float n_i[3][1];
 	int match=0;
 	float angle=0.0;
-	
-	
+		
 	NN = NN + 1 + 5*atp1.size_waypoint_array;
 	float pn   = in[0+NN];
 	float pe   = in[1+NN];
@@ -289,7 +288,6 @@ void path_manager_fillet(float in[],struct atp atp1,int start_of_simulation,floa
 			break;
 			
 		default:
-		
 			break;
 			
 	}
@@ -310,7 +308,7 @@ void path_manager_fillet(float in[],struct atp atp1,int start_of_simulation,floa
 	out[11]=rho;
 	out[12]=lambda;
 	
-	for(i=0;i<17;i++)
+	for(i=0;i<16;i++)
 	{
 		out[i+13]=state[i];		
 	}
@@ -625,7 +623,6 @@ void dubinsParameters(float start_node[], float end_node[], float R_min, struct 
 	    dubinspath.w3[i]   = _w3[i];
 	    dubinspath.q3[i]   = _q3[i];
 	}
-
 }
 
 void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,float waypoints[5][WAYPOINT_SIZE],float out[])
@@ -726,9 +723,12 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 	float *_p6, *_p7, *_p8;
 	_p1 = (float *) malloc(3*sizeof(float));
 	_p2 = (float *) malloc(3*sizeof(float));
+	_p3 = (float *) malloc(sizeof(float));
 	_p4 = (float *) malloc(3*sizeof(float));
+	_p5 = (float *) malloc(sizeof(float));
 	_p6 = (float *) malloc(3*sizeof(float));
 	_p7 = (float *) malloc(3*sizeof(float));
+	_p8 = (float *) malloc(sizeof(float));
 	
 	int flag;
 	float Va_d, rho, lambda;
@@ -841,7 +841,7 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 			for(int i=0;i<3;i++){
 				_r[i] = -999;
 				_q[i] = -999;
-				_c[i] = dubinspath.ce;
+				_c[i] = dubinspath.ce[i];
 			}
 			flag_first_time_in_state = 0;
 
@@ -850,17 +850,76 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 				flag_first_time_in_state = 1;
 			}
 			else if(*_p8 >= 0){
-				if()
+				if(ptr_a == num_waypoints-2){
+					flag_need_new_waypoints = 1;
+					ptr_b = ptr_a+1;
+				}
+				else{
+					ptr_a = ptr_a+1;
+					//ptr_b = ptr_a+1; //this was the original part but seems to be wrong
+					ptr_b = ptr_b+1;
+					state_transition = 1;
+					flag_first_time_in_state = 1;
+				}
+				float start_node[] = {waypoints[0][ptr_a], waypoints[1][ptr_a], waypoints[2][ptr_a], waypoints[3][ptr_a], 0, 0};
+				float end_node[]   = {waypoints[0][ptr_b], waypoints[1][ptr_b], waypoints[2][ptr_b], waypoints[3][ptr_b], 0, 0};
+				dubinsParameters(start_node, end_node, atp1.R_min, dubinspath);
+			}
+			else{
+				flag_first_time_in_state = 0;
 			}
 		break;
 
 		case 5:
+			flag = 2;
+			Va_d = waypoints[4][ptr_a];
+			rho = dubinspath.R;
+			lambda = dubinspath.lame;
+			
+			for(int i=0;i<3;i++){
+				_r[i] = -999;
+				_q[i] = -999;
+				_c[i] = dubinspath.ce[i];
+			}
+			flag_first_time_in_state = 0;
+
+			if(*_p8<0){
+				state_transition = 4;
+				flag_first_time_in_state = 1;
+			}
+			else{
+				flag_first_time_in_state = 0;
+			}
 		break;
 
 		default:
 		break;
 	}
- }
+	out[0]=flag;
+	out[1]=Va_d;
+
+	out[2]=_r[0];
+	out[3]=_r[1];
+	out[4]=_r[2];
+
+	out[5]=_q[0];
+	out[6]=_q[1];
+	out[7]=_q[2];
+
+	out[8]	=_c[0];
+	out[9]	=_c[1];
+	out[10]	=_c[2];
+
+	out[11]=rho;
+	out[12]=lambda;
+
+	for(i=0;i<16;i++)
+	{
+		out[i+13]=state[i];		
+	}
+
+	out[29]=(float)flag_need_new_waypoints;		
+}
 
 void path_planner(float in[], struct atp atp1,float out[])
 {
@@ -875,7 +934,7 @@ void path_planner(float in[], struct atp atp1,float out[])
 	static int flag_temp=0;
 	
 	//below if is not satisfied hence would go to else - nik.
-	if(flag_temp==1)
+	/*if(flag_temp==1)
 	{
 		wpp[0][0]=0.0;
 		wpp[0][1]=0.0;
@@ -891,13 +950,13 @@ void path_planner(float in[], struct atp atp1,float out[])
 		
 		wpp[2][0]=0.0;
 		wpp[2][1]=1100.0;
-		wpp[2][2]=-110.0;
+		wpp[2][2]=-100.0;
 		wpp[2][3]=-9999.0;
 		wpp[2][4]=atp1.Va0;
 		
 		wpp[3][0]=1200.0;
 		wpp[3][1]=1200.0;
-		wpp[3][2]=-150.0;
+		wpp[3][2]=-100.0;
 		wpp[3][3]=-9999,0;
 		wpp[3][4]=atp1.Va0;
 		
@@ -909,7 +968,7 @@ void path_planner(float in[], struct atp atp1,float out[])
 		
 		num_waypoints=5; //starting from 0
 	}
-	else
+	else*/
 	{
 		wpp[0][0]=0.0;
 		wpp[0][1]=0.0;
@@ -925,7 +984,7 @@ void path_planner(float in[], struct atp atp1,float out[])
 		
 		wpp[2][0]=0.0;
 		wpp[2][1]=1200.0;
-		wpp[2][2]=-110.0;
+		wpp[2][2]=-100.0;
 		wpp[2][3]=(45.0*PI)/180;
 		wpp[2][4]=atp1.Va0;
 		
@@ -1058,7 +1117,7 @@ void path_manager(float in[],struct atp atp1,float out[])
 				out[i+13]=state[i];
 			}
 			//out[28]=(float)flag_need_new_waypoints;//doubt
-			out[30]=(float)flag_need_new_waypoints;//doubt
+			out[29]=(float)flag_need_new_waypoints;//doubt
 	}
 	else
 	{
@@ -1088,7 +1147,7 @@ void path_manager(float in[],struct atp atp1,float out[])
 		//else
 		//{
 			// % follows Dubins paths between waypoint configurations
-        out = path_manager_dubins(in,atp,start_of_simulation); 
+        path_manager_dubins(in,atp1,start_of_simulation,waypoints,out); 
         start_of_simulation=0;
 			
 		//}
