@@ -391,7 +391,7 @@ struct dpath{
 	float q3[3];
 };
 
-void dubinsParameters(float start_node[], float end_node[], float R_min, struct dpath dubinspath)
+void dubinsParameters(float start_node[], float end_node[], float R_min, struct dpath *dubinspath)
 {
 	float ell;
 	float cle[3], cls[3], cre[3], crs[3];
@@ -455,6 +455,7 @@ void dubinsParameters(float start_node[], float end_node[], float R_min, struct 
 		cle[i] = pe[i] + R_min * temp3x1_4[i];
 	}
 
+	printf("ps[i] = [%f %f %f]\n",ps[0],ps[1],ps[2]);
 	printf("cls[i] = [%f %f %f]\n",cls[0],cls[1],cls[2]);
 
 	//compute L1
@@ -618,25 +619,28 @@ void dubinsParameters(float start_node[], float end_node[], float R_min, struct 
 		_w3[i] = pe[i];
 	}
 
-	dubinspath.chis = chis;
-    dubinspath.chie = chie;
-    dubinspath.R    = R_min;
-    dubinspath.L    = Lmin.L;
-    dubinspath.lams = lams;
-    dubinspath.lame = lame;
+	dubinspath->chis = chis;
+    dubinspath->chie = chie;
+    dubinspath->R    = R_min;
+    dubinspath->L    = Lmin.L;
+    dubinspath->lams = lams;
+    dubinspath->lame = lame;
 
     for(i=0;i<3;i++)
     {
-	    dubinspath.ps[i]   = ps[i];
-	    dubinspath.pe[i]   = pe[i];
-	    dubinspath.cs[i]   = cs[i];
-	    dubinspath.ce[i]   = ce[i];
-	    dubinspath.w1[i]   = _w1[i];
-	    dubinspath.q1[i]   = _q1[i];
-	    dubinspath.w2[i]   = _w2[i];
-	    dubinspath.w3[i]   = _w3[i];
-	    dubinspath.q3[i]   = _q3[i];
+	    dubinspath->ps[i]   = ps[i];
+	    dubinspath->pe[i]   = pe[i];
+	    dubinspath->cs[i]   = cs[i];
+	    dubinspath->ce[i]   = ce[i];
+	    dubinspath->w1[i]   = _w1[i];
+	    dubinspath->q1[i]   = _q1[i];
+	    dubinspath->w2[i]   = _w2[i];
+	    dubinspath->w3[i]   = _w3[i];
+	    dubinspath->q3[i]   = _q3[i];
 	}
+
+	//printf("q1[i] test1 = [%f %f %f]\n",dubinspath->q1[0],dubinspath->q1[1],dubinspath->q1[2]);
+	printf("cs[i] test1 = [%f %f %f]\n",dubinspath->cs[0],dubinspath->cs[1],dubinspath->cs[2]);
 	
 	free(Mat1);
 	free(Mat2);
@@ -690,10 +694,11 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
   static int ptr_a, ptr_b;           // waypoint pointer
   static int state_transition; // state of transition state machine
   //static int start_of_simulation;
-  static struct dpath dubinspath;
+  static struct dpath *dubinspath;
   static int flag_need_new_waypoints; // flag that request new waypoints from path planner
   static int flag_first_time_in_state;
   
+  dubinspath = (struct dpath*)malloc(sizeof(struct dpath));
   
   	if(start_of_simulation==1)
 	{
@@ -732,7 +737,8 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 				float start_node[] = {waypoints[0][ptr_a], waypoints[1][ptr_a], waypoints[2][ptr_a], waypoints[3][ptr_a], 0, 0};
 				float end_node[]   = {waypoints[0][ptr_b], waypoints[1][ptr_b], waypoints[2][ptr_b], waypoints[3][ptr_b], 0, 0};
 				dubinsParameters(start_node, end_node, atp1.R_min, dubinspath); 
-					printf("dubinspath.cs[1] = [%f]\n",dubinspath.ps[2]);
+					//printf("q1[i] test2 = [%f %f %f]\n",dubinspath->q1[0],dubinspath->q1[1],dubinspath->q1[2]);
+					printf("cs[i] test2 = [%f %f %f]\n",dubinspath->cs[0],dubinspath->cs[1],dubinspath->cs[2]);
 
 				match=1;
 				break;
@@ -762,11 +768,11 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 	float _r[3], _q[3], _c[3];
 
 	for(int i=0;i<3;i++){
-		*(_p1+i)= _p[i]-dubinspath.w1[i];
-		*(_p2+i)= dubinspath.q1[i];
-		*(_p4+i)= _p[i]-dubinspath.w2[i];
-		*(_p6+i)= _p[i]-dubinspath.w3[i];
-		*(_p7+i)= dubinspath.q3[i];
+		*(_p1+i)= _p[i]-dubinspath->w1[i];
+		*(_p2+i)= dubinspath->q1[i];
+		*(_p4+i)= _p[i]-dubinspath->w2[i];
+		*(_p6+i)= _p[i]-dubinspath->w3[i];
+		*(_p7+i)= dubinspath->q3[i];
 	}
 
 	MatrixMultiply(_p1,1,3,_p2,3,1,_p3);
@@ -779,14 +785,14 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 		case 0:
 			flag = 2;
 			Va_d = waypoints[4][ptr_a];
-			rho = dubinspath.R;
-			lambda = dubinspath.lams;
+			rho = dubinspath->R;
+			lambda = dubinspath->lams;
 			
 			for(int i=0;i<3;i++)
 			{
 				_r[i] = -999;
 				_q[i] = -999;
-				_c[i] = dubinspath.cs[i];
+				_c[i] = dubinspath->cs[i];
 			}
 
 			if(flag_first_time_in_state==1)
@@ -796,14 +802,14 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 		case 1:
 			flag = 2;
 			Va_d = waypoints[4][ptr_a];
-			rho = dubinspath.R;
-			lambda = dubinspath.lams;
+			rho = dubinspath->R;
+			lambda = dubinspath->lams;
 			
 			for(int i=0;i<3;i++)
 			{
 				_r[i] = -999;
 				_q[i] = -999;
-				_c[i] = dubinspath.cs[i];
+				_c[i] = dubinspath->cs[i];
 			}
  	printf("_c[i] = [%f %f %f]\n",_c[0],_c[1],_c[2]);
 
@@ -822,14 +828,14 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 		case 2:
 			flag = 2;
 			Va_d = waypoints[4][ptr_a];
-			rho = dubinspath.R;
-			lambda = dubinspath.lams;
+			rho = dubinspath->R;
+			lambda = dubinspath->lams;
 			
 			for(int i=0;i<3;i++)
 			{
 				_r[i] = -999;
 				_q[i] = -999;
-				_c[i] = dubinspath.cs[i];
+				_c[i] = dubinspath->cs[i];
 			}
 
 			if(*_p3<0){
@@ -847,8 +853,8 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 			lambda = -999;
 			for(int i=0;i<3;i++)
 			{
-				_r[i] = dubinspath.w1[i];
-				_q[i] = dubinspath.q1[i];
+				_r[i] = dubinspath->w1[i];
+				_q[i] = dubinspath->q1[i];
 				_c[i] = -999;
 			}
 			flag_first_time_in_state = 0;
@@ -862,13 +868,13 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 		case 4:
 			flag = 2;
 			Va_d = waypoints[4][ptr_a];
-			rho = dubinspath.R;
-			lambda = dubinspath.lame;
+			rho = dubinspath->R;
+			lambda = dubinspath->lame;
 			
 			for(int i=0;i<3;i++){
 				_r[i] = -999;
 				_q[i] = -999;
-				_c[i] = dubinspath.ce[i];
+				_c[i] = dubinspath->ce[i];
 			}
 			flag_first_time_in_state = 0;
 
@@ -900,13 +906,13 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 		case 5:
 			flag = 2;
 			Va_d = waypoints[4][ptr_a];
-			rho = dubinspath.R;
-			lambda = dubinspath.lame;
+			rho = dubinspath->R;
+			lambda = dubinspath->lame;
 			
 			for(int i=0;i<3;i++){
 				_r[i] = -999;
 				_q[i] = -999;
-				_c[i] = dubinspath.ce[i];
+				_c[i] = dubinspath->ce[i];
 			}
 			flag_first_time_in_state = 0;
 
@@ -955,6 +961,7 @@ void path_manager_dubins(float in[],struct atp atp1,int start_of_simulation,floa
 	free(_p6);
 	free(_p7);
 	free(_p8);
+
 }
 
 void path_planner(float in[], struct atp atp1,float out[])
