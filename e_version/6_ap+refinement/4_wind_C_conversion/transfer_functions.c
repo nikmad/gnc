@@ -9,7 +9,7 @@ struct trans_funcs* transfer_functions(struct states x_trim, struct trim_out y_t
 	struct trans_funcs* tf;
 	tf = (struct trans_funcs*)malloc(8*sizeof(struct trans_funcs));
 
-	float Va_trim = sqrt(x_trim.u*x_trim.u + x_trim.v*x_trim.v  + x_trim.w*x_trim.w);
+	float Va_trim = sqrtf(x_trim.u*x_trim.u + x_trim.v*x_trim.v  + x_trim.w*x_trim.w);
 
 	float theta_trim = x_trim.theta;
 	float alpha_trim  = y_trim.alpha;
@@ -43,7 +43,7 @@ struct trans_funcs* transfer_functions(struct states x_trim, struct trim_out y_t
 	float b_omega = vtol.rho*powf(vtol.D_prop,4)*vtol.CQ1*Va_trim/(2*PI) + powf(vtol.KQ,2)/vtol.Rmotor;
 	float c_omega = vtol.rho*powf(vtol.D_prop,3)*vtol.CQ2*powf(Va_trim,2) - vtol.KQ * Vin/vtol.Rmotor + vtol.KQ * vtol.i0;
 
-	float Omega_p = (-b_omega + sqrt(powf(b_omega,2)-4*a_omega*c_omega))/(2*a_omega);
+	float Omega_p = (-b_omega + sqrtf(powf(b_omega,2)-4*a_omega*c_omega))/(2*a_omega);
 
 	// parameters defined to merely simplify the actual expression of dTpVa and dTpDelta_t
 	float vk1 = vtol.rho*powf(vtol.D_prop,4)*vtol.CT0/powf(2*PI,2);
@@ -57,10 +57,10 @@ struct trans_funcs* transfer_functions(struct states x_trim, struct trim_out y_t
 	float vk9 = powf(vk4 * Va_trim + vk5, 2) - 4*a_omega*(vk6 * powf(Va_trim,2) + vk7 * delta_t_trim + vk8); // = b^2 - 4*a*c
 	float vk10 = 2*(vk4*Va_trim + vk5)*vk4 - 4*a_omega*(2*vk6*Va_trim); // vk10 = d(vk9)/d(Va)
 
-	float dOmegaVa = (1/(2*a_omega))*(-vk4 + 0.5 * (1/sqrt(vk9)) * vk10); // = d(Omega_p)/d(Va)
+	float dOmegaVa = (1/(2*a_omega))*(-vk4 + 0.5 * (1/sqrtf(vk9)) * vk10); // = d(Omega_p)/d(Va)
 
 	float dTpVa       = 2 * vk1 * Omega_p * dOmegaVa + vk2*(Va_trim * dOmegaVa + Omega_p) + 2 * vk3 * Va_trim; // = d(T_p)/d(Va)
-	float dTpDelta_t  = (-vk7/sqrt(vk9)) * (2*vk1*Omega_p + vk2*Va_trim); // = d(T_p)/d(delta_t)
+	float dTpDelta_t  = (-vk7/sqrtf(vk9)) * (2*vk1*Omega_p + vk2*Va_trim); // = d(T_p)/d(delta_t)
 
 	float a_V1 = (1/vtol.m) * (vtol.rho * Va_trim * vtol.S_wing *(vtol.CD0 + vtol.CDalpha*alpha_trim + vtol.CDdelta_e * delta_e_trim) - dTpVa); 
 	float a_V2 = (1/vtol.m) * dTpDelta_t;

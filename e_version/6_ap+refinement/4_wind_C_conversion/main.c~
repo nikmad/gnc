@@ -98,16 +98,16 @@ int main()
 	fprintf(fptr_ap, " AP.omega_n_h  	      %+f\n", AP.omega_n_h );
 	fprintf(fptr_ap, " AP.altitude_ki       %+f\n", AP.altitude_ki);
 	fprintf(fptr_ap, " AP.altitude_kp       %+f\n", AP.altitude_kp);
-	fprintf(fptr_ap, " AP.d_h        	      %+f\n", AP.d_h       );
-	fprintf(fptr_ap, " AP.W_V2       	      %+f\n", AP.W_V2      );
-	fprintf(fptr_ap, " AP.zeta_V2    	      %+f\n", AP.zeta_V2   );
-	fprintf(fptr_ap, " AP.omega_n_V2 	      %+f\n", AP.omega_n_V2);
-	fprintf(fptr_ap, " AP.kp_V2      	      %+f\n", AP.kp_V2     );
-	fprintf(fptr_ap, " AP.ki_V2      	      %+f\n", AP.ki_V2     );
-	fprintf(fptr_ap, " AP.zeta_V     	      %+f\n", AP.zeta_V    );
-	fprintf(fptr_ap, " AP.omega_n_V  	      %+f\n", AP.omega_n_V );
-	fprintf(fptr_ap, " AP.ki_V       	      %+f\n", AP.ki_V );
-	fprintf(fptr_ap, " AP.kp_V       	      %+f\n", AP.kp_V );
+	fprintf(fptr_ap, " AP.d_h        	%+f\n", AP.d_h       );
+	fprintf(fptr_ap, " AP.W_V2       	%+f\n", AP.W_V2      );
+	fprintf(fptr_ap, " AP.zeta_V2    	%+f\n", AP.zeta_V2   );
+	fprintf(fptr_ap, " AP.omega_n_V2 	%+f\n", AP.omega_n_V2);
+	fprintf(fptr_ap, " AP.kp_V2      	%+f\n", AP.kp_V2     );
+	fprintf(fptr_ap, " AP.ki_V2      	%+f\n", AP.ki_V2     );
+	fprintf(fptr_ap, " AP.zeta_V     	%+f\n", AP.zeta_V    );
+	fprintf(fptr_ap, " AP.omega_n_V  	%+f\n", AP.omega_n_V );
+	fprintf(fptr_ap, " AP.ki_V       	%+f\n", AP.ki_V );
+	fprintf(fptr_ap, " AP.kp_V       	%+f\n", AP.kp_V );
 
 	fclose(fptr_ap);
 

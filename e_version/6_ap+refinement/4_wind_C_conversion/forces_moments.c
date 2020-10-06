@@ -92,9 +92,9 @@ struct force_n_moments forces_moments(struct states states_in, struct actuators 
 	w_r = states_in.w - V_w_MAT[2][0];
 
 	//compute air data
-	fm_out.Va = sqrt(u_r*u_r+v_r*v_r+w_r*w_r);
-	fm_out.alpha = (float)atan2(w_r,u_r);
-	fm_out.beta = asin(v_r/fm_out.Va);
+	fm_out.Va = sqrtf(u_r*u_r+v_r*v_r+w_r*w_r);
+	fm_out.alpha = (float)atan2f(w_r,u_r);
+	fm_out.beta = asinf(v_r/fm_out.Va);
 
 	//Total wind vector in NED frame
 	float *V_w, *V_v;
@@ -168,8 +168,8 @@ struct force_n_moments forces_moments(struct states states_in, struct actuators 
     // Aerodynamic forces
     //====================================================
 
-    float CDalpha = vtol.CDp  + (powf(vtol.CL0 + vtol.CLalpha*abs(fm_out.alpha),2))/(PI*vtol.e*vtol.AR);
-   	float sigma_alpha = (1 + exp(-vtol.M*(fm_out.alpha-vtol.alpha0)) + exp(vtol.M*(fm_out.alpha+vtol.alpha0)))/((1+exp(-vtol.M*(fm_out.alpha-vtol.alpha0)))*(1+exp(vtol.M*(fm_out.alpha+vtol.alpha0))));
+    float CDalpha = vtol.CDp  + (powf(vtol.CL0 + vtol.CLalpha*fabsf(fm_out.alpha),2))/(PI*vtol.e*vtol.AR);
+   	float sigma_alpha = (1 + expf(-vtol.M*(fm_out.alpha-vtol.alpha0)) + expf(vtol.M*(fm_out.alpha+vtol.alpha0)))/((1+expf(-vtol.M*(fm_out.alpha-vtol.alpha0)))*(1+expf(vtol.M*(fm_out.alpha+vtol.alpha0))));
    	float CLalpha = (1-sigma_alpha)*(vtol.CL0 + vtol.CLalpha*fm_out.alpha) + sigma_alpha*(2*sign(fm_out.alpha)*powf(sinf(fm_out.alpha),2)*cosf(fm_out.alpha));
     
     float CXalpha = -CDalpha*cosf(fm_out.alpha) + CLalpha*sinf(fm_out.alpha);
@@ -179,7 +179,7 @@ struct force_n_moments forces_moments(struct states states_in, struct actuators 
     float CZq_alpha = -vtol.CDq*sinf(fm_out.alpha) - vtol.CLq*cosf(fm_out.alpha);
     float CZdelta_e_alpha = -vtol.CDdelta_e*sinf(fm_out.alpha) - vtol.CLdelta_e*cosf(fm_out.alpha);
 
-    float fa_x = 0.5*vtol.rho*powf(fm_out.Va,2)*vtol.S_wing*(CXalpha + CXq_alpha*(vtol.c/(2*fm_out.Va))*states_in.q + CXdelta_e_alpha*abs(delta.delta_e)); 
+    float fa_x = 0.5*vtol.rho*powf(fm_out.Va,2)*vtol.S_wing*(CXalpha + CXq_alpha*(vtol.c/(2*fm_out.Va))*states_in.q + CXdelta_e_alpha*fabsf(delta.delta_e)); 
     float fa_y = 0.5*vtol.rho*powf(fm_out.Va,2)*vtol.S_wing*(vtol.CY0 + vtol.CYbeta*fm_out.beta + vtol.CYp*(vtol.b/(2*fm_out.Va))*states_in.p + vtol.CYr*(vtol.b/(2*fm_out.Va))*states_in.r + vtol.CYdelta_a*delta.delta_a + vtol.CYdelta_r*delta.delta_r);
     float fa_z = 0.5*vtol.rho*powf(fm_out.Va,2)*vtol.S_wing*(CZalpha + CZq_alpha*(vtol.c/(2*fm_out.Va))*states_in.q + CZdelta_e_alpha*delta.delta_e);
 
@@ -196,7 +196,7 @@ struct force_n_moments forces_moments(struct states states_in, struct actuators 
     float b_omega = vtol.rho*powf(vtol.D_prop,4)*vtol.CQ1*fm_out.Va/(2*PI) + powf(vtol.KQ,2)/vtol.Rmotor;
     float c_omega = vtol.rho*powf(vtol.D_prop,3)*vtol.CQ2*powf(fm_out.Va,2) - vtol.KQ * Vin/vtol.Rmotor + vtol.KQ * vtol.i0;
     
-    float Omega_p = (-b_omega + sqrt(powf(b_omega,2)-4*a_omega*c_omega))/(2*a_omega);
+    float Omega_p = (-b_omega + sqrtf(powf(b_omega,2)-4*a_omega*c_omega))/(2*a_omega);
     float Tp = vtol.rho*powf(vtol.D_prop,4)*vtol.CT0*powf(Omega_p,2)/(4*PI*PI)+ vtol.rho*powf(vtol.D_prop,3)*vtol.CT1*fm_out.Va*Omega_p/(2*PI) + vtol.rho*powf(vtol.D_prop,2)*vtol.CT2*powf(fm_out.Va,2);
     float Qp = vtol.rho*powf(vtol.D_prop,5)*vtol.CQ0*powf(Omega_p,2)/(4*PI*PI)+ vtol.rho*powf(vtol.D_prop,4)*vtol.CQ1*fm_out.Va*Omega_p/(2*PI) + vtol.rho*powf(vtol.D_prop,3)*vtol.CQ2*powf(fm_out.Va,2);
 
