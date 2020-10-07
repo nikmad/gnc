@@ -97,8 +97,6 @@ else
         
 end
 
-
-
 %[delta_a, intg, err] = roll_with_aileron(phi_c, phi, p, AP, intg_prev(2), err_prev(2));
 % phi_c    = uu(5+NN); % Use it when testing roll loop. Comment it whenever giving course input (Course loop is the actual case we will be using in final Autopilot version).
 [delta_a] = roll_with_aileron(phi_c, phi, p, AP);

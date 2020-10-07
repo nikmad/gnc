@@ -170,6 +170,13 @@ struct actuators{
 	float delta_t;
 };
 
+struct actuator_commands{
+	float actr_deflect_cmd; 	//actuator command
+	float intg; 	//integrator
+	float diff;		//differentiator
+	float err;		//error
+};
+
 struct trim_out{
 	float Va; 
 	float alpha; 

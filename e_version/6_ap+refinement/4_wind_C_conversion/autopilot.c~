@@ -1,0 +1,145 @@
+
+#include <stdio.h>
+#include "math_util.h"
+#include "functions_vtol.h"
+#include "parameters_vtol.h"
+
+float* autopilot(float uu[], struct ap_gains AP)
+{
+	int NN = 0;
+	float pn       =  uu(0+NN); // inertial North position
+	float pe       =  uu(1+NN); // inertial East position
+	float h        =  uu(2+NN); // altitude
+	float Va       =  uu(3+NN); // airspeed
+	float alpha    =  uu(4+NN); // angle of attack
+	float beta     =  uu(5+NN); // side slip angle
+	float phi      =  uu(6+NN); // roll angle
+	float theta    =  uu(7+NN); // pitch angle
+	float chi      =  uu(8+NN); // course angle
+	float p        =  uu(9+NN); // body frame roll rate
+	float q        =  uu(10+NN);// body frame pitch rate
+	float r        =  uu(11+NN);// body frame yaw rate
+	float Vg       =  uu(12+NN);// ground speed
+	float wn       =  uu(13+NN);// wind North
+	float we       =  uu(14+NN);// wind East
+	float psi      =  uu(15+NN);// heading
+	float bx       =  uu(16+NN);// x-gyro bias
+	float by       =  uu(17+NN);// y-gyro bias
+	float bz       =  uu(18+NN);// z-gyro bias
+	NN = NN+18;
+	float Va_c     = uu(1+NN);  // commanded airspeed (m/s)
+	float h_c      = uu(2+NN);  // commanded altitude (m)
+	//float theta_c  = uu(3+NN);
+	float chi_c    = uu(3+NN);  // commanded course (rad)
+	float phi_c    = uu(4+NN);
+
+	t = uu(5+NN);
+
+	static float intg_prev[7];
+	static float diff_prev[7];
+	static float err_prev[7];
+	static float xi_prev;
+	static float Ts_prev;
+	static float Kr_prev;
+	static float pWo_prev;
+
+	float throttle_max = 2.0;
+	float throttle_limit = 2.5;
+
+	struct actuator_commands elevtr, ailrn, ruddr, throtl, phiC;
+
+	int flag = 2;
+
+	if(t==0)
+	{
+		flag = 1; % for initialization, flag is 1. For rest all cases it is 2;
+	    
+	    for(int i=0; i<7; i++)
+	    {
+	    	intg_prev[i] = 0.0;
+		    diff_prev[i] = 0.0;
+		    err_prev[i]  = 0.0;
+	    }
+	    	    
+	    xi_prev = 0;
+	    Ts_prev = vtol.Ts;
+	    Kr_prev = AP.yaw_damper_kp;
+	    pWo_prev = AP.p_wo;
+	}
+		
+	if(flag==1)
+	{
+		phi_c   = 0.0;
+    	delta_r = 0.0;
+	}
+	else
+	{
+		/*
+		y_c = ;
+		y 	= ;
+		kp 	= ;
+		ki 	= ;
+		kd 	= ;
+		limit = ;
+		intg = ;
+		diff = ;
+		err = ;
+		*/
+
+		phiC = pidloop(chi_c, chi, AP.course_kp, AP.course_ki, 0, 30*PI/180, vtol.Ts, AP.tau, intg_prev[0], diff_prev[0], err_prev[0]);
+	    
+	    intg_prev[0] = phiC.intg;
+	    diff_prev[0] = phiC.diff;
+	    err_prev[0]  = phiC.err;	    
+	}
+}
+
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// course_with_roll
+//   - regulate heading using the roll command
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                    
+struct actuator_commands pidloop(y_c, y, kp, ki, kd, limit, Ts, tau, intg, diff, err)
+{
+	float integrator = intg;
+	float differentiator = diff;
+	float error_d1 = err;
+
+	float error = y_c - y; // compute the current error
+	 
+	integrator = integrator + (Ts/2)*(error + error_d1);
+
+	// update integrator
+	differentiator = ((2*tau-Ts)/(2*tau+Ts))*differentiator + (2/(2*tau+Ts))*(error - error_d1);
+
+	// update differentiator
+	error_d1 = error; // update the error for next time through the loop
+	 
+	float u = sat(kp * error +  ki * integrator + kd * differentiator, limit); // ensure abs(u)<=limit
+	 
+	// implement integrator anti-windup
+	if(ki != 0.0)
+	{
+		float u_unsat = kp*error + ki*integrator + kd*differentiator;
+	    integrator = integrator + (1/ki) * (u - u_unsat);
+	}
+	     
+	struct actuator_commands act_cmds = {u, integrator, differentiator, error_d1};
+
+	return act_cmds;
+}
+
+float sat(float in, float limit)
+{
+	float out;
+	if(in < -limit)
+        out = -limit;
+    else if(in > limit)
+        out = limit;
+    else{
+        out = in;
+    }
+    
+    return out;
+}
+
