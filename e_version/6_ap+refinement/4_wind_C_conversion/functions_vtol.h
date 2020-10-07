@@ -28,5 +28,6 @@ struct trans_funcs* transfer_functions(struct states, struct trim_out, struct ac
 float* autopilot(float [], struct ap_gains);
 struct actuator_commands pidloop(float,float,float,float,float,float,float,float,float,float,float);
 float sat(float, float);
+void true_states(struct states, struct force_n_moments, float *);
 
 #endif

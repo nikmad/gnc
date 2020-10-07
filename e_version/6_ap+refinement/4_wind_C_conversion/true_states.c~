@@ -1,0 +1,102 @@
+
+#include <stdio.h>
+#include "math_util.h"
+#include "functions_vtol.h"
+#include "parameters_vtol.h"
+
+float * true_states(struct states states_out, struct force_n_moments fm_in)
+{
+
+// fake state estimation for vtolsim
+//   - this function will be replaced with a state estimator later
+//
+// Outputs are:
+//   pnhat    - estimated North position, 
+//   pehat    - estimated East position, 
+//   hhat     - estimated altitude, 
+//   Vahat    - estimated airspeed, 
+//   alphahat - estimated angle of attack
+//   betahat  - estimated sideslip angle
+//   phihat   - estimated roll angle, 
+//   thetahat - estimated pitch angel, 
+//   chihat   - estimated course, 
+//   phat     - estimated roll rate, 
+//   qhat     - estimated pitch rate, 
+//   rhat     - estimated yaw rate,
+//   Vghat    - estimated ground speed, 
+//   wnhat    - estimate of North wind, 
+//   wehat    - estimate of East wind
+//   psihat   - estimate of heading angle
+//   bxhat    - estimate of x-gyro bias
+//   byhat    - estimate of y-gyro bias
+//   bzhat    - estimate of z-gyro bias
+ 
+
+// process inputs
+    int NN = 0;
+    float pn       = uu[0+NN] // inertial North position
+    float pe       = uu[1+NN];  // inertial East position
+    float h        = -uu[2+NN]; // altitude
+    //  float u        = uu[3+NN]; // inertial velocity along body x-axis
+    //  float v        = uu[4+NN]; // inertial velocity along body y-axis
+    //  float w        = uu[5+NN]; // inertial velocity along body z-axis
+    float phi      = uu[6+NN];  // roll angle
+    float theta    = uu[7+NN];  // pitch angle
+    float psi      = uu[8+NN];  // yaw angle
+    float p        = uu[9+NN];  // body frame roll rate
+    float q        = uu[10+NN]; // body frame pitch rate
+    float r        = uu[11+NN]; // body frame yaw rate
+    float NN = NN+11;
+    float Va       = uu[1+NN];  // airspeed
+    float alpha    = uu[2+NN];  // angle of attack
+    float beta     = uu[3+NN];  // sideslip angle
+    float wn       = uu[4+NN];  // wind North
+    float we       = uu[5+NN];  // wind East
+    //  float wd       = uu[6+NN];  // wind down
+    NN = NN+6;
+    //  float t        = uu[1+NN]; // time
+    
+// estimate states (using real state data)
+    float pnhat    = states_out.pn;
+    float pehat    = states_out.pe;
+    float hhat     = -states_out.pd;
+    float Vahat    = Va;
+    float alphahat = alpha;
+    float betahat  = beta;
+    float phihat   = phi;
+    float thetahat = theta;
+    float chihat   = atan2f(Va*sinf(psi)+we, Va*cosf(psi)+wn);
+    float phat     = p;
+    float qhat     = q;
+    float rhat     = r;
+    float Vghat    = sqrtf(powf(Va*cosf(psi)+wn, 2) + powf(Va*sinf(psi)+we, 2));
+    float wnhat    = wn;
+    float wehat    = we;
+    float psihat   = psi;
+    float bxhat    = 0;
+    float byhat    = 0;
+    float bzhat    = 0;
+    
+    float xhat[] = {pnhat,
+        pehat,
+        hhat,
+        Vahat,
+        alphahat,
+        betahat,
+        phihat,
+        thetahat,
+        chihat,
+        phat,
+        qhat,
+        rhat,
+        Vghat,
+        wnhat,
+        wehat,
+        psihat,
+        bxhat,
+        byhat,
+        bzhat,
+        };
+
+return xhat;
+}

@@ -17,7 +17,11 @@ int main()
 	//float rk4_stepsize = 0.01;
 
 	struct states states_in = {0,0,0,0,0,0,0,0,0,0,0,0};
-	struct states states_out, states_prevMemory;
+	struct states states_out, states_prevMemory; 
+	
+	float* states_estimated;
+	states_estimated = (float*)malloc(19*sizeof(float));
+
 	struct force_n_moments fm_in = {0,0,0, 0,0,0, 0,0,0, 0,0,0};
 	struct actuators delta = {0*PI/180, 0*PI/180, 15*PI/180, 0};
 	struct wnd _wind = {0.0000000001,0.0000000001,0.0000000001,0.0000000001,0.0000000001,0.0000000001};
@@ -127,14 +131,15 @@ int main()
 		fprintf(fptr, "%3.3f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", t, states_out.pn, states_out.pe, states_out.pd, states_out.u, states_out.v, states_out.w, states_out.phi, states_out.theta, states_out.psi, states_out.p, states_out.q, states_out.r, fm_in.Va, fm_in.alpha, fm_in.beta,chi,delta.delta_e,delta.delta_a,delta.delta_r,delta.delta_t);
 		states_in = states_out;
 
-		true_states();
-		guidance();
-		delta = autopilot();
+		true_states(states_out, fm_in, states_estimated);
+		//guidance();
+		//delta = autopilot();
    	}
 
 	fclose(fptr);
 
 	free(tf);
+	free(states_estimated);
 	//free(AP);
 	
 	return 0;
