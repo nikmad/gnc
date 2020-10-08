@@ -30,10 +30,12 @@ struct states rk4(struct states, struct force_n_moments);
 struct state_rates sixDOF(float *, float *);
 struct ap_gains gains_autopilot(struct states, struct trim_out, struct actuators, struct trans_funcs*);
 struct trans_funcs* transfer_functions(struct states, struct trim_out, struct actuators);
-float* autopilot(float [], struct ap_gains);
+void autopilot(float*, float*, struct ap_gains, struct actuators, float, float*);
 struct actuator_commands pidloop(float,float,float,float,float,float,float,float,float,float,float);
 float sat(float, float);
 void true_states(struct states, struct force_n_moments, float *);
+float * yaw_damper(float, float, float, float, float);
+float pidloop_rate(float, float, float, float, float, float);
 
 void guidance(float*);
 void path_manager_fillet(float [], int ,float [5][WAYPOINT_SIZE],float []);

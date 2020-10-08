@@ -48,6 +48,9 @@ void true_states(struct states states_out, struct force_n_moments fm_in, float* 
         byhat,
         bzhat};
 
-    states_estimated = xhat;
+    for(int i=0;i<19;i++)
+    {
+        *(states_estimated+i)      = xhat[i];
+    }
 
 }

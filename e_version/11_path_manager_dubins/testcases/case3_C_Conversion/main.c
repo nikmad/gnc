@@ -24,7 +24,7 @@ int main()
 	states_estimated = (float*)malloc(19*sizeof(float));
 
 	struct force_n_moments fm_in = {0,0,0, 0,0,0, 0,0,0, 0,0,0};
-	struct actuators delta = {0*PI/180, 0*PI/180, 15*PI/180, 0};
+	struct actuators delta = {0*PI/180, 0*PI/180, 0*PI/180, 0};
 	struct wnd _wind = {0.0000000001,0.0000000001,0.0000000001,0.0000000001,0.0000000001,0.0000000001};
 	
 	struct trans_funcs* tf;
@@ -33,8 +33,11 @@ int main()
 	float* guidance_commands;
 	guidance_commands = (float*)malloc(4*sizeof(float));
 	
+	float* autopilot_commands;
+	autopilot_commands = (float*)malloc(16*sizeof(float));
+
 	int i;
-	float t = 0.0, t_tot = 5.0;
+	float t = 0.0, t_tot = 300.0;
 
 	float chi = 0.0;
 
@@ -119,13 +122,16 @@ int main()
 
 	fclose(fptr_ap);
 
-	FILE *fptr;
+	FILE *fptr, *fptr_truestates, *fptr_autopilot;
+	fptr_truestates = fopen("true_states.txt", "w+");
 	fptr = fopen("nikstates.txt", "w+");
+	fptr_autopilot = fopen("autopilot_commands.txt", "w+");
 
-	fprintf(fptr, "%3.3f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", t, states_in.pn, states_in.pe, states_in.pd, states_in.u, states_in.v, states_in.w, states_in.phi, states_in.theta, states_in.psi, states_in.p, states_in.q, states_in.r, fm_in.Va, fm_in.alpha,fm_in.beta,chi,delta.delta_e,delta.delta_a,delta.delta_r,delta.delta_t);
+	//fprintf(fptr, "%3.3f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", t, states_in.pn, states_in.pe, states_in.pd, states_in.u, states_in.v, states_in.w, states_in.phi, states_in.theta, states_in.psi, states_in.p, states_in.q, states_in.r, fm_in.Va, fm_in.alpha,fm_in.beta,chi,delta.delta_e,delta.delta_a,delta.delta_r,delta.delta_t);
 
-	for(i=1; i<(int)(t_tot/SIM.rk4_stepsize)+1; i++)
+	for(i=0; i<(int)(t_tot/SIM.rk4_stepsize)+1; i++)
 	{
+		//printf("_____________________________________________\n");
 		t = i*SIM.rk4_stepsize;
 		fm_in = forces_moments(states_in, delta, _wind);
 		states_out = vtol_dynamics(states_in, fm_in);
@@ -136,18 +142,25 @@ int main()
 		states_in = states_out;
 
 		true_states(states_out, fm_in, states_estimated);
-		guidance(guidance_commands);
-		printf(" Va_c = %f\n h_c = %f\n chi_c = %f\n phi_ff = %f\n", *guidance_commands, *(guidance_commands+1), *(guidance_commands+2), *(guidance_commands+3));
+		//                        1    2    3    4    5    6    7    8    9    10   11   12   13   14   15   16   17   18   19
+		fprintf(fptr_truestates, "%f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", *states_estimated, *(states_estimated+1), *(states_estimated+2), *(states_estimated+3), *(states_estimated+4), *(states_estimated+5), *(states_estimated+6), *(states_estimated+7), *(states_estimated+8), *(states_estimated+9), *(states_estimated+10), *(states_estimated+11), *(states_estimated+12), *(states_estimated+13), *(states_estimated+14), *(states_estimated+15), *(states_estimated+16), *(states_estimated+17), *(states_estimated+18));
 
-		//delta = autopilot();
+		guidance(guidance_commands);
+		//printf(" Va_c = %f\n h_c = %f\n chi_c = %f\n phi_ff = %f\n", *guidance_commands, *(guidance_commands+1), *(guidance_commands+2), *(guidance_commands+3));
+
+		autopilot(states_estimated, guidance_commands, AP, u_trim, t, autopilot_commands);
+		//                        1   2    3    4    5    6    7    8    9    10   11   12   13   14   15   16
+		fprintf(fptr_autopilot, "%f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n",*(autopilot_commands), *(autopilot_commands+1), *(autopilot_commands+2), *(autopilot_commands+3),*(autopilot_commands+4), *(autopilot_commands+5), *(autopilot_commands+6), *(autopilot_commands+7),*(autopilot_commands+8), *(autopilot_commands+9), *(autopilot_commands+10), *(autopilot_commands+11),*(autopilot_commands+12), *(autopilot_commands+13), *(autopilot_commands+14), *(autopilot_commands+15));
    	}
 
 	fclose(fptr);
+	fclose(fptr_truestates);
+	fclose(fptr_autopilot);
 
 	free(tf);
 	free(states_estimated);
 	free(guidance_commands);
-	//free(AP);
+	free(autopilot_commands);
 	
 	return 0;
 }

@@ -72,7 +72,11 @@ void guidance(float* guidance_commands)
 
 	//printf(" Va_c = %f\n h_c = %f\n chi_c = %f\n phi_ff = %f\n", out_pfollow[0], out_pfollow[1], out_pfollow[2], out_pfollow[3]);
 
-	guidance_commands = out_pfollow;		
+	for(int i=0;i<4;i++)
+	{
+		*(guidance_commands+i) = out_pfollow[i];
+	}
+				
 }
 
 void path_manager_fillet(float in[],int start_of_simulation,float waypoints[5][WAYPOINT_SIZE],float out[])
@@ -368,8 +372,8 @@ void dubinsParameters(float start_node[], float end_node[], float R_min, struct 
 	float pe[] = {end_node[0],end_node[1],end_node[2]};
 	float chie = end_node[3];
 
-	printf("Ps[] check = [%f %f %f]\n", ps[0], ps[1], ps[2]);
-	printf("Rmin check = %f\n", R_min);
+	//printf("Ps[] check = [%f %f %f]\n", ps[0], ps[1], ps[2]);
+	//printf("Rmin check = %f\n", R_min);
 
 	//float *Rmat1, *Rmat2;
 	float *Mat1, *Mat2;
@@ -403,7 +407,7 @@ void dubinsParameters(float start_node[], float end_node[], float R_min, struct 
 	MatrixMultiply(rotz(PI/2),3,3,Mat2,3,1,temp3x1_3);
 	MatrixMultiply(rotz(-PI/2),3,3,Mat2,3,1,temp3x1_4);
 
-    printf("temp3x1_2 = [%f %f %f]\n",temp3x1_2[0],temp3x1_2[1],temp3x1_2[2]);
+    //printf("temp3x1_2 = [%f %f %f]\n",temp3x1_2[0],temp3x1_2[1],temp3x1_2[2]);
 
 	for(int i=0; i<3; i++)
 	{
@@ -413,8 +417,8 @@ void dubinsParameters(float start_node[], float end_node[], float R_min, struct 
 		cle[i] = pe[i] + R_min * temp3x1_4[i];
 	}
 
-	printf("ps[i] = [%f %f %f]\n",ps[0],ps[1],ps[2]);
-	printf("cls[i] = [%f %f %f]\n",cls[0],cls[1],cls[2]);
+	//printf("ps[i] = [%f %f %f]\n",ps[0],ps[1],ps[2]);
+	//printf("cls[i] = [%f %f %f]\n",cls[0],cls[1],cls[2]);
 
 	//compute L1
 	theta = modpi_(atan2f(cre[1]-crs[1], cre[0]-crs[0]) + 2*PI);
@@ -450,7 +454,7 @@ void dubinsParameters(float start_node[], float end_node[], float R_min, struct 
 	//Minimum distance of all 4 evaluations
 	struct L_idx Lmin;
 	Lmin = min_4(L1, L2, L3, L4);
-	printf("Checking Lmin = %f %d\n", Lmin.L, Lmin.indx);
+	//printf("Checking Lmin = %f %d\n", Lmin.L, Lmin.indx);
 
 	float *e1, *_q1, *_q3, *temp3x1_5;
 	e1 = (float *) malloc(3*sizeof(float));
@@ -598,7 +602,7 @@ void dubinsParameters(float start_node[], float end_node[], float R_min, struct 
 	}
 
 	//printf("q1[i] test1 = [%f %f %f]\n",dubinspath->q1[0],dubinspath->q1[1],dubinspath->q1[2]);
-	printf("cs[i] test1 = [%f %f %f]\n",dubinspath->cs[0],dubinspath->cs[1],dubinspath->cs[2]);
+	//printf("cs[i] test1 = [%f %f %f]\n",dubinspath->cs[0],dubinspath->cs[1],dubinspath->cs[2]);
 	
 	free(Mat1);
 	free(Mat2);
@@ -696,7 +700,7 @@ void path_manager_dubins(float in[],int start_of_simulation,float waypoints[5][W
 				float end_node[]   = {waypoints[0][ptr_b], waypoints[1][ptr_b], waypoints[2][ptr_b], waypoints[3][ptr_b], 0, 0};
 				dubinsParameters(start_node, end_node, atp1.R_min, dubinspath); 
 					//printf("q1[i] test2 = [%f %f %f]\n",dubinspath->q1[0],dubinspath->q1[1],dubinspath->q1[2]);
-					printf("cs[i] test2 = [%f %f %f]\n",dubinspath->cs[0],dubinspath->cs[1],dubinspath->cs[2]);
+					//printf("cs[i] test2 = [%f %f %f]\n",dubinspath->cs[0],dubinspath->cs[1],dubinspath->cs[2]);
 
 				match=1;
 				break;
@@ -769,7 +773,7 @@ void path_manager_dubins(float in[],int start_of_simulation,float waypoints[5][W
 				_q[i] = -999;
 				_c[i] = dubinspath->cs[i];
 			}
- 	printf("_c[i] = [%f %f %f]\n",_c[0],_c[1],_c[2]);
+ 	//printf("_c[i] = [%f %f %f]\n",_c[0],_c[1],_c[2]);
 
 			if((*_p3>=0)&&(flag_first_time_in_state==1)){
 				state_transition = 2;
@@ -1061,10 +1065,10 @@ void path_manager(float in[],float out[])
 		
 	int NN=0;
 	int  num_waypoints = (int)in[0+NN];
-		printf("Testiugskfg3m1\n");
+		//printf("Testiugskfg3m1\n");
 	if(num_waypoints==0)
 	{
-				printf("Testiugskfg3.0\n");
+				//printf("Testiugskfg3.0\n");
 			flag   = 1; // % following straight line path
 			Va_d   = atp1.Va0;// % desired airspeed along waypoint path
 			NN     = NN + 1 + 5*atp1.size_waypoint_array;
@@ -1119,13 +1123,13 @@ void path_manager(float in[],float out[])
 			{
 				out[i+13]=state[i];
 			}
-			printf("Testiugskfg3.0\n");
+			//printf("Testiugskfg3.0\n");
 			//out[28]=(float)flag_need_new_waypoints;//doubt
 			out[29]=(float)flag_need_new_waypoints;//doubt
 	}
 	else
 	{
-			printf("Testiugskfg3.1\n");
+			//printf("Testiugskfg3.1\n");
 			//printf("atp1.size_waypoint_array = %d\n",atp1.size_waypoint_array);
 		//waypoints matrix being used in two function.
 		for(j=0;j<atp1.size_waypoint_array;j++)
@@ -1137,9 +1141,9 @@ void path_manager(float in[],float out[])
 			}
 			
 		}
-					printf("Checking waypoints(0-4,0) = [%f %f %f %f]\n",waypoints[0][0],waypoints[1][0],waypoints[2][0],waypoints[3][0],waypoints[4][0]);
+					//printf("Checking waypoints(0-4,0) = [%f %f %f %f]\n",waypoints[0][0],waypoints[1][0],waypoints[2][0],waypoints[3][0],waypoints[4][0]);
 
-					printf("Checking waypoints(0-4,1) = [%f %f %f %f]\n",waypoints[0][1],waypoints[1][1],waypoints[2][1],waypoints[3][1],waypoints[4][1]);
+					//printf("Checking waypoints(0-4,1) = [%f %f %f %f]\n",waypoints[0][1],waypoints[1][1],waypoints[2][1],waypoints[3][1],waypoints[4][1]);
 						//printf("Testiugskfg3.2\n");
 		
 		//if(fabsf(waypoints[4][0]>=2*PI))	
@@ -1156,7 +1160,7 @@ void path_manager(float in[],float out[])
 			// % follows Dubins paths between waypoint configurations
         path_manager_dubins(in,start_of_simulation,waypoints,out); 
         start_of_simulation=0;
-        printf("check out[8,9,10] = [%f %f %f]\n", out[8], out[9], out[10]);
+        //printf("check out[8,9,10] = [%f %f %f]\n", out[8], out[9], out[10]);
 			
 		//}
 	}
@@ -1173,7 +1177,7 @@ void path_follow(float in[], float out[])
 	int i=0,j=0;
 
 	//PATH input to path_follow
-	printf("check in[0] = %f\n", in[0]);
+	//printf("check in[0] = %f\n", in[0]);
 	int flag  = (int)in[0+NN];
     float Va_d = in[1+NN];
     float r_path[3][1] = {{in[2+NN]},{in[3+NN]},{in[4+NN]}};
@@ -1182,7 +1186,7 @@ void path_follow(float in[], float out[])
     float rho_orbit = in[11+NN];
     float lam_orbit = in[12+NN];
 	
-    printf("checking in[8,9,10] = [%f %f %f]\n", in[8+NN], in[9+NN], in[10+NN]);
+    //printf("checking in[8,9,10] = [%f %f %f]\n", in[8+NN], in[9+NN], in[10+NN]);
 
 	float s_i[3]={0.0,0.0,0.0};
 	
@@ -1213,7 +1217,7 @@ void path_follow(float in[], float out[])
 	
 	float t = in[16+NN];
 
-	printf("time check: %f\n", t);
+	//printf("time check: %f\n", t);
 
 	float chi_q=0.0;
 	float chi_c=0.0;
@@ -1312,7 +1316,7 @@ void path_follow(float in[], float out[])
         
 	        // commanded altitude is the height of the orbit  
 	        h_c = -c_orbit[2][0];	
-	        printf("checking C_rbit = [%f %f %f]\n", c_orbit[0][0], c_orbit[1][0], c_orbit[2][0]);
+	        //printf("checking C_rbit = [%f %f %f]\n", c_orbit[0][0], c_orbit[1][0], c_orbit[2][0]);
 	        // distance from orbit center
 	        d_s = sqrtf(powf((pn-c_orbit[0][0]),2)+powf((pe-c_orbit[1][0]),2)); 
 	     
@@ -1336,7 +1340,7 @@ void path_follow(float in[], float out[])
 		break;
 		
 		default:
-		printf("Default case\n");
+		//printf("Default case\n");
 		break;
 	}
   	//printf("test 4: %f\n", phi_ff);
