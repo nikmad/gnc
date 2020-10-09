@@ -1,9 +1,9 @@
-% function out = path_planner(in, atp)
-function out = path_planner()
+function out = path_planner(in, atp)
+% function out = path_planner()
 
-  atp.Va0 = 35;
-  atp.size_waypoint_array = 100;
-  atp.R_min = 35*35/9.81;
+%   atp.Va0 = 35;
+%   atp.size_waypoint_array = 100;
+%   atp.R_min = 35*35/9.81;
 
   NN = 0;
   % pn        = in(1+NN);

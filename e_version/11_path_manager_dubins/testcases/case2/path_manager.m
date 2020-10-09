@@ -23,14 +23,14 @@
 %   rho  - radius of orbit
 %   lambda = direction of orbit (+1 for CW, -1 for CCW)
 %
-% function out = path_manager(in,P)
-function out = path_manager(in)
+function out = path_manager(in,P)
+% function out = path_manager(in)
 
   persistent start_of_simulation
   
-  P.Va0 = 35;
-  P.size_waypoint_array = 100;
-  P.R_min = 35*35/9.81;
+%   P.Va0 = 35;
+%   P.size_waypoint_array = 100;
+%   P.R_min = 35*35/9.81;
   
   t = in(end);
   if t==0,

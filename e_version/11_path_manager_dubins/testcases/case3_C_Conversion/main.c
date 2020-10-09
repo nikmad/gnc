@@ -1,6 +1,7 @@
 /*
 Author: Nikhil Madduri (nikhil.madduri@gmail.com)
 Created: 31/Jul/2020
+Modified: 01/Aug/2020 till 08/Oct/2020
 */
 //#define EXTERN
 //#define VTOL
@@ -131,7 +132,7 @@ int main()
 
 	for(i=0; i<(int)(t_tot/SIM.rk4_stepsize)+1; i++)
 	{
-		//printf("_____________________________________________\n");
+		printf("_____________________________________________\n");
 		t = i*SIM.rk4_stepsize;
 		fm_in = forces_moments(states_in, delta, _wind);
 		states_out = vtol_dynamics(states_in, fm_in);
@@ -146,11 +147,12 @@ int main()
 		fprintf(fptr_truestates, "%f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", *states_estimated, *(states_estimated+1), *(states_estimated+2), *(states_estimated+3), *(states_estimated+4), *(states_estimated+5), *(states_estimated+6), *(states_estimated+7), *(states_estimated+8), *(states_estimated+9), *(states_estimated+10), *(states_estimated+11), *(states_estimated+12), *(states_estimated+13), *(states_estimated+14), *(states_estimated+15), *(states_estimated+16), *(states_estimated+17), *(states_estimated+18));
 
 		guidance(guidance_commands);
-		//printf(" Va_c = %f\n h_c = %f\n chi_c = %f\n phi_ff = %f\n", *guidance_commands, *(guidance_commands+1), *(guidance_commands+2), *(guidance_commands+3));
+		printf("t = %f\n Va_c = %f\n h_c = %f\n chi_c = %f\n phi_ff = %f\n", t, *guidance_commands, *(guidance_commands+1), *(guidance_commands+2), *(guidance_commands+3));
 
 		autopilot(states_estimated, guidance_commands, AP, u_trim, t, autopilot_commands);
-		//                        1   2    3    4    5    6    7    8    9    10   11   12   13   14   15   16
-		fprintf(fptr_autopilot, "%f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n",*(autopilot_commands), *(autopilot_commands+1), *(autopilot_commands+2), *(autopilot_commands+3),*(autopilot_commands+4), *(autopilot_commands+5), *(autopilot_commands+6), *(autopilot_commands+7),*(autopilot_commands+8), *(autopilot_commands+9), *(autopilot_commands+10), *(autopilot_commands+11),*(autopilot_commands+12), *(autopilot_commands+13), *(autopilot_commands+14), *(autopilot_commands+15));
+		//                        1   2    3    4    5    6    7    8    9    10   11   12     13   14   15   16
+		//						delE delA delR delT  pn   pe   h_c  Va_c v    w  phi_c theta_c chi_c p   q    r
+		fprintf(fptr_autopilot, "%f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f     %f   %f   %f   %f\n",*(autopilot_commands), *(autopilot_commands+1), *(autopilot_commands+2), *(autopilot_commands+3),*(autopilot_commands+4), *(autopilot_commands+5), *(autopilot_commands+6), *(autopilot_commands+7),*(autopilot_commands+8), *(autopilot_commands+9), *(autopilot_commands+10), *(autopilot_commands+11),*(autopilot_commands+12), *(autopilot_commands+13), *(autopilot_commands+14), *(autopilot_commands+15));
    	}
 
 	fclose(fptr);
