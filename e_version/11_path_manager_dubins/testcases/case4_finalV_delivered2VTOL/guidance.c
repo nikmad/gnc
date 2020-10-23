@@ -13,9 +13,27 @@ Modified: 01/Aug/2020 till 08/Oct/2020
 
 #define WAYPOINT_SIZE 100
 
-void guidance(float* guidance_commands)
+void guidance(float* states_estimated, float clock, float* guidance_commands)
 {
-	float in_pplanner[17] = {5, 5, 5, 30, 0.5, 0.1, 0.2, 0.2, 0.2, 0.1, 1, 0.4, 20, 3, 2, 0.4, 0}; //17 floats = 16 states + 1 time
+	//float in_pplanner[17] = {5, 5, 5, 30, 0.5, 0.1, 0.2, 0.2, 0.2, 0.1, 1, 0.4, 20, 3, 2, 0.4, 0}; //17 floats = 16 states + 1 time
+	float in_pplanner[17] = {*(states_estimated), 
+							 *(states_estimated+1), 
+							 *(states_estimated+2),
+							 *(states_estimated+3),
+							 *(states_estimated+4),
+							 *(states_estimated+5),
+							 *(states_estimated+6),
+							 *(states_estimated+7),
+							 *(states_estimated+8),
+							 *(states_estimated+9),
+							 *(states_estimated+10),
+							 *(states_estimated+11),
+							 *(states_estimated+12),
+							 *(states_estimated+13),
+							 *(states_estimated+14),
+							 *(states_estimated+15),
+							 clock
+							};
 	float out_pplanner[501];
 	path_planner(in_pplanner, out_pplanner);
 
@@ -899,6 +917,8 @@ void path_planner(float in[], float out[])
 	}
 	else*/
 	//{
+
+	//wpp format = pn, pe, pd, chi, Va
 		wpp[0][0]=0.0;
 		wpp[0][1]=0.0;
 		wpp[0][2]=-100.0;

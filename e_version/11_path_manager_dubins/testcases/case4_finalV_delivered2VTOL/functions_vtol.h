@@ -34,7 +34,7 @@ void true_states(struct states, struct force_n_moments, float *);
 float * yaw_damper(float, float, float, float, float);
 float pidloop_rate(float, float, float, float, float, float);
 
-void guidance(float*);
+void guidance(float*, float, float*);
 void path_manager_fillet(float [], int ,float [5][WAYPOINT_SIZE],float []);
 struct L_idx min_4(float, float, float, float);
 float modpi_(float);

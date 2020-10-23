@@ -122,10 +122,11 @@ int main()
 
 	fclose(fptr_ap);
 	//______________________________________________________
-	FILE *fptr, *fptr_truestates, *fptr_autopilot;
+	FILE *fptr, *fptr_truestates, *fptr_autopilot, *fptr_guidance;
 	fptr_truestates = fopen("true_states.txt", "w+");
 	fptr = fopen("nikstates.txt", "w+");
 	fptr_autopilot = fopen("autopilot_commands.txt", "w+");
+	fptr_guidance = fopen("guidance_commands.txt", "w+");
 	//______________________________________________________
 	
 	for(i=0; i<(int)(t_tot/SIM.rk4_stepsize)+1; i++)
@@ -150,8 +151,8 @@ int main()
 		fprintf(fptr_truestates, "%f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f\n", *states_estimated, *(states_estimated+1), *(states_estimated+2), *(states_estimated+3), *(states_estimated+4), *(states_estimated+5), *(states_estimated+6), *(states_estimated+7), *(states_estimated+8), *(states_estimated+9), *(states_estimated+10), *(states_estimated+11), *(states_estimated+12), *(states_estimated+13), *(states_estimated+14), *(states_estimated+15), *(states_estimated+16), *(states_estimated+17), *(states_estimated+18));
 		//______________________________________________________
 		// Inside guidance, there are calls to path planner, manager and follower, dubins path and fillet paths. One can feed fresh waypoints in guidance file
-		guidance(guidance_commands);
-		printf("t = %f\n Va_c = %f\n h_c = %f\n chi_c = %f\n phi_ff = %f\n", t, *guidance_commands, *(guidance_commands+1), *(guidance_commands+2), *(guidance_commands+3));
+		guidance(states_estimated, t, guidance_commands);
+		fprintf(fptr_guidance, "t = %f Va_c = %f h_c = %f chi_c = %f phi_ff = %f\n", t, *guidance_commands, *(guidance_commands+1), *(guidance_commands+2), *(guidance_commands+3));
 		//______________________________________________________
 		// Using guidance outputs, autopilot generates control outputs
 		autopilot(states_estimated, guidance_commands, AP, u_trim, t, autopilot_commands);
@@ -159,10 +160,15 @@ int main()
 		//						delE delA delR delT  pn   pe   h_c  Va_c v    w  phi_c theta_c chi_c p   q    r
 		fprintf(fptr_autopilot, "%f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f   %f     %f   %f   %f   %f\n",*(autopilot_commands), *(autopilot_commands+1), *(autopilot_commands+2), *(autopilot_commands+3),*(autopilot_commands+4), *(autopilot_commands+5), *(autopilot_commands+6), *(autopilot_commands+7),*(autopilot_commands+8), *(autopilot_commands+9), *(autopilot_commands+10), *(autopilot_commands+11),*(autopilot_commands+12), *(autopilot_commands+13), *(autopilot_commands+14), *(autopilot_commands+15));
 		//______________________________________________________
+		delta.delta_e = *(autopilot_commands+0);
+		delta.delta_a = *(autopilot_commands+1);
+		delta.delta_r = *(autopilot_commands+2);
+		delta.delta_t = *(autopilot_commands+3);
    	}
 
 	fclose(fptr);
 	fclose(fptr_truestates);
+	fclose(fptr_guidance);
 	fclose(fptr_autopilot);
 
 	free(tf);
